@@ -1,2 +1,4 @@
-# flaks_heroku
-containes code for flaks_heroku project test
+# Aayud home management app
+> Build based on python flask framework
+> Deployed on Heroku
+
