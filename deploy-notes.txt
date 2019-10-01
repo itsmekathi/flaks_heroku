@@ -1,0 +1,7 @@
+To deploy to heroku
+    1, Create a new heroku app
+        heroku create "app-name"
+    2, Check whether remotes are added
+        git remote -v
+    3, Push the code to heroku
+        git push heroku master
