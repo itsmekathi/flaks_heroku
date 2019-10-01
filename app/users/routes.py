@@ -64,6 +64,8 @@ def account():
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.email.data = current_user.email
+        form.first_name.data = current_user.first_name
+        form.last_name.data = current_user.last_name
     image_file = url_for(
         'static', filename='profile_pics/' + current_user.image_file)
     return render_template('/users/account.html', title='Account', image_file=image_file, form=form)
