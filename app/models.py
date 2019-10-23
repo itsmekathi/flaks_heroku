@@ -41,6 +41,9 @@ class User(db.Model, UserMixin):
     # Define the posts related to the user
     posts = db.relationship('Post', backref='author', lazy=True)
 
+    # Define the todolists for the user
+    todoLists = db.relationship('ToDoList', backref="user", lazy=True)
+
     def get_reset_token(self, expires_sec=1800):
         s = Serializer(current_app.config['SECRET_KEY'], expires_sec)
         return s.dumps({'user_id': self.id}).decode('utf-8')
@@ -65,8 +68,6 @@ class Role(db.Model):
     name = db.Column(db.String(50), unique=True)
 
 # Define the UserRoles association table
-
-
 class UserRoles(db.Model):
     __tablename__ = 'user_roles'
     id = db.Column(db.Integer(), primary_key=True)
@@ -76,8 +77,6 @@ class UserRoles(db.Model):
         'roles.id', ondelete='CASCADE'))
 
 # Define the Post table
-
-
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
@@ -88,3 +87,37 @@ class Post(db.Model):
 
     def __repr__(self):
         return f"Post('{self.title}', '{self.date_posted}')"
+
+
+class ToDoList(db.Model):
+    __tablename__='todo_lists'
+    id = db.Column(db.Integer(), primary_key=True)
+    title=db.Column(db.String(100), nullable=False)
+    description=db.Column(db.String(200), nullable=False)
+    user_id = db.Column(db.Integer(), db.ForeignKey('users.id'), nullable=False)
+    todo_items = db.relationship('ToDoItem', backref='todolist', lazy=True)
+
+class ToDoItem(db.Model):
+    __tablename__="todo_items"
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    description=db.Column(db.String(200), nullable=False)
+    statusId = db.Column(db.Integer(), nullable=False, default=0)
+    todo_list_id = db.Column(db.Integer, db.ForeignKey('todo_lists.id'), nullable=False)
+    date_created = db.Column(db.DateTime(), nullable=False, default = datetime.utcnow)
+    date_modified = db.Column(db.DateTime(), nullable=False, default= datetime.utcnow)
+
+
+
+# class TaskStatus(db.Model):
+#     __tablename__ = "task_status"
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(100), nullable=False, unique=True)
+
+# class TaskStatusLink(db.Model):
+#     __tablename__ = "task_status_link"
+#     id=db.Column(db.Integer, primary_key=True)
+#     task_id = db.Column(db.Integer(), db.ForeignKey(
+#         'todo_items.id', ondelete='CASCADE'))
+#     status_id = db.Column(db.Integer(), db.ForeignKey(
+#         'task_status.id', ondelete='CASCADE'))

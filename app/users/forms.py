@@ -5,13 +5,11 @@ from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationE
 from app.models import User
 from flask_login import current_user
 
-
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators =[DataRequired(), Length(min=4, max=20)])
     email = StringField('Email', validators =[DataRequired(), Email()])
     password = PasswordField('Password', validators = [DataRequired(), Length(min=6, max=16)])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
-
     submit = SubmitField('Sign Up')
 
     def validate_username(self, username):

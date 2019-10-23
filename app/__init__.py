@@ -25,11 +25,13 @@ def create_app(config_name):
     from .main.routes import main
     from .users.routes import users
     from .posts.routes import posts
+    from .todolists.routes import todolists
     from .errors.routes import errors
     
     app.register_blueprint(main)
     app.register_blueprint(errors)
     app.register_blueprint(users)
     app.register_blueprint(posts)
+    app.register_blueprint(todolists)
 
     return app

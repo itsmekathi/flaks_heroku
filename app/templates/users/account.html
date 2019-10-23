@@ -79,5 +79,10 @@
             {{ form.submit(class="btn btn-outline-info") }}
         </div>
     </form>
+    <div class="role-container">
+        {% for role in roles%}
+        <p class="text-danger">{{role.name}}</p>
+        {% endfor %}
+    </div>
 </div>
 {% endblock content%}
