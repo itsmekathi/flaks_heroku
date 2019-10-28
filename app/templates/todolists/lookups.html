@@ -1,0 +1,115 @@
+{% extends "layout.html" %}
+{% block content %}
+{% if lookups %}
+<div class="content-section">
+    <h2>Existing Data</h2>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <td>#</td>
+                <td>Name</td>
+                <td>Description</td>
+                <td>Color-Class</td>
+                <td>Edit</td>
+                <td>Delete</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for lookup in lookups %}
+            <tr>
+                <td>{{ lookup.id }}</td>
+                <td>{{ lookup.name }}</td>
+                <td>{{ lookup.description }}</td>
+                <td>{{ lookup.style_class }}</td>
+                <td>
+                    {% if lookupTitle=='Status' %}
+                    <a class="btn btn-warning" href="{{url_for('todolists.edit_status', status_id=lookup.id)}}">Edit</a>
+                    {% endif %}
+                    {% if lookupTitle=='Priority' %}
+                    <a class="btn btn-warning" href="{{url_for('todolists.edit_priority', priority_id=lookup.id)}}">Edit</a>
+                    {% endif %}
+                    {% if lookupTitle=='Urgency' %}
+                    <a class="btn btn-warning" href="{{url_for('todolists.edit_urgency', urgency_id=lookup.id)}}">Edit</a>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if lookupTitle=='Status' %}
+                    <form action="{{url_for('todolists.delete_status', status_id=lookup.id)}}" method="POST">
+                        <input type="submit" value="Delete" class="btn btn-danger">
+                    </form>
+                    {% endif %}
+                    {% if lookupTitle=='Priority' %}
+                    <form action="{{url_for('todolists.delete_priority', priority_id=lookup.id)}}" method="POST">
+                        <input type="submit" value="Delete" class="btn btn-danger">
+                    </form>
+                    {% endif %}
+                    {% if lookupTitle=='Urgency' %}
+                    <form action="{{url_for('todolists.delete_urgency', urgency_id=lookup.id)}}" method="POST">
+                        <input type="submit" value="Delete" class="btn btn-danger">
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="content-section">
+    <h2>No value found</h2>
+</div>
+{% endif %}
+<div class="content-section">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">{{ legend }}</legend>
+            <div class="form-group">
+                {{ form.name.label(class="form-control-label") }}{% if form.name.flags.required %}<span
+                    class="required-field">*</span>{% endif %}
+                {% if form.name.errors %}
+                {{ form.name(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.name.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.name(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.description.label(class="form-control-label") }}{% if form.description.flags.required %}<span
+                    class="required-field">*</span>{% endif %}
+                {% if form.description.errors %}
+                {{ form.description(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.description.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.description(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.style_class.label(class="form-control-label") }}{% if form.style_class.flags.required %}<span
+                    class="required-field">*</span>{% endif %}
+                {% if form.style_class.errors %}
+                {{ form.style_class(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.style_class.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.style_class(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</div>
+{% endblock content %}

@@ -36,7 +36,20 @@
                     <div class="navbar-nav">
                         {% if current_user.is_authenticated %}
                         <a class="nav-item nav-link" href="{{ url_for('posts.new_post') }}">New Post</a>
-                        <a class="nav-item nav-link" href="{{ url_for('todolists.new_todolist') }}">New TodoList</a>
+                        <div class="dropdown show">
+                            <a class="nav-item nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Todo List
+                            </a>
+
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                <a class="dropdown-item" href="{{ url_for('todolists.new_todolist') }}">New TodoList</a>
+                                <a class="dropdown-item" href="{{ url_for('todolists.status') }}">Manage task Statuses</a>
+                                <a class="dropdown-item" href="{{ url_for('todolists.priority') }}">Manage task Priorities</a>
+                                <a class="dropdown-item" href="{{ url_for('todolists.urgency') }}">Manage task Urgency</a>
+
+                            </div>
+                        </div>
                         <a class="nav-item nav-link" href="{{ url_for('users.logout') }}">Logout</a>
                         <a class="nav-item nav-link" href="{{ url_for('users.account' )}}">Account</a>
                         {% else %}

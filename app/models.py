@@ -97,27 +97,54 @@ class ToDoList(db.Model):
     user_id = db.Column(db.Integer(), db.ForeignKey('users.id'), nullable=False)
     todo_items = db.relationship('ToDoItem', backref='todolist', lazy=True)
 
+class TaskStatusLu(db.Model):
+    __tablename__ = "task_status_lu"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False, unique=True)
+    description = db.Column(db.String(300), nullable=False)
+    style_class = db.Column(db.String(200), nullable=False, default="text-danger")
+    todo_items = db.relationship('ToDoItem', backref='task_status') 
+
+
+class TaskPriorityLu(db.Model):
+    __tablename__="task_priority_lu"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False, unique=True)
+    description = db.Column(db.String(300), nullable=False)
+    style_class = db.Column(db.String(200), nullable=False, default ="text-danger")
+    todo_items = db.relationship('ToDoItem', backref='task_priority') 
+
+class TaskUrgencyLu(db.Model):
+    __tablename__ = "task_urgency_lu"
+    id = db.Column(db.Integer, primary_key=True)
+    name= db.Column(db.String(100), nullable=False, unique=True)
+    description = db.Column(db.String(300), nullable=False)
+    style_class = db.Column(db.String(200), nullable=False, default="text-danger")
+    todo_items = db.relationship('ToDoItem', backref='task_urgency') 
+    
 class ToDoItem(db.Model):
     __tablename__="todo_items"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     description=db.Column(db.String(200), nullable=False)
-    statusId = db.Column(db.Integer(), nullable=False, default=0)
+    status_id = db.Column(db.Integer(), db.ForeignKey('task_status_lu.id'), nullable=False)
+    priority_id = db.Column(db.Integer(), db.ForeignKey('task_priority_lu.id'), nullable=False )
+    urgency_id = db.Column(db.Integer(), db.ForeignKey('task_urgency_lu.id'), nullable=False)
     todo_list_id = db.Column(db.Integer, db.ForeignKey('todo_lists.id'), nullable=False)
+    scheduled_date = db.Column(db.DateTime(), nullable=False, default = datetime.utcnow)
+    estimated_duration_hours = db.Column(db.Integer(), nullable=False, default=0)
+    estimated_duration_minutes = db.Column(db.Integer(), nullable=False, default = 0)
+    actual_duration_hours = db.Column(db.Integer(), nullable=False, default = 0)
+    actual_duration_minutes = db.Column(db.Integer(), nullable=False, default = 0)
+    comments = db.relationship('ToDoItemComments', backref='todoitem') 
     date_created = db.Column(db.DateTime(), nullable=False, default = datetime.utcnow)
     date_modified = db.Column(db.DateTime(), nullable=False, default= datetime.utcnow)
 
-
-
-# class TaskStatus(db.Model):
-#     __tablename__ = "task_status"
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(100), nullable=False, unique=True)
-
-# class TaskStatusLink(db.Model):
-#     __tablename__ = "task_status_link"
-#     id=db.Column(db.Integer, primary_key=True)
-#     task_id = db.Column(db.Integer(), db.ForeignKey(
-#         'todo_items.id', ondelete='CASCADE'))
-#     status_id = db.Column(db.Integer(), db.ForeignKey(
-#         'task_status.id', ondelete='CASCADE'))
+class ToDoItemComments(db.Model):
+    __tablename__="todo_items_comments"
+    id = db.Column(db.Integer, primary_key=True)
+    comment = db.Column(db.String(300), nullable=False)
+    todo_item_comment = db.Column(db.Integer(), db.ForeignKey('todo_items.id'), nullable=False)
+    user_id = db.Column(db.Integer(), db.ForeignKey('users.id'), nullable=False)
+    user_name = db.Column(db.String(20), nullable=False)
+    comment_date = db.Column(db.DateTime(), nullable=False, default= datetime.utcnow)
