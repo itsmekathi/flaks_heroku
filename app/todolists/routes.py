@@ -116,7 +116,7 @@ def urgency():
         form.style_class.data = ""
         flash('New task-urgency has been added')
     urgencies = TaskUrgencyLu.query.all()
-    return render_template('/todolists/lookups.html', form=form, lookups=urgencies, legend='Add New Priority', lookupTitle='Urgency')
+    return render_template('/todolists/lookups.html', form=form, lookups=urgencies, legend='Add New Urgency', lookupTitle='Urgency')
 
 
 @todolists.route('/todolists/urgency/edit/<int:urgency_id>', methods=['GET', 'POST'])
