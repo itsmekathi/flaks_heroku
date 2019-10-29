@@ -96,6 +96,8 @@ class ToDoList(db.Model):
     description=db.Column(db.String(200), nullable=False)
     user_id = db.Column(db.Integer(), db.ForeignKey('users.id'), nullable=False)
     todo_items = db.relationship('ToDoItem', backref='todolist', lazy=True)
+    date_created = db.Column(db.DateTime(), nullable=False, default = datetime.utcnow)
+    date_modified = db.Column(db.DateTime(), nullable=False, default= datetime.utcnow)
 
 class TaskStatusLu(db.Model):
     __tablename__ = "task_status_lu"
@@ -144,7 +146,7 @@ class ToDoItemComments(db.Model):
     __tablename__="todo_items_comments"
     id = db.Column(db.Integer, primary_key=True)
     comment = db.Column(db.String(300), nullable=False)
-    todo_item_comment = db.Column(db.Integer(), db.ForeignKey('todo_items.id'), nullable=False)
+    todo_item_id = db.Column(db.Integer(), db.ForeignKey('todo_items.id'), nullable=False)
     user_id = db.Column(db.Integer(), db.ForeignKey('users.id'), nullable=False)
     user_name = db.Column(db.String(20), nullable=False)
     comment_date = db.Column(db.DateTime(), nullable=False, default= datetime.utcnow)

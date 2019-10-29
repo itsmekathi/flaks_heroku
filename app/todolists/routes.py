@@ -1,8 +1,8 @@
 from flask import render_template, url_for, flash, redirect, request, abort
 from flask_login import current_user, login_required
 from app import db
-from app.models import ToDoList, ToDoItem, TaskStatusLu, TaskPriorityLu, TaskUrgencyLu
-from .forms import ToDoListForm, TaskLuForm
+from app.models import ToDoList, ToDoItem, TaskStatusLu, TaskPriorityLu, TaskUrgencyLu, ToDoItemComments
+from .forms import ToDoListForm, TaskLuForm, NewToDoItemForm
 from . import todolists
 
 
@@ -160,5 +160,62 @@ def new_todolist():
         db.session.add(todolist)
         db.session.commit()
         flash('Your new todo-list has been created!', 'success')
-        return redirect(url_for('main.home'))
+        return redirect(url_for('todolists.todolist_details', todolist_id=todolist.id))
     return render_template('/todolists/create_todolist.html', title="New ToDoList", form=form, legend='New ToDoList')
+
+
+@todolists.route('/todolists', methods=['GET'])
+@login_required
+def all_todolist():
+    todo_lists = ToDoList.query.filter_by(user=current_user).order_by('title')
+    return render_template('/todolists/todolists.html', todo_lists=todo_lists, title=f"All To-Do Lists")
+
+
+@todolists.route('/todolists/<int:todolist_id>', methods=['GET'])
+@login_required
+def todolist_details(todolist_id):
+    todo_list = ToDoList.query.get_or_404(todolist_id)
+    todo_items = ToDoItem.query.filter_by(todo_list_id=todolist_id).all()
+    return render_template('/todolists/todolist_details.html', title=f"To-Do List: {todo_list.title}", todo_items=todo_items, todo_list=todo_list)
+
+
+
+@todolists.route('/todolists/todoitems/<int:todolist_id>', methods=['POST', 'GET'])
+@login_required
+def todoitem_new(todolist_id):
+    todo_list = ToDoList.query.get_or_404(todolist_id)
+    form = NewToDoItemForm()
+    form.status_id.choices = [(status.id, status.name)
+                              for status in TaskStatusLu.query.order_by('name').all()]
+    form.priority_id.choices = [(priority.id, priority.name)
+                                for priority in TaskPriorityLu.query.order_by('name').all()]
+    form.urgency_id.choices = [(urgency.id, urgency.name)
+                               for urgency in TaskUrgencyLu.query.order_by('name').all()]
+    if form.validate_on_submit():
+        todo_item = ToDoItem(title=form.title.data,
+                             description=form.description.data, status_id=form.status_id.data,
+                             priority_id=form.priority_id.data, urgency_id=form.urgency_id.data,
+                             todo_list_id=todolist_id, scheduled_date=form.scheduled_date.data,
+                             estimated_duration_hours=form.estimated_duration_hours.data,
+                             estimated_duration_minutes=form.estimated_duration_minutes.data)
+        if form.comment.data is not None:
+            comment = ToDoItemComments(
+                comment=form.comment.data, user_id=current_user.id, user_name=current_user.username)
+            todo_item.comments.append(comment)
+        db.session.add(todo_item)
+        db.session.add(comment)
+        db.session.commit()
+        return redirect(url_for('todolists.todolist_details', todolist_id=todolist_id))
+    return render_template('/todolists/todolist_new.html', title=f'New To-Do Item', form=form, legend='New To-Do Item')
+
+
+@todolists.route('/todolists/todoitems/edit/<int:todoitem_id>', methods=['POST', 'GET'])
+@login_required
+def edit_todoitem(todoitem_id):
+    return redirect(url_for('todolists.todolist_details', todolist_id=todoitem_id))
+
+
+@todolists.route('/todolists/todoitems/delete/<int:todoitem_id>', methods=['POST', 'GET'])
+@login_required
+def delete_todoitem(todoitem_id):
+    return redirect(url_for('todolists.todolist_details', todolist_id=todoitem_id))

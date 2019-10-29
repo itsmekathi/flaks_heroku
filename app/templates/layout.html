@@ -43,6 +43,7 @@
                             </a>
 
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                <a class="dropdown-item" href="{{ url_for('todolists.all_todolist')}}">View my ToDoLists</a>
                                 <a class="dropdown-item" href="{{ url_for('todolists.new_todolist') }}">New TodoList</a>
                                 <a class="dropdown-item" href="{{ url_for('todolists.status') }}">Manage task Statuses</a>
                                 <a class="dropdown-item" href="{{ url_for('todolists.priority') }}">Manage task Priorities</a>
@@ -61,7 +62,7 @@
             </div>
         </nav>
     </header>
-    <main role="main" class="container">
+    <main role="main" class="container-fluid">
         <div class="row">
             <div class="col-md-8">
                 {% with messages = get_flashed_messages(with_categories=true) %}
