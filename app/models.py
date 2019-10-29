@@ -43,6 +43,8 @@ class User(db.Model, UserMixin):
 
     # Define the todolists for the user
     todoLists = db.relationship('ToDoList', backref="user", lazy=True)
+    allComments = db.relationship('ToDoItemComments', backref="user", lazy=True)
+    workLogs = db.relationship('ToDoItemWorkLog', backref="user", lazy=True)
 
     def get_reset_token(self, expires_sec=1800):
         s = Serializer(current_app.config['SECRET_KEY'], expires_sec)
@@ -138,7 +140,8 @@ class ToDoItem(db.Model):
     estimated_duration_minutes = db.Column(db.Integer(), nullable=False, default = 0)
     actual_duration_hours = db.Column(db.Integer(), nullable=False, default = 0)
     actual_duration_minutes = db.Column(db.Integer(), nullable=False, default = 0)
-    comments = db.relationship('ToDoItemComments', backref='todoitem') 
+    comments = db.relationship('ToDoItemComments', backref='todoitem', lazy='select')
+    work_logs = db.relationship('ToDoItemWorkLog', backref='todoitem', lazy='select') 
     date_created = db.Column(db.DateTime(), nullable=False, default = datetime.utcnow)
     date_modified = db.Column(db.DateTime(), nullable=False, default= datetime.utcnow)
 
@@ -148,5 +151,15 @@ class ToDoItemComments(db.Model):
     comment = db.Column(db.String(300), nullable=False)
     todo_item_id = db.Column(db.Integer(), db.ForeignKey('todo_items.id'), nullable=False)
     user_id = db.Column(db.Integer(), db.ForeignKey('users.id'), nullable=False)
-    user_name = db.Column(db.String(20), nullable=False)
     comment_date = db.Column(db.DateTime(), nullable=False, default= datetime.utcnow)
+
+class ToDoItemWorkLog(db.Model):
+    __tablename__="todo_item_worklogs"
+    id = db.Column(db.Integer, primary_key=True)
+    todo_item_id = db.Column(db.Integer(), db.ForeignKey('todo_items.id'), nullable=False)
+    start_datetime = db.Column(db.DateTime(), nullable=False, default = datetime.utcnow)
+    end_datetime = db.Column(db.DateTime(), nullable=False, default=datetime.utcnow)
+    comment = db.Column(db.String(200), nullable=False)
+    user_id = db.Column(db.Integer(), db.ForeignKey('users.id'), nullable=False)
+    date_created = db.Column(db.DateTime(), nullable=False, default = datetime.utcnow)
+    

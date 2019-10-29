@@ -12,27 +12,23 @@
                 <td>Created by</td>
                 <td>Created on</td>
                 <td>Items</td>
-                <td>Details</td>
-                <td>Delete</td>
+                <td>Actions</td>
             </tr>
         </thead>
         <tbody>
             {% for todo_list in todo_lists %}
             <tr>
-                <td>{{ todo_list.id }}</td>
+                <td>{{ loop.index }}</td>
                 <td>{{ todo_list.title }}</td>
                 <td>{{ todo_list.description }}</td>
                 <td>{{ todo_list.user.username }}</td>
-                <td>{{ todo_list.date_created }}</td>
-                <td>1</td>
-                <!-- <td>{{ todo_list.todo_items }}</td> -->
+                <td>{{ todo_list.date_created.strftime("%d %B %Y") }}</td>
+                <td>{% if todo_list.todo_items %}{{ todo_list.todo_items|length }} {% else %} No items {% endif %}</td>
                 <td>
                     <a class="btn btn-warning"
-                        href="{{url_for('todolists.todolist_details', todolist_id=todo_list.id)}}">Details</a>
-                </td>
-                <td>
+                        href="{{url_for('todolists.todolist_details', todolist_id=todo_list.id)}}">Details <i class="fas fa-edit"></i></a>
                     <!-- <form action="{{url_for('todolists.delete_todoitem', todoitem_id=todo_list.id)}}" method="POST"> -->
-                    <input type="submit" value="Delete" class="btn btn-danger">
+                    <input type="submit" class="btn btn-danger">Delete <i class="fas fa-trash-alt"></i> </input>
                     <!-- </form> -->
                 </td>
             </tr>

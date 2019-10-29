@@ -2,7 +2,7 @@ from flask import render_template, url_for, flash, redirect, request, abort
 from flask_login import current_user, login_required
 from app import db
 from app.models import ToDoList, ToDoItem, TaskStatusLu, TaskPriorityLu, TaskUrgencyLu, ToDoItemComments
-from .forms import ToDoListForm, TaskLuForm, NewToDoItemForm
+from .forms import ToDoListForm, TaskLuForm, ToDoItemForm
 from . import todolists
 
 
@@ -184,7 +184,7 @@ def todolist_details(todolist_id):
 @login_required
 def todoitem_new(todolist_id):
     todo_list = ToDoList.query.get_or_404(todolist_id)
-    form = NewToDoItemForm()
+    form = ToDoItemForm()
     form.status_id.choices = [(status.id, status.name)
                               for status in TaskStatusLu.query.order_by('name').all()]
     form.priority_id.choices = [(priority.id, priority.name)
