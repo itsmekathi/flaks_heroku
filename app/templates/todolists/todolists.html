@@ -19,16 +19,16 @@
             {% for todo_list in todo_lists %}
             <tr>
                 <td>{{ loop.index }}</td>
-                <td>{{ todo_list.title }}</td>
+                <td><a href="{{url_for('todolists.todolist_details', todolist_id=todo_list.id)}}">{{ todo_list.title }}<i class="fas fa-edit"></i></a></td>
                 <td>{{ todo_list.description }}</td>
                 <td>{{ todo_list.user.username }}</td>
                 <td>{{ todo_list.date_created.strftime("%d %B %Y") }}</td>
                 <td>{% if todo_list.todo_items %}{{ todo_list.todo_items|length }} {% else %} No items {% endif %}</td>
                 <td>
-                    <a class="btn btn-warning"
-                        href="{{url_for('todolists.todolist_details', todolist_id=todo_list.id)}}">Details <i class="fas fa-edit"></i></a>
+                    <!-- <a class="btn btn-warning"
+                        href="{{url_for('todolists.todolist_details', todolist_id=todo_list.id)}}">Details <i class="fas fa-edit"></i></a> -->
                     <!-- <form action="{{url_for('todolists.delete_todoitem', todoitem_id=todo_list.id)}}" method="POST"> -->
-                    <input type="submit" class="btn btn-danger">Delete <i class="fas fa-trash-alt"></i> </input>
+                    <input type="submit" value="Delete" class="btn btn-danger">
                     <!-- </form> -->
                 </td>
             </tr>
