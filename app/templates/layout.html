@@ -50,7 +50,6 @@
                                 <a class="dropdown-item" href="{{ url_for('todolists.status') }}">Manage task Statuses <i class="fas fa-thumbtack"></i></a>
                                 <a class="dropdown-item" href="{{ url_for('todolists.priority') }}">Manage task Priorities</a>
                                 <a class="dropdown-item" href="{{ url_for('todolists.urgency') }}">Manage task Urgency</a>
-
                             </div>
                         </div>
                         <a class="nav-item nav-link" href="{{ url_for('users.logout') }}">Logout <i class="fas fa-unlock-alt"></i></a>
@@ -78,6 +77,7 @@
                 {% endwith%}
                 {% block content %}{% endblock %}
             </div>
+            {% block sidebar %}
             <div class="col-md-4">
                 <div class="content-section">
                     <h3>Our Sidebar</h3>
@@ -91,6 +91,7 @@
                     </p>
                 </div>
             </div>
+            {% endblock %}
         </div>
     </main>
 

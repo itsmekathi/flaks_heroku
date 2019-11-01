@@ -101,3 +101,6 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# dev/ test db created locally by commands
+*.db

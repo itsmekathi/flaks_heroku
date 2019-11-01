@@ -1,32 +1,42 @@
 import os
+basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'AkOk1nsWG84FUw3yDCi6xC7wkpI'
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///site.db'
-    MAIL_SERVER = 'smtp.gmail.com'
+    MAIL_SERVER = os.environ.get('SECRET_KEY') or 'smtp.gmail.com'
     MAIL_PORT = 587
     MAIL_USE_TLS = True
-    MAIL_USERNAME = os.environ.get('EMAIL_USER')
-    MAIL_PASSWORD = os.environ.get('EMAIL_PASS')
+    MAIL_USERNAME = os.environ.get('EMAIL_USER') or 'dummyuser@gmail.com'
+    MAIL_PASSWORD = os.environ.get('EMAIL_PASS') or 'dummypassword'
+    FLASK_MAIL_SUBJECT_PREFIX ='[Flasky]'
+    FLASK_MAIL_SENDER = 'Admin <admin@aayudhms.com>'
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    @staticmethod
+    def init_app(app):
+        pass
 
 class DevelopmentConfig(Config):
     DEBUG = True
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URI') or \
+        'sqlite:///' + os.path.join(basedir,'data-dev.db')
     SECRET_KEY = os.environ.get('SECRET_KEY') or 't0p s3cr3t'
 
 
 class TestingConfig(Config):
     TESTING = True
-
+    SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URI') or \
+        'sqlite:///' + os.path.join(basedir,'data-test.db')
 
 class ProductionConfig(Config):
-    pass
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URI') or \
+        'sqlite:///' + os.path.join(basedir,'site.db')
 
 
 config = {
     'development': DevelopmentConfig,
     'testing': TestingConfig,
     'production': ProductionConfig,
-    'default': ProductionConfig
+    'default': DevelopmentConfig
 }

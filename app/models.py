@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from app import db, login_manager
 from flask_login import UserMixin
 from flask import current_app
@@ -98,7 +98,7 @@ class ToDoList(db.Model):
     description=db.Column(db.String(200), nullable=False)
     user_id = db.Column(db.Integer(), db.ForeignKey('users.id'), nullable=False)
     todo_items = db.relationship('ToDoItem', backref='todolist', lazy=True)
-    date_created = db.Column(db.DateTime(), nullable=False, default = datetime.utcnow)
+    date_created = db.Column(db.Date(), nullable=False, default = date.today)
     date_modified = db.Column(db.DateTime(), nullable=False, default= datetime.utcnow)
 
 class TaskStatusLu(db.Model):
