@@ -2,7 +2,7 @@
 {% block content %}
 {% if todo_items %}
 <div class="content-section">
-    <h2>Existing Data for To-Do List: {{todo_list.title}} <span class="badge badge-primary">{{ todo_items|length }}</span> </h2>
+    <h2>{{todo_list.title}} <span class="badge badge-primary">{{ todo_items|length }}</span> </h2>
     <table class="table table-striped table-bordered">
         <thead>
             <tr>

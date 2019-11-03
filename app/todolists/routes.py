@@ -18,7 +18,7 @@ def status():
         form.name.data = ""
         form.description.data = ""
         form.style_class.data = ""
-        flash('New status has been added')
+        flash('New status has been added','success')
     statuses = TaskStatusLu.query.all()
     return render_template('/todolists/lookups.html', form=form, lookups=statuses, legend='Add New Status', lookupTitle='Status')
 
@@ -200,7 +200,7 @@ def todoitem_new(todolist_id):
                              estimated_duration_minutes=form.estimated_duration_minutes.data)
         if form.comment.data is not None:
             comment = ToDoItemComments(
-                comment=form.comment.data, user_id=current_user.id, user_name=current_user.username)
+                comment=form.comment.data, user=current_user)
             todo_item.comments.append(comment)
         db.session.add(todo_item)
         db.session.add(comment)
@@ -218,4 +218,11 @@ def edit_todoitem(todoitem_id):
 @todolists.route('/todolists/todoitems/delete/<int:todoitem_id>', methods=['POST', 'GET'])
 @login_required
 def delete_todoitem(todoitem_id):
-    return redirect(url_for('todolists.todolist_details', todolist_id=todoitem_id))
+    todo_item = ToDoItem.query.get_or_404(todoitem_id)
+    if todo_item.todolist.user != current_user:
+        abort(403)
+    todolist_id = todo_item.todolist.id
+    db.session.delete(todo_item)
+    db.session.commit()
+    flash('The task has been deleted.', 'success')
+    return redirect(url_for('todolists.todolist_details', todolist_id=todolist_id))

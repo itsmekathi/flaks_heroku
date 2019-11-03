@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="app">
 
 <head>
     <meta charset="UTF-8">
@@ -22,22 +22,26 @@
 
 <body>
     <header class="site-header">
-        <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+        <nav
+            class="navbar navbar-expand-md navbar-dark {% if environment == 'development' %} bg-dark {% endif %} {% if environment == 'testing' %} bg-primary {% endif %} {% if environment == 'production' %} bg-steel {% endif %} fixed-top">
             <div class="container">
-                <a class="navbar-brand mr-4" href="/">HMS</a>
+                <a class="navbar-brand mr-4" href="/">HMS{% if environment == 'development' %}(dev){% endif %} {% if environment == 'testing' %}(test){% endif %}</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
                     aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarToggle">
                     <div class="navbar-nav mr-auto">
-                        <a class="nav-item nav-link" href="{{ url_for('main.home') }}">Home <i class="fas fa-home"></i></a>
-                        <a class="nav-item nav-link" href="{{ url_for('main.about') }}">About <i class="fas fa-info"></i></a>
+                        <a class="nav-item nav-link" href="{{ url_for('main.home') }}">Home <i
+                                class="fas fa-home"></i></a>
+                        <a class="nav-item nav-link" href="{{ url_for('main.about') }}">About <i
+                                class="fas fa-info"></i></a>
                     </div>
                     <!-- Navbar Right Side -->
                     <div class="navbar-nav">
                         {% if current_user.is_authenticated %}
-                        <a class="nav-item nav-link" href="{{ url_for('posts.new_post') }}">New Post <i class="fas fa-blog"></i></a>
+                        <a class="nav-item nav-link" href="{{ url_for('posts.new_post') }}">New Post <i
+                                class="fas fa-blog"></i></a>
                         <div class="dropdown show">
                             <a class="nav-item nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -45,17 +49,25 @@
                             </a>
 
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                <a class="dropdown-item" href="{{ url_for('todolists.all_todolist')}}">View my ToDoLists <i class="fas fa-tasks"></i></a>
-                                <a class="dropdown-item" href="{{ url_for('todolists.new_todolist') }}">New TodoList <i class="far fa-plus-square"></i></a>
-                                <a class="dropdown-item" href="{{ url_for('todolists.status') }}">Manage task Statuses <i class="fas fa-thumbtack"></i></a>
-                                <a class="dropdown-item" href="{{ url_for('todolists.priority') }}">Manage task Priorities</a>
-                                <a class="dropdown-item" href="{{ url_for('todolists.urgency') }}">Manage task Urgency</a>
+                                <a class="dropdown-item" href="{{ url_for('todolists.all_todolist')}}">View my ToDoLists
+                                    <i class="fas fa-tasks"></i></a>
+                                <a class="dropdown-item" href="{{ url_for('todolists.new_todolist') }}">New TodoList <i
+                                        class="far fa-plus-square"></i></a>
+                                <a class="dropdown-item" href="{{ url_for('todolists.status') }}">Manage task Statuses
+                                    <i class="fas fa-thumbtack"></i></a>
+                                <a class="dropdown-item" href="{{ url_for('todolists.priority') }}">Manage task
+                                    Priorities</a>
+                                <a class="dropdown-item" href="{{ url_for('todolists.urgency') }}">Manage task
+                                    Urgency</a>
                             </div>
                         </div>
-                        <a class="nav-item nav-link" href="{{ url_for('users.logout') }}">Logout <i class="fas fa-unlock-alt"></i></a>
-                        <a class="nav-item nav-link" href="{{ url_for('users.account' )}}">Account <i class="fas fa-id-card"></i></i></a>
+                        <a class="nav-item nav-link" href="{{ url_for('users.logout') }}">Logout <i
+                                class="fas fa-unlock-alt"></i></a>
+                        <a class="nav-item nav-link" href="{{ url_for('users.account' )}}">Account <i
+                                class="fas fa-id-card"></i></i></a>
                         {% else %}
-                        <a class="nav-item nav-link" href="{{ url_for('users.login') }}">Login <i class="fas fa-sign-in-alt"></i></a>
+                        <a class="nav-item nav-link" href="{{ url_for('users.login') }}">Login <i
+                                class="fas fa-sign-in-alt"></i></a>
                         <a class="nav-item nav-link" href="{{ url_for('users.register') }}">Register</a>
                         {% endif %}
                     </div>
@@ -94,7 +106,6 @@
             {% endblock %}
         </div>
     </main>
-
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
@@ -104,6 +115,12 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+    <!-- Angular js Library -->
+    <script
+        src="{% if environment=='development' %}{{ url_for('static', filename='scripts/angular.js') }} {% endif %} {% if environment=='testing' or environment=='production' %}{{ url_for('static', filename='scripts/angular.min.js') }} {% endif %}"></script>
+    <!-- Angular module and controllers -->
+    <script src="{{ url_for('static', filename='scripts/app/app.module.js')}}"></script>
+    <script src="{{ url_for('static', filename='scripts/app/wordcount.controller.js')}}"></script>
 </body>
 
 </html>

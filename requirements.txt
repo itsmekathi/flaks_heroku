@@ -8,6 +8,7 @@ blinker==1.4
 cffi==1.12.3
 click==6.7
 colorama==0.4.1
+coverage==4.5.4
 Flask==0.12.2
 Flask-BabelEx==0.9.3
 Flask-Bcrypt==0.7.1

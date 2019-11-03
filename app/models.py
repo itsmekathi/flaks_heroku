@@ -140,8 +140,8 @@ class ToDoItem(db.Model):
     estimated_duration_minutes = db.Column(db.Integer(), nullable=False, default = 0)
     actual_duration_hours = db.Column(db.Integer(), nullable=False, default = 0)
     actual_duration_minutes = db.Column(db.Integer(), nullable=False, default = 0)
-    comments = db.relationship('ToDoItemComments', backref='todoitem', lazy='select')
-    work_logs = db.relationship('ToDoItemWorkLog', backref='todoitem', lazy='select') 
+    comments = db.relationship('ToDoItemComments', backref='todoitem', lazy='select', cascade="save-update, merge, delete")
+    work_logs = db.relationship('ToDoItemWorkLog', backref='todoitem', lazy='select', cascade="save-update, merge, delete") 
     date_created = db.Column(db.DateTime(), nullable=False, default = datetime.utcnow)
     date_modified = db.Column(db.DateTime(), nullable=False, default= datetime.utcnow)
 
