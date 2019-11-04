@@ -1,6 +1,7 @@
-from flask import render_template, request, Blueprint
+from flask import render_template, request
 from app.models import Post
-main = Blueprint('main', __name__)
+
+from . import main
 
 @main.route('/')
 @main.route('/home')
@@ -13,3 +14,15 @@ def home():
 @main.route('/about')
 def about():
     return render_template('/main/about.html', title="About")
+
+@main.app_errorhandler(404)
+def error_404(error):
+    return render_template('main/404.html'), 404
+
+@main.app_errorhandler(403)
+def error_403(error):
+    return render_template('main/403.html'), 403
+
+@main.app_errorhandler(500)
+def error_500(error):
+    return render_template('main/500.html'), 500

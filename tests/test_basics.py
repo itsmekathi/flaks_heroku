@@ -22,6 +22,7 @@ class BasicsTestCase(unittest.TestCase):
         c = self.app.test_client()
         response = c.get('/', follow_redirects=True)
         self.assertEqual(response.status_code, 200)
+        
     def test_about_page(self):
         c = self.app.test_client()
         response = c.get('/about')

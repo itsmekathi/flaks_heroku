@@ -22,17 +22,16 @@ def create_app(config_name):
     bcrypt.init_app(app)
     login_manager.init_app(app)
     mail.init_app(app)
-    from .main.routes import main
-    from .users.routes import users
-    from .posts.routes import posts
-    from .todolists.routes import todolists
-    from .errors.routes import errors
+
+    from app.main import main as main_blueprint
+    from app.users import users as users_blueprint
+    from app.posts import posts as posts_blueprint
+    from app.todolists import todolists as todolists_blueprint
     
-    app.register_blueprint(main)
-    app.register_blueprint(errors)
-    app.register_blueprint(users)
-    app.register_blueprint(posts)
-    app.register_blueprint(todolists)
+    app.register_blueprint(main_blueprint)
+    app.register_blueprint(users_blueprint)
+    app.register_blueprint(posts_blueprint)
+    app.register_blueprint(todolists_blueprint)
 
     from .api import api as api_blueprint
     app.register_blueprint(api_blueprint, url_prefix='/api/v1')

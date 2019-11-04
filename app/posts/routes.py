@@ -1,10 +1,10 @@
-from flask import render_template, url_for, flash, redirect, request, abort, Blueprint
+from flask import render_template, url_for, flash, redirect, request, abort
 from flask_login import current_user,  login_required
 from app import db
 from app.models import Post
 from .forms import PostForm
 
-posts = Blueprint('posts', __name__)
+from . import posts
 
 @posts.route('/post/new', methods=['GET', 'POST'])
 @login_required

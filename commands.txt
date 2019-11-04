@@ -1,0 +1,2 @@
+flask run -start's the application
+python -m flask test --coverage - runs coverage
