@@ -6,7 +6,7 @@ from .forms import ToDoListForm, TaskLuForm, ToDoItemForm
 from . import todolists
 
 
-@todolists.route('/todolists/status', methods=['GET', 'POST'])
+@todolists.route('/status', methods=['GET', 'POST'])
 @login_required
 def status():
     form = TaskLuForm()
@@ -23,7 +23,7 @@ def status():
     return render_template('/todolists/lookups.html', form=form, lookups=statuses, legend='Add New Status', lookupTitle='Status')
 
 
-@todolists.route('/todolists/status/edit/<int:status_id>', methods=['GET', 'POST'])
+@todolists.route('/status/edit/<int:status_id>', methods=['GET', 'POST'])
 @login_required
 def edit_status(status_id):
     form = TaskLuForm()
@@ -44,7 +44,7 @@ def edit_status(status_id):
     return render_template('/todolists/lookups.html', form=form, lookups=statuses, legend='Edit Status', lookupTitle='Status')
 
 
-@todolists.route('/todolists/status/delete/<int:status_id>', methods=['POST'])
+@todolists.route('/status/delete/<int:status_id>', methods=['POST'])
 @login_required
 def delete_status(status_id):
     status = TaskStatusLu.query.get_or_404(status_id)
@@ -54,7 +54,7 @@ def delete_status(status_id):
     return redirect(url_for('todolists.status'))
 
 
-@todolists.route('/todolists/priority', methods=['GET', 'POST'])
+@todolists.route('/priority', methods=['GET', 'POST'])
 @login_required
 def priority():
     form = TaskLuForm()
@@ -71,7 +71,7 @@ def priority():
     return render_template('/todolists/lookups.html', form=form, lookups=priorities, legend='Add New Priority', lookupTitle='Priority')
 
 
-@todolists.route('/todolists/priority/edit/<int:priority_id>', methods=['GET', 'POST'])
+@todolists.route('/priority/edit/<int:priority_id>', methods=['GET', 'POST'])
 @login_required
 def edit_priority(priority_id):
     form = TaskLuForm()
@@ -92,7 +92,7 @@ def edit_priority(priority_id):
     return render_template('/todolists/lookups.html', form=form, lookups=priorities, legend='Edit priority', lookupTitle='Priority')
 
 
-@todolists.route('/todolists/priority/delete/<int:priority_id>', methods=['POST'])
+@todolists.route('/priority/delete/<int:priority_id>', methods=['POST'])
 @login_required
 def delete_priority(priority_id):
     priority = TaskPriorityLu.query.get_or_404(priority_id)
@@ -102,7 +102,7 @@ def delete_priority(priority_id):
     return redirect(url_for('todolists.priority'))
 
 
-@todolists.route('/todolists/urgency', methods=['GET', 'POST'])
+@todolists.route('/urgency', methods=['GET', 'POST'])
 @login_required
 def urgency():
     form = TaskLuForm()
@@ -119,7 +119,7 @@ def urgency():
     return render_template('/todolists/lookups.html', form=form, lookups=urgencies, legend='Add New Urgency', lookupTitle='Urgency')
 
 
-@todolists.route('/todolists/urgency/edit/<int:urgency_id>', methods=['GET', 'POST'])
+@todolists.route('/urgency/edit/<int:urgency_id>', methods=['GET', 'POST'])
 @login_required
 def edit_urgency(urgency_id):
     form = TaskLuForm()
@@ -140,7 +140,7 @@ def edit_urgency(urgency_id):
     return render_template('/todolists/lookups.html', form=form, lookups=urgencies, legend='Edit urgency', lookupTitle='Urgency')
 
 
-@todolists.route('/todolists/urgency/delete/<int:urgency_id>', methods=['POST'])
+@todolists.route('/urgency/delete/<int:urgency_id>', methods=['POST'])
 @login_required
 def delete_urgency(urgency_id):
     urgency_data = TaskUrgencyLu.query.get_or_404(urgency_id)
@@ -150,7 +150,7 @@ def delete_urgency(urgency_id):
     return redirect(url_for('todolists.urgency'))
 
 
-@todolists.route('/todolists/new', methods=['GET', 'POST'])
+@todolists.route('/new', methods=['GET', 'POST'])
 @login_required
 def new_todolist():
     form = ToDoListForm()
@@ -164,14 +164,14 @@ def new_todolist():
     return render_template('/todolists/create_todolist.html', title="New ToDoList", form=form, legend='New ToDoList')
 
 
-@todolists.route('/todolists', methods=['GET'])
+@todolists.route('/', methods=['GET'])
 @login_required
 def all_todolist():
     todo_lists = ToDoList.query.filter_by(user=current_user).order_by('title')
     return render_template('/todolists/todolists.html', todo_lists=todo_lists, title=f"All To-Do Lists")
 
 
-@todolists.route('/todolists/<int:todolist_id>', methods=['GET'])
+@todolists.route('/<int:todolist_id>', methods=['GET'])
 @login_required
 def todolist_details(todolist_id):
     todo_list = ToDoList.query.get_or_404(todolist_id)
@@ -180,7 +180,7 @@ def todolist_details(todolist_id):
 
 
 
-@todolists.route('/todolists/todoitems/<int:todolist_id>', methods=['POST', 'GET'])
+@todolists.route('/<int:todolist_id>/todoitems', methods=['POST', 'GET'])
 @login_required
 def todoitem_new(todolist_id):
     todo_list = ToDoList.query.get_or_404(todolist_id)
@@ -206,16 +206,51 @@ def todoitem_new(todolist_id):
         db.session.add(comment)
         db.session.commit()
         return redirect(url_for('todolists.todolist_details', todolist_id=todolist_id))
-    return render_template('/todolists/todolist_new.html', title=f'New To-Do Item', form=form, legend='New To-Do Item')
+    return render_template('/todolists/todo_item.detail.html', title=f'New To-Do Item', form=form, legend='New To-Do Item')
 
 
-@todolists.route('/todolists/todoitems/edit/<int:todoitem_id>', methods=['POST', 'GET'])
+@todolists.route('/todoitems/edit/<int:todoitem_id>', methods=['POST', 'GET'])
 @login_required
 def edit_todoitem(todoitem_id):
-    return redirect(url_for('todolists.todolist_details', todolist_id=todoitem_id))
+    todo_item = ToDoItem.query.get_or_404(todoitem_id)
+    if todo_item.todolist.user != current_user:
+        abort(403)
+    form = ToDoItemForm()
+    form.status_id.choices = [(status.id, status.name)
+                              for status in TaskStatusLu.query.order_by('name').all()]
+    form.priority_id.choices = [(priority.id, priority.name)
+                                for priority in TaskPriorityLu.query.order_by('name').all()]
+    form.urgency_id.choices = [(urgency.id, urgency.name)
+                               for urgency in TaskUrgencyLu.query.order_by('name').all()]
+    if form.validate_on_submit():
+        todo_item.title = form.title.data
+        todo_item.description = form.description.data
+        todo_item.status_id = form.status_id.data
+        todo_item.priority_id = form.priority_id.data
+        todo_item.urgency_id=form.urgency_id.data
+        todo_item.scheduled_date=form.scheduled_date.data
+        todo_item.estimated_duration_hours=form.estimated_duration_hours.data
+        todo_item.estimated_duration_minutes=form.estimated_duration_minutes.data
+        if form.comment.data is not None:
+            comment = ToDoItemComments(
+                comment=form.comment.data, user=current_user, todoitem=todo_item)
+            db.session.add(comment)
+        db.session.add(todo_item)
+        db.session.commit()
+        flash('Todo-Item has been updated','success')
+        return redirect(url_for('todolists.todolist_details', todolist_id=todo_item.todo_list_id))
+    form.title.data = todo_item.title
+    form.description.data = todo_item.description
+    form.scheduled_date.data = todo_item.scheduled_date
+    form.estimated_duration_hours.data = todo_item.estimated_duration_hours
+    form.estimated_duration_minutes.data = todo_item.estimated_duration_minutes
+    form.status_id.data = todo_item.status_id
+    form.priority_id.data = todo_item.priority_id
+    form.urgency_id.data = todo_item.urgency_id
+    return render_template('/todolists/todo_item.detail.html', title=f'Edit Item: {todo_item.title} ', form=form, legend='Edit To-Do Item')
 
 
-@todolists.route('/todolists/todoitems/delete/<int:todoitem_id>', methods=['POST', 'GET'])
+@todolists.route('/todoitems/delete/<int:todoitem_id>', methods=['POST', 'GET'])
 @login_required
 def delete_todoitem(todoitem_id):
     todo_item = ToDoItem.query.get_or_404(todoitem_id)

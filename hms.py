@@ -3,7 +3,7 @@ import sys
 import click
 from app import create_app, db
 from app.models import User, Role, UserRoles, Post, ToDoList, TaskStatusLu, TaskPriorityLu, TaskUrgencyLu, ToDoItem, ToDoItemComments
-from flask_migrate import Migrate
+from flask_migrate import Migrate, upgrade
 from datetime import datetime, date
 
 
@@ -14,14 +14,6 @@ migrate = Migrate(app, db)
 def make_shell_context():
     return dict(db=db, User=User, Role=Role, UserRoles=UserRoles, Post=Post, ToDoList=ToDoList, TaskStatusLu = TaskStatusLu,
      TaskPriorityLu = TaskPriorityLu, TaskUrgencyLu=TaskUrgencyLu , ToDoItem = ToDoItem, ToDoItemComments = ToDoItemComments )
-
-# @app.cli.command()
-# def test():
-#     """Run the unit tests."""
-#     import unittest
-#     tests = unittest.TestLoader().discover('tests')
-#     unittest.TextTestRunner(verbosity=2).run(tests)
-
 
 @app.cli.command("dropdb")
 def drop_db():
@@ -202,6 +194,34 @@ def populateseeddata():
     db.session.commit()
 
 
+def upper(cts, param, value):
+    if value is not None:
+        return value.upper()
+
+# Test commands
+
+# @app.cli.command('hello')
+# @click.option('--name', default='World')
+# def hello_command(name):
+#     click.echo(f'Hello, {name}!')
+
+# def test_hello_params():
+#     context = hello_command.make_context('hello',['--name','flask'])
+#     assert context.test_hello_params['name'] == 'Flask'
+
+# def test_hello():
+#     runner = app.test_cli_runner()
+
+#     # invoke the command directly
+#     result = runner.invoke(hello_command, ['--name', 'Flask'])
+#     assert 'Hello, Flask' in result.output
+
+#     # or by name
+#     result = runner.invoke(args=['hello'])
+#     assert 'World' in result.output
+
+
+# Unit testing and code coverage
 COV = None
 if os.environ.get('FLASK_COVERAGE'):
     import coverage
@@ -228,3 +248,11 @@ def test(coverage):
         COV.html_report(directory=covdir)
         print('HTML version: file://%s/index.html'%covdir)
         COV.erase()
+
+@app.cli.command()
+def deploy():
+    """Run deployment tasks."""
+    # migrate database to latest version
+    upgrade()
+
+    # create or update data

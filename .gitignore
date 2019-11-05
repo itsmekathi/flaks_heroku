@@ -104,3 +104,4 @@ ENV/
 
 # dev/ test db created locally by commands
 *.db
+.vscode/*

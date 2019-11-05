@@ -1,4 +1,5 @@
 from flask import Flask
+import click
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
@@ -23,21 +24,26 @@ def create_app(config_name):
     login_manager.init_app(app)
     mail.init_app(app)
 
-    from app.main import main as main_blueprint
-    from app.users import users as users_blueprint
-    from app.posts import posts as posts_blueprint
-    from app.todolists import todolists as todolists_blueprint
-    
+
+    if app.config['SSL_REDIRECT']:
+        from flask_sslify import SSLify
+        sslify = SSLify(app)
+
+    from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
-    app.register_blueprint(users_blueprint)
-    app.register_blueprint(posts_blueprint)
-    app.register_blueprint(todolists_blueprint)
+
+    from .users import users as users_blueprint
+    app.register_blueprint(users_blueprint, url_prefix='/user')
+
+    from .posts import posts as posts_blueprint
+    app.register_blueprint(posts_blueprint, url_prefix='/post')
+
+    from app.todolists import todolists as todolists_blueprint
+    app.register_blueprint(todolists_blueprint, url_prefix='/todolists')
 
     from .api import api as api_blueprint
     app.register_blueprint(api_blueprint, url_prefix='/api/v1')
-
-    
-
+ 
     @app.context_processor
     def inject_environment_variables():
         return dict(environment=config_name) 

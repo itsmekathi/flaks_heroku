@@ -6,7 +6,7 @@ from .forms import PostForm
 
 from . import posts
 
-@posts.route('/post/new', methods=['GET', 'POST'])
+@posts.route('/new', methods=['GET', 'POST'])
 @login_required
 def new_post():
     form = PostForm()
@@ -20,13 +20,13 @@ def new_post():
     return render_template('/posts/create_post.html', title="New Post", form=form, legend='New Post')
 
 
-@posts.route('/post/<int:post_id>', methods=['GET', 'POST'])
+@posts.route('/<int:post_id>', methods=['GET', 'POST'])
 def post(post_id):
     post = Post.query.get_or_404(post_id)
     return render_template('/posts/post.html', title=post.title, post=post)
 
 
-@posts.route('/post/<int:post_id>/update', methods=['GET', 'POST'])
+@posts.route('/<int:post_id>/update', methods=['GET', 'POST'])
 @login_required
 def update_post(post_id):
     post = Post.query.get_or_404(post_id)
@@ -46,7 +46,7 @@ def update_post(post_id):
     return render_template('/posts/create_post.html', title="Update Post", form=form, legend='Update Post')
 
 
-@posts.route('/post/<int:post_id>/delete', methods=['POST'])
+@posts.route('/<int:post_id>/delete', methods=['POST'])
 @login_required
 def delete_post(post_id):
     post = Post.query.get_or_404(post_id)
