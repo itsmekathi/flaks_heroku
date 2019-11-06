@@ -12,6 +12,7 @@ class Config:
     FLASK_MAIL_SUBJECT_PREFIX ='[Flasky]'
     FLASK_MAIL_SENDER = 'Admin <admin@aayudhms.com>'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SSL_REDIRECT = False
 
     @staticmethod
     def init_app(app):

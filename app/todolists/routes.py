@@ -1,9 +1,10 @@
 from flask import render_template, url_for, flash, redirect, request, abort
 from flask_login import current_user, login_required
 from app import db
-from app.models import ToDoList, ToDoItem, TaskStatusLu, TaskPriorityLu, TaskUrgencyLu, ToDoItemComments
-from .forms import ToDoListForm, TaskLuForm, ToDoItemForm
+from app.models import ToDoList, ToDoItem, TaskStatusLu, TaskPriorityLu, TaskUrgencyLu, ToDoItemComments, ToDoItemWorkLog
+from .forms import ToDoListForm, TaskLuForm, ToDoItemForm, ToDoItemEditForm, ToDoItemLogWorkForm
 from . import todolists
+from datetime import date, datetime
 
 
 @todolists.route('/status', methods=['GET', 'POST'])
@@ -18,7 +19,7 @@ def status():
         form.name.data = ""
         form.description.data = ""
         form.style_class.data = ""
-        flash('New status has been added','success')
+        flash('New status has been added', 'success')
     statuses = TaskStatusLu.query.all()
     return render_template('/todolists/lookups.html', form=form, lookups=statuses, legend='Add New Status', lookupTitle='Status')
 
@@ -167,6 +168,7 @@ def new_todolist():
 @todolists.route('/', methods=['GET'])
 @login_required
 def all_todolist():
+    # Get the query parameters
     todo_lists = ToDoList.query.filter_by(user=current_user).order_by('title')
     return render_template('/todolists/todolists.html', todo_lists=todo_lists, title=f"All To-Do Lists")
 
@@ -174,10 +176,15 @@ def all_todolist():
 @todolists.route('/<int:todolist_id>', methods=['GET'])
 @login_required
 def todolist_details(todolist_id):
-    todo_list = ToDoList.query.get_or_404(todolist_id)
-    todo_items = ToDoItem.query.filter_by(todo_list_id=todolist_id).all()
-    return render_template('/todolists/todolist_details.html', title=f"To-Do List: {todo_list.title}", todo_items=todo_items, todo_list=todo_list)
+    # Get the query parameters
+    page = request.args.get('page', 1, type=int)
+    page_size=request.args.get('pagesize', 5, type=int)
 
+    todo_list = ToDoList.query.get_or_404(todolist_id)
+    if todo_list.user != current_user:
+        return abort(403)
+    todo_items = ToDoItem.query.filter_by(todo_list_id=todolist_id).order_by(ToDoItem.scheduled_date).paginate(page=page, per_page=page_size)
+    return render_template('/todolists/todolist_details.html', title=f"To-Do List: {todo_list.title}", todo_items=todo_items, todo_list=todo_list)
 
 
 @todolists.route('/<int:todolist_id>/todoitems', methods=['POST', 'GET'])
@@ -206,7 +213,9 @@ def todoitem_new(todolist_id):
         db.session.add(comment)
         db.session.commit()
         return redirect(url_for('todolists.todolist_details', todolist_id=todolist_id))
-    return render_template('/todolists/todo_item.detail.html', title=f'New To-Do Item', form=form, legend='New To-Do Item')
+    # Initialize the scheduled date to today on get request
+    form.scheduled_date.data = date.today()
+    return render_template('/todolists/todo_item.html', title=f'New To-Do Item', form=form, legend='New To-Do Item')
 
 
 @todolists.route('/todoitems/edit/<int:todoitem_id>', methods=['POST', 'GET'])
@@ -215,29 +224,38 @@ def edit_todoitem(todoitem_id):
     todo_item = ToDoItem.query.get_or_404(todoitem_id)
     if todo_item.todolist.user != current_user:
         abort(403)
-    form = ToDoItemForm()
+    form = ToDoItemEditForm()
+    log_workform = ToDoItemLogWorkForm()
     form.status_id.choices = [(status.id, status.name)
                               for status in TaskStatusLu.query.order_by('name').all()]
     form.priority_id.choices = [(priority.id, priority.name)
                                 for priority in TaskPriorityLu.query.order_by('name').all()]
     form.urgency_id.choices = [(urgency.id, urgency.name)
                                for urgency in TaskUrgencyLu.query.order_by('name').all()]
-    if form.validate_on_submit():
+
+    if form.is_submitted() and form.validate_on_submit():
         todo_item.title = form.title.data
         todo_item.description = form.description.data
         todo_item.status_id = form.status_id.data
         todo_item.priority_id = form.priority_id.data
-        todo_item.urgency_id=form.urgency_id.data
-        todo_item.scheduled_date=form.scheduled_date.data
-        todo_item.estimated_duration_hours=form.estimated_duration_hours.data
-        todo_item.estimated_duration_minutes=form.estimated_duration_minutes.data
+        todo_item.urgency_id = form.urgency_id.data
+        todo_item.scheduled_date = form.scheduled_date.data
+        todo_item.estimated_duration_hours = form.estimated_duration_hours.data
+        todo_item.estimated_duration_minutes = form.estimated_duration_minutes.data
         if form.comment.data is not None:
             comment = ToDoItemComments(
                 comment=form.comment.data, user=current_user, todoitem=todo_item)
             db.session.add(comment)
         db.session.add(todo_item)
         db.session.commit()
-        flash('Todo-Item has been updated','success')
+        flash('Todo-Item has been updated', 'success')
+        return redirect(url_for('todolists.todolist_details', todolist_id=todo_item.todo_list_id))
+    if log_workform.is_submitted() and log_workform.validate_on_submit():
+        work_log = ToDoItemWorkLog(todoitem=todo_item, start_datetime=log_workform.start_datetime.data,
+                                   end_datetime=log_workform.end_datetime.data, comment=log_workform.comment.data, user=current_user)
+        db.session.add(work_log)
+        db.session.commit()
+        flash('Your worklog has been recorded', 'success')
         return redirect(url_for('todolists.todolist_details', todolist_id=todo_item.todo_list_id))
     form.title.data = todo_item.title
     form.description.data = todo_item.description
@@ -247,7 +265,9 @@ def edit_todoitem(todoitem_id):
     form.status_id.data = todo_item.status_id
     form.priority_id.data = todo_item.priority_id
     form.urgency_id.data = todo_item.urgency_id
-    return render_template('/todolists/todo_item.detail.html', title=f'Edit Item: {todo_item.title} ', form=form, legend='Edit To-Do Item')
+    log_workform.start_datetime.data = datetime.now()
+    log_workform.end_datetime.data = datetime.now()
+    return render_template('/todolists/todo_item.html', title=f'Edit Item: {todo_item.title} ', form=form, log_workform=log_workform, legend='Edit/Update To-Do Item')
 
 
 @todolists.route('/todoitems/delete/<int:todoitem_id>', methods=['POST', 'GET'])

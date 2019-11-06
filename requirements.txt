@@ -21,6 +21,7 @@ Flask-Script==2.0.6
 Flask-Security==3.0.0
 Flask-SQLAlchemy==2.2
 Flask-SSLify==0.1.5
+Flask-Toastr==0.5.2
 Flask-WTF==0.14.2
 gunicorn==19.9.0
 importlib-metadata==0.23

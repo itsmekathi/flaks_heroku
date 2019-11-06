@@ -5,12 +5,14 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_mail import Mail
 from config import config
+from flask_toastr import Toastr
 
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 login_manager = LoginManager()
 mail = Mail()
+toastr = Toastr()
 
 login_manager.login_view = 'users.login'
 login_manager.login_message = 'info'
@@ -23,6 +25,7 @@ def create_app(config_name):
     bcrypt.init_app(app)
     login_manager.init_app(app)
     mail.init_app(app)
+    toastr.init_app(app)
 
 
     if app.config['SSL_REDIRECT']:

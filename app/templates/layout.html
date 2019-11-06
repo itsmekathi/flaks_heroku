@@ -18,6 +18,9 @@
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <!-- Fontawesome kit link -->
     <script src="https://kit.fontawesome.com/1d10738437.js" crossorigin="anonymous"></script>
+    {{ toastr.include_jquery() }}
+    {{ toastr.include_toastr_css() }}
+    {{ toastr.message() }}
 </head>
 
 <body>
@@ -25,7 +28,8 @@
         <nav
             class="navbar navbar-expand-md navbar-dark {% if environment == 'development' %} bg-dark {% endif %} {% if environment == 'testing' %} bg-primary {% endif %} {% if environment == 'production' %} bg-steel {% endif %} fixed-top">
             <div class="container">
-                <a class="navbar-brand mr-4" href="/">HMS{% if environment == 'development' %}(dev){% endif %} {% if environment == 'testing' %}(test){% endif %}</a>
+                <a class="navbar-brand mr-4" href="/">HMS{% if environment == 'development' %}(dev){% endif %}
+                    {% if environment == 'testing' %}(test){% endif %}</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
                     aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -78,19 +82,10 @@
     <main role="main" class="container-fluid">
         <div class="row">
             <div class="col-md-8">
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                {% for category, message in messages %}
-                <div class="alert alert-{{category}}">
-                    {{ message }}
-                </div>
-                {% endfor %}
-                {% endif %}
-                {% endwith%}
                 {% block content %}{% endblock %}
             </div>
-            {% block sidebar %}
             <div class="col-md-4">
+                {% block sidebar %}
                 <div class="content-section">
                     <h3>Our Sidebar</h3>
                     <p class='text-muted'>You can put any information here you'd like.
@@ -102,13 +97,13 @@
                         </ul>
                     </p>
                 </div>
+                {% endblock %}
             </div>
-            {% endblock %}
         </div>
     </main>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
+        crossorigin="anonymous"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
         integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
         crossorigin="anonymous"></script>
@@ -117,7 +112,9 @@
         crossorigin="anonymous"></script>
     <!-- Angular js Library -->
     <script
-        src="{% if environment=='development' %}{{ url_for('static', filename='scripts/angular.js') }} {% endif %} {% if environment=='testing' or environment=='production' %}{{ url_for('static', filename='scripts/angular.min.js') }} {% endif %}"></script>
+        src="{% if environment=='development' %}{{ url_for('static', filename='scripts/angular.js') }} {% else %}  {{ url_for('static', filename='scripts/angular.min.js') }} {% endif %}"></script>
+    <!-- Toastr scripts -->
+    {{ toastr.include_toastr_js() }}
     <!-- Angular module and controllers -->
     <script src="{{ url_for('static', filename='scripts/app/app.module.js')}}"></script>
     <script src="{{ url_for('static', filename='scripts/app/wordcount.controller.js')}}"></script>
