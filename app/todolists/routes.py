@@ -173,17 +173,30 @@ def all_todolist():
     return render_template('/todolists/todolists.html', todo_lists=todo_lists, title=f"All To-Do Lists")
 
 
+@todolists.route('/delete/<int:todolist_id>', methods=['POST'])
+@login_required
+def delete_todolist(todolist_id):
+    todo_list = ToDoList.query.get_or_404(todolist_id)
+    if todo_list.user != current_user:
+        return abort(403)
+    db.session.delete(todo_list)
+    db.session.commit()
+    flash('Todo list has been deleted')
+    return redirect(url_for('todolists.all_todolist'))
+
+
 @todolists.route('/<int:todolist_id>', methods=['GET'])
 @login_required
 def todolist_details(todolist_id):
     # Get the query parameters
     page = request.args.get('page', 1, type=int)
-    page_size=request.args.get('pagesize', 5, type=int)
+    page_size = request.args.get('pagesize', 5, type=int)
 
     todo_list = ToDoList.query.get_or_404(todolist_id)
     if todo_list.user != current_user:
         return abort(403)
-    todo_items = ToDoItem.query.filter_by(todo_list_id=todolist_id).order_by(ToDoItem.scheduled_date).paginate(page=page, per_page=page_size)
+    todo_items = ToDoItem.query.filter_by(todo_list_id=todolist_id).order_by(
+        ToDoItem.scheduled_date).paginate(page=page, per_page=page_size)
     return render_template('/todolists/todolist_details.html', title=f"To-Do List: {todo_list.title}", todo_items=todo_items, todo_list=todo_list)
 
 

@@ -2,18 +2,52 @@
 {% block content %}
 {% if todo_items %}
 <div class="content-section">
-    <h2>{{todo_list.title}} <span class="badge badge-primary">{{ todo_items.total }}</span> </h2>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-9">
+                    <h3>{{todo_list.title}}</h3>
+                </div>
+                <div class="col-md-3">
+                    <a class="btn btn-primary mb-4" title="Add New"
+                        href="{{ url_for('todolists.todoitem_new', todolist_id=todo_list.id) }}">Add New <i
+                            class="fas fa-plus-circle"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="row">
+                <div class="col-md-2">
+                    <span>Pages</span>
+                </div>
+                <div class="col-md-10 table-paginator">
+                    {% for page_num in todo_items.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                    {% if page_num %}
+                    {% if todo_items.page == page_num %}
+                    <a class="btn btn-info mb-4"
+                        href="{{ url_for('todolists.todolist_details',todolist_id=todo_list.id ,page=page_num, pagesize='5')}}">{{ page_num }}</a>
+                    {% else %}
+                    <a class="btn btn-outline-info mb-4"
+                        href="{{ url_for('todolists.todolist_details',todolist_id=todo_list.id, page=page_num, pagesize='5')}}">{{ page_num }}</a>
+                    {% endif %}
+                    {% else %}
+                    ...
+                    {% endif %}
+                    {% endfor%}
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="table-responsive-md">
-        <table class="table table-bordered table-hover table-sm" style="table-layout: fixed;">
+        <span class="badge badge-primary pull-right">Total Items: {{ todo_items.total }}</span>
+        <table class="table table-bordered table-hover table-sm" style="table-layout: fixed; text-align: start;">
             <thead class="thead-dark">
                 <tr>
-                    <!-- <th>#</th> -->
-                    <th>Title</th>
-                    <th>Description</th>
+                    <th style="width: 200px;">Title</th>
+                    <th style="width: 200px;">Description</th>
                     <th>Status</th>
                     <th>Priority</th>
                     <th>Urgency</th>
-                    <th>Date Created</th>
                     <th>Scheduled Date</th>
                     <th>Estimated Duration</th>
                     <th></th>
@@ -21,46 +55,26 @@
             </thead>
             <tbody>
                 {% for todo_item in todo_items.items %}
-                <tr>
-                    <!-- <td>{{ loop.index }}</td> -->
-                    <td> {{ todo_item.title }} <a
-                            href="{{url_for('todolists.edit_todoitem', todoitem_id=todo_item.id)}}" title="Edit Item"><i
-                                class="fas fa-edit" aria-hidden="true"></i></a></td>
+                <tr class="{{todo_item.task_status.style_class}}">
+                    <td> {{ todo_item.title }} </td>
                     <td>{{ todo_item.description }}</td>
                     <td>{{ todo_item.task_status.name }}</td>
                     <td>{{ todo_item.task_priority.name }}</td>
                     <td>{{ todo_item.task_urgency.name }}</td>
-                    <td>{{ todo_item.date_created.strftime("%d %B %Y") }}</td>
                     <td>{{ todo_item.scheduled_date.strftime("%d %B %Y") }}</td>
                     <td>{{ todo_item.estimated_duration_hours}}h {{todo_item.estimated_duration_minutes}}m
                     </td>
                     <td>
                         <form action="{{url_for('todolists.delete_todoitem', todoitem_id=todo_item.id)}}" method="POST">
-                            <input type="submit" value="Delete" class="btn btn-danger">
+                            <span><a href="{{url_for('todolists.edit_todoitem', todoitem_id=todo_item.id)}}" class="btn"
+                                    title="Edit Item"><i class="fas fa-edit" style="color: azure;"
+                                        aria-hidden="true"></i></a></span>
+                            <button type="submit" class="btn"><i class="fas fa-trash-alt" style="color: azure;"
+                                    title="Delete Item"></i></button>
                         </form>
                     </td>
                 </tr>
                 {% endfor %}
-                <tr>
-                    <td colspan="10" align="center">
-                        <div class="col-md-12 table-paginator">
-                            {% for page_num in todo_items.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
-                            {% if page_num %}
-                            {% if todo_items.page == page_num %}
-                            <a class="btn btn-info mb-4"
-                                href="{{ url_for('todolists.todolist_details',todolist_id=todo_list.id ,page=page_num, pagesize='5')}}">{{ page_num }}</a>
-                            {% else %}
-                            <a class="btn btn-outline-info mb-4"
-                                href="{{ url_for('todolists.todolist_details',todolist_id=todo_list.id, page=page_num, pagesize='5')}}">{{ page_num }}</a>
-                            {% endif %}
-                            {% else %}
-                            ...
-                            {% endif %}
-                            {% endfor%}
-                        </div>
-                    </td>
-
-                </tr>
             </tbody>
         </table>
     </div>
@@ -70,7 +84,4 @@
     <h2>No Items found</h2>
 </div>
 {% endif %}
-<div class="Add new Item">
-    <a class="btn btn-primary" href="{{ url_for('todolists.todoitem_new', todolist_id=todo_list.id) }}">Add new Item</a>
-</div>
 {% endblock content %}
