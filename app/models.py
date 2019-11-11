@@ -1,8 +1,9 @@
 from datetime import datetime, date
-from app import db, login_manager
+from app import db, login_manager, bcrypt
 from flask_login import UserMixin
-from flask import current_app
+from flask import current_app, url_for
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from .exceptions import ValidationError
 
 
 @login_manager.user_loader
@@ -43,12 +44,29 @@ class User(db.Model, UserMixin):
 
     # Define the todolists for the user
     todoLists = db.relationship('ToDoList', backref="user", lazy=True)
-    allComments = db.relationship('ToDoItemComments', backref="user", lazy=True)
+    allComments = db.relationship(
+        'ToDoItemComments', backref="user", lazy=True)
     workLogs = db.relationship('ToDoItemWorkLog', backref="user", lazy=True)
+
+    def verify_password(self, password):
+        return bcrypt.check_password_hash(self.password, password)
+
+    def generate_auth_token(self, expiration):
+        s = Serializer(current_app.config['SECRET_KEY'], expires_in=expiration)
+        return s.dumps({'id': self.id}).decode('utf-8')
 
     def get_reset_token(self, expires_sec=1800):
         s = Serializer(current_app.config['SECRET_KEY'], expires_sec)
         return s.dumps({'user_id': self.id}).decode('utf-8')
+
+    @staticmethod
+    def verify_auth_token(token):
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token)
+        except:
+            return None
+        return User.query.get(data['id'])
 
     @staticmethod
     def verify_reset_token(token):
@@ -70,6 +88,8 @@ class Role(db.Model):
     name = db.Column(db.String(50), unique=True)
 
 # Define the UserRoles association table
+
+
 class UserRoles(db.Model):
     __tablename__ = 'user_roles'
     id = db.Column(db.Integer(), primary_key=True)
@@ -79,6 +99,8 @@ class UserRoles(db.Model):
         'roles.id', ondelete='CASCADE'))
 
 # Define the Post table
+
+
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
@@ -87,79 +109,122 @@ class Post(db.Model):
     content = db.Column(db.Text(), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
+    def to_json(self):
+        json_post = {
+            'url': url_for('api.get_post', id=self.id),
+            'body': {'title' : self.title, 'content': self.content, 'date_posted': self.date_posted, 'image_file': self.author.image_file}
+        }
+        return json_post
+
+    @staticmethod
+    def from_json(json_post):
+        body = json_post.get('body')
+        if body is None or body == '':
+            raise ValidationError('post does not have a body')
+        return Post(body=body)
+
     def __repr__(self):
         return f"Post('{self.title}', '{self.date_posted}')"
 
 
 class ToDoList(db.Model):
-    __tablename__='todo_lists'
+    __tablename__ = 'todo_lists'
     id = db.Column(db.Integer(), primary_key=True)
-    title=db.Column(db.String(100), nullable=False)
-    description=db.Column(db.String(200), nullable=False)
-    user_id = db.Column(db.Integer(), db.ForeignKey('users.id'), nullable=False)
+    title = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(200), nullable=False)
+    user_id = db.Column(db.Integer(), db.ForeignKey(
+        'users.id'), nullable=False)
     todo_items = db.relationship('ToDoItem', backref='todolist', lazy=True)
-    date_created = db.Column(db.Date(), nullable=False, default = date.today)
-    date_modified = db.Column(db.DateTime(), nullable=False, default= datetime.utcnow)
+    date_created = db.Column(db.Date(), nullable=False, default=date.today)
+    date_modified = db.Column(
+        db.DateTime(), nullable=False, default=datetime.utcnow)
+
 
 class TaskStatusLu(db.Model):
     __tablename__ = "task_status_lu"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
     description = db.Column(db.String(300), nullable=False)
-    style_class = db.Column(db.String(200), nullable=False, default="text-danger")
-    todo_items = db.relationship('ToDoItem', backref='task_status') 
+    style_class = db.Column(
+        db.String(200), nullable=False, default="text-danger")
+    todo_items = db.relationship('ToDoItem', backref='task_status')
 
 
 class TaskPriorityLu(db.Model):
-    __tablename__="task_priority_lu"
+    __tablename__ = "task_priority_lu"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
     description = db.Column(db.String(300), nullable=False)
-    style_class = db.Column(db.String(200), nullable=False, default ="text-danger")
-    todo_items = db.relationship('ToDoItem', backref='task_priority') 
+    style_class = db.Column(
+        db.String(200), nullable=False, default="text-danger")
+    todo_items = db.relationship('ToDoItem', backref='task_priority')
+
 
 class TaskUrgencyLu(db.Model):
     __tablename__ = "task_urgency_lu"
     id = db.Column(db.Integer, primary_key=True)
-    name= db.Column(db.String(100), nullable=False, unique=True)
+    name = db.Column(db.String(100), nullable=False, unique=True)
     description = db.Column(db.String(300), nullable=False)
-    style_class = db.Column(db.String(200), nullable=False, default="text-danger")
-    todo_items = db.relationship('ToDoItem', backref='task_urgency') 
-    
+    style_class = db.Column(
+        db.String(200), nullable=False, default="text-danger")
+    todo_items = db.relationship('ToDoItem', backref='task_urgency')
+
+
 class ToDoItem(db.Model):
-    __tablename__="todo_items"
+    __tablename__ = "todo_items"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
-    description=db.Column(db.String(200), nullable=False)
-    status_id = db.Column(db.Integer(), db.ForeignKey('task_status_lu.id'), nullable=False)
-    priority_id = db.Column(db.Integer(), db.ForeignKey('task_priority_lu.id'), nullable=False )
-    urgency_id = db.Column(db.Integer(), db.ForeignKey('task_urgency_lu.id'), nullable=False)
-    todo_list_id = db.Column(db.Integer, db.ForeignKey('todo_lists.id'), nullable=False)
-    scheduled_date = db.Column(db.DateTime(), nullable=False, default = datetime.utcnow)
-    estimated_duration_hours = db.Column(db.Integer(), nullable=False, default=0)
-    estimated_duration_minutes = db.Column(db.Integer(), nullable=False, default = 0)
-    actual_duration_hours = db.Column(db.Integer(), nullable=False, default = 0)
-    actual_duration_minutes = db.Column(db.Integer(), nullable=False, default = 0)
-    comments = db.relationship('ToDoItemComments', backref='todoitem', lazy='select', cascade="save-update, merge, delete")
-    work_logs = db.relationship('ToDoItemWorkLog', backref='todoitem', lazy='select', cascade="save-update, merge, delete") 
-    date_created = db.Column(db.DateTime(), nullable=False, default = datetime.utcnow)
-    date_modified = db.Column(db.DateTime(), nullable=False, default= datetime.utcnow)
+    description = db.Column(db.String(200), nullable=False)
+    status_id = db.Column(db.Integer(), db.ForeignKey(
+        'task_status_lu.id'), nullable=False)
+    priority_id = db.Column(db.Integer(), db.ForeignKey(
+        'task_priority_lu.id'), nullable=False)
+    urgency_id = db.Column(db.Integer(), db.ForeignKey(
+        'task_urgency_lu.id'), nullable=False)
+    todo_list_id = db.Column(db.Integer, db.ForeignKey(
+        'todo_lists.id'), nullable=False)
+    scheduled_date = db.Column(
+        db.DateTime(), nullable=False, default=datetime.utcnow)
+    estimated_duration_hours = db.Column(
+        db.Integer(), nullable=False, default=0)
+    estimated_duration_minutes = db.Column(
+        db.Integer(), nullable=False, default=0)
+    actual_duration_hours = db.Column(db.Integer(), nullable=False, default=0)
+    actual_duration_minutes = db.Column(
+        db.Integer(), nullable=False, default=0)
+    comments = db.relationship('ToDoItemComments', backref='todoitem',
+                               lazy='select', cascade="save-update, merge, delete")
+    work_logs = db.relationship('ToDoItemWorkLog', backref='todoitem',
+                                lazy='select', cascade="save-update, merge, delete")
+    date_created = db.Column(
+        db.DateTime(), nullable=False, default=datetime.utcnow)
+    date_modified = db.Column(
+        db.DateTime(), nullable=False, default=datetime.utcnow)
+
 
 class ToDoItemComments(db.Model):
-    __tablename__="todo_items_comments"
+    __tablename__ = "todo_items_comments"
     id = db.Column(db.Integer, primary_key=True)
     comment = db.Column(db.String(300), nullable=False)
-    todo_item_id = db.Column(db.Integer(), db.ForeignKey('todo_items.id'), nullable=False)
-    user_id = db.Column(db.Integer(), db.ForeignKey('users.id'), nullable=False)
-    comment_date = db.Column(db.DateTime(), nullable=False, default= datetime.utcnow)
+    todo_item_id = db.Column(db.Integer(), db.ForeignKey(
+        'todo_items.id'), nullable=False)
+    user_id = db.Column(db.Integer(), db.ForeignKey(
+        'users.id'), nullable=False)
+    comment_date = db.Column(
+        db.DateTime(), nullable=False, default=datetime.utcnow)
+
 
 class ToDoItemWorkLog(db.Model):
-    __tablename__="todo_item_worklogs"
+    __tablename__ = "todo_item_worklogs"
     id = db.Column(db.Integer, primary_key=True)
-    todo_item_id = db.Column(db.Integer(), db.ForeignKey('todo_items.id'), nullable=False)
-    start_datetime = db.Column(db.DateTime(), nullable=False, default = datetime.utcnow)
-    end_datetime = db.Column(db.DateTime(), nullable=False, default=datetime.utcnow)
+    todo_item_id = db.Column(db.Integer(), db.ForeignKey(
+        'todo_items.id'), nullable=False)
+    start_datetime = db.Column(
+        db.DateTime(), nullable=False, default=datetime.utcnow)
+    end_datetime = db.Column(
+        db.DateTime(), nullable=False, default=datetime.utcnow)
     comment = db.Column(db.String(200), nullable=False)
-    user_id = db.Column(db.Integer(), db.ForeignKey('users.id'), nullable=False)
-    date_created = db.Column(db.DateTime(), nullable=False, default = datetime.utcnow)
-    
+    user_id = db.Column(db.Integer(), db.ForeignKey(
+        'users.id'), nullable=False)
+    date_created = db.Column(
+        db.DateTime(), nullable=False, default=datetime.utcnow)

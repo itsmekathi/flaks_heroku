@@ -105,3 +105,6 @@ ENV/
 # dev/ test db created locally by commands
 *.db
 .vscode/*
+
+# node package directory
+node_modules/

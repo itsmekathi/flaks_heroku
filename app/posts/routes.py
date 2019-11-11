@@ -56,3 +56,9 @@ def delete_post(post_id):
     db.session.commit()
     flash('Your post has been deleted', 'success')
     return redirect(url_for('main.home'))
+
+
+@posts.route('/angular/allposts', methods=['GET'])
+@login_required
+def spa_allposts():
+    return render_template('/posts/angular_allposts.html', title="Posts using angular")

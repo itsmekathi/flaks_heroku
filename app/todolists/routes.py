@@ -225,6 +225,7 @@ def todoitem_new(todolist_id):
         db.session.add(todo_item)
         db.session.add(comment)
         db.session.commit()
+        flash('New to-do item has been created','success')
         return redirect(url_for('todolists.todolist_details', todolist_id=todolist_id))
     # Initialize the scheduled date to today on get request
     form.scheduled_date.data = date.today()

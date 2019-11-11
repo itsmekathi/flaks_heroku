@@ -1,18 +1,43 @@
+from flask import g, jsonify
 from flask_httpauth import HTTPBasicAuth
 from app.models import User
 from app import bcrypt, db
+from .errors import unauthorized, forbidden
+from . import api
 auth = HTTPBasicAuth()
 
 @auth.verify_password
-def verify_password(email, password):
-    if email == '':
+def verify_password(email_or_token, password):
+    if email_or_token == '':
         return False
-    user = User.query.filter_by(email = email).first()
-    if not User:
+    if password == '':
+        g.current_user = User.verify_auth_token(email_or_token)
+        g.token_used = True
+        return g.current_user is not None
+    user = User.query.filter_by(email=email_or_token).first()
+    if not user:
         return False
     g.current_user = user
-    return bcrypt.check_password_hash(user.password, password)
+    g.token_used = False
+    return user.verify_password(password)
+
+@api.before_request
+@auth.login_required
+def before_request():
+    if g.current_user.is_anonymous:
+        return forbidden('Unauthorized')
+
+@api.route('/tokens', methods=['POST','GET'])
+def get_token():
+    if g.current_user.is_anonymous or g.token_used:
+        return unauthorized('Invalid credentials')
+    return jsonify({'token': g.current_user.generate_auth_token(expiration=3600), 'expiration': 3600 })
+
+@api.route('/resource')
+@auth.login_required
+def get_resource():
+    return jsonify({'data' : 'Hello %s!'% g.current_user.username})
 
 @auth.error_handler
 def auth_error():
-    return unau
+    return unauthorized('Invalid Credentials')

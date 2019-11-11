@@ -149,6 +149,7 @@
 {% endblock content %}
 {% block sidebar %}
 {{ super()}}
+{% if log_workform %}
 <div class="content-section">
     <form method="POST" action="">
         {{ log_workform.hidden_tag() }}
@@ -206,4 +207,5 @@
         </div>
     </form>
 </div>
+{% endif %}
 {% endblock %}

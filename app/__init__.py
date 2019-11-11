@@ -15,7 +15,8 @@ mail = Mail()
 toastr = Toastr()
 
 login_manager.login_view = 'users.login'
-login_manager.login_message = 'info'
+login_manager.login_message = 'Please login to continue'
+login_manager.login_message_category = "info"
 
 
 def create_app(config_name):
