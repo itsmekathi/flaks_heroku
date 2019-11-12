@@ -107,6 +107,22 @@
                             </div>
                         </div>
                         <div class="dropdown show">
+                            <a class="nav-item nav-link dropdown-toggle" href="#" role="button"
+                                id="personaldownMenuLink" data-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false">
+                                Personal <i class="fas fa-th-list"></i>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="personaldownMenuLink">
+                                <a class="dropdown-item" href="{{ url_for('posts.spa_allposts')}}">My Journals
+                                    <i class="fab fa-usps"></i></a>
+                                <a class="dropdown-item" href="{{ url_for('posts.new_post') }}">My Goals<i
+                                        class="fas fa-blog"></i></a>
+                                <a class="dropdown-item" href="{{ url_for('posts.new_post') }}">My Calendar<i
+                                        class="fas fa-blog"></i></a>
+                                        
+                            </div>
+                        </div>
+                        <div class="dropdown show">
                             <a class="nav-item nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Todo List <i class="fas fa-th-list"></i>
