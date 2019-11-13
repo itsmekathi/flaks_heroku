@@ -1,5 +1,6 @@
 (function () {
     'use strict';
+
     angular.module('app')
         .controller('todoListDetailsController', ['$scope', '$log', '$mdDialog','$http','$window',
             function ($scope, $log, $mdDialog, $http, $window) {
