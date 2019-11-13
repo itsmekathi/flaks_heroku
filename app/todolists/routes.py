@@ -191,13 +191,23 @@ def todolist_details(todolist_id):
     # Get the query parameters
     page = request.args.get('page', 1, type=int)
     page_size = request.args.get('pagesize', 5, type=int)
+    status_id = request.args.get('status_id', None, type=int)
 
     todo_list = ToDoList.query.get_or_404(todolist_id)
     if todo_list.user != current_user:
-        return abort(403)
-    todo_items = ToDoItem.query.filter_by(todo_list_id=todolist_id).order_by(
-        ToDoItem.scheduled_date).paginate(page=page, per_page=page_size)
-    return render_template('/todolists/todolist_details.html', title=f"To-Do List: {todo_list.title}", todo_items=todo_items, todo_list=todo_list)
+        return abort(403) 
+    if status_id is None:
+        todo_items = ToDoItem.query.filter_by(todo_list_id=todolist_id).order_by(
+            ToDoItem.scheduled_date).paginate(page=page, per_page=page_size)
+        todo_items_group = db.session.query(TaskStatusLu.name, TaskStatusLu.id, TaskStatusLu.style_class,  db.func.count(ToDoItem.id))\
+            .outerjoin(ToDoItem, (TaskStatusLu.id == ToDoItem.status_id) & (ToDoItem.todo_list_id == todolist_id)).group_by(TaskStatusLu.name).order_by(TaskStatusLu.name)
+    else:
+        todo_items = ToDoItem.query.filter_by(todo_list_id=todolist_id).filter_by(status_id=status_id).order_by(
+            ToDoItem.scheduled_date).paginate(page=page, per_page=page_size)
+        todo_items_group = db.session.query(TaskStatusLu.name, TaskStatusLu.id, TaskStatusLu.style_class,  db.func.count(ToDoItem.id))\
+            .outerjoin(ToDoItem, (TaskStatusLu.id == ToDoItem.status_id) & (TaskStatusLu.id == status_id) & (ToDoItem.todo_list_id == todolist_id)).group_by(TaskStatusLu.name).order_by(TaskStatusLu.name)
+        
+    return render_template('/todolists/todolist_details.html', title=f"To-Do List: {todo_list.title}", todo_items=todo_items, todo_list=todo_list, todo_items_group=todo_items_group)
 
 
 @todolists.route('/<int:todolist_id>/todoitems', methods=['POST', 'GET'])

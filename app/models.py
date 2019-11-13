@@ -134,7 +134,7 @@ class ToDoList(db.Model):
     description = db.Column(db.String(200), nullable=False)
     user_id = db.Column(db.Integer(), db.ForeignKey(
         'users.id'), nullable=False)
-    todo_items = db.relationship('ToDoItem', backref='todolist', lazy=True)
+    todo_items = db.relationship('ToDoItem', backref='todolist', lazy=True, cascade="save-update, merge, delete")
     date_created = db.Column(db.Date(), nullable=False, default=date.today)
     date_modified = db.Column(
         db.DateTime(), nullable=False, default=datetime.utcnow)
@@ -200,6 +200,13 @@ class ToDoItem(db.Model):
         db.DateTime(), nullable=False, default=datetime.utcnow)
     date_modified = db.Column(
         db.DateTime(), nullable=False, default=datetime.utcnow)
+    
+    def to_json(self):
+        json_todo_item = {
+            'url': url_for('api.todoitems', id=self.id),
+            'body': {'title' : self.title, 'description': self.description, 'status': self.task_status.name, 'priority': self.task_priority.name , 'urgency': self.task_urgency.name, 'scheduled_date': self.scheduled_date  }
+        }
+        return json_todo_item
 
 
 class ToDoItemComments(db.Model):

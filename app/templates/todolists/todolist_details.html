@@ -1,14 +1,19 @@
 {% extends "layout.html" %}
 {% block content %}
-<script src="{{ url_for('static', filename='scripts/app/todoListDetails.Controller.js')}}"></script>
+<script src="{{ url_for('static', filename='scripts/app/todoListDetails.controller.js')}}"></script>
 <div class="todo-items-container" ng-controller="todoListDetailsController">
-    {% if todo_items  and todo_items.total > 0%}
+    {% if todo_items and todo_items.total > 0 %}
     <div class="content-section">
         <div class="row">
             <div class="col-md-8">
                 <div class="row">
                     <div class="col-md-9">
                         <h3>{{todo_list.title}}</h3>
+                        {% for status, status_id, style_class, item_count in todo_items_group %}
+                            {% if item_count > 0 %}
+                                <span class="badge badge-pill {{style_class}}"><a style="color: inherit;" href="{{url_for('todolists.todolist_details', todolist_id=todo_list.id, status_id=status_id)}}">{{status}} : {{item_count}}</a></span>
+                            {% endif %}
+                        {% endfor %}
                     </div>
                     <div class="col-md-3">
                         <a class="btn btn-primary mb-4" title="Add New"
@@ -46,7 +51,7 @@
                 <thead class="thead-dark">
                     <tr>
                         <th style="width: 200px;">Title</th>
-                        <th style="width: 200px;">Description</th>
+                        <th style="width: 300px;">Description</th>
                         <th>Status</th>
                         <th>Priority</th>
                         <th>Urgency</th>
@@ -74,7 +79,8 @@
                                             aria-hidden="true"></i></a></span>
                                 <!-- <button type="submit" class="btn"><i class="fas fa-trash-alt" style="color: azure;"
                                         title="Delete Item"></i></button> -->
-                                <md-button ng-click="showConfirm($event)" class="md-primary md-raised">
+                                <md-button ng-click="showConfirm($event, {{ todo_item.id }} )"
+                                    class="md-primary md-raised">
                                     Delete
                                 </md-button>
                             </form>

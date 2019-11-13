@@ -1,12 +1,12 @@
 (function () {
     'use strict';
     angular.module('app')
-        .controller('todoListDetailsController', ['$scope', '$log', '$mdDialog','$http','$window',
+        .controller('todoListController', ['$scope', '$log', '$mdDialog', '$http', '$window',
             function ($scope, $log, $mdDialog, $http, $window) {
-                $log.log('Todo List details controller initialized');
+                $log.log('Todo List controller initialized');
                 $scope.status = '  ';
                 $scope.customFullscreen = false;
-                $scope.itemUrl = '/api/v1/todo_item/'
+                $scope.itemUrl = '/api/v1/todo_list/'
 
                 $scope.deleteMethod = 'DELETE';
                 $scope.currentItemId = 0;
@@ -29,7 +29,7 @@
                     });
                 };
 
-                var deleteItem = function(){
+                var deleteItem = function () {
                     $http({
                         method: $scope.deleteMethod,
                         url: $scope.itemUrl + $scope.currentItemId
@@ -43,4 +43,4 @@
                 };
 
             }]);
-})()
+})();
