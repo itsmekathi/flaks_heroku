@@ -8,12 +8,8 @@
             <div class="col-md-8">
                 <div class="row">
                     <div class="col-md-9">
-                        <h3>{{todo_list.title}}</h3>
-                        {% for status, status_id, style_class, item_count in todo_items_group %}
-                            {% if item_count > 0 %}
-                                <span class="badge badge-pill {{style_class}}"><a style="color: inherit;" href="{{url_for('todolists.todolist_details', todolist_id=todo_list.id, status_id=status_id)}}">{{status}} : {{item_count}}</a></span>
-                            {% endif %}
-                        {% endfor %}
+                        <h3>{{todo_list.title}} {% if today_items %}<span class="small">(Items for today)</span>
+                            {% endif %}</h3>
                     </div>
                     <div class="col-md-3">
                         <a class="btn btn-primary mb-4" title="Add New"
@@ -45,6 +41,23 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-6">
+                {% for status, status_id, style_class, item_count in todo_items_group %}
+                {% if item_count > 0 %}
+                <span class="badge badge-pill {{style_class}}"><a style="color: inherit; "
+                        href="{{url_for('todolists.todolist_details', todolist_id=todo_list.id, status_id=status_id)}}">{{status}}
+                        : {{item_count}}</a></span>
+                {% endif %}
+                {% endfor %}
+                {% if today_items %}{% else %}
+                <span class="badge badge-pill badge-warning p-3 mb-2"><a style="color: inherit; "
+                        href="{{url_for('todolists.todolist_details', todolist_id=todo_list.id, today_items=1)}}">Items
+                        for today</a></span>
+                {% endif %}
+            </div>
+            <div class="col-md-6"></div>
+        </div>
         <div class="table-responsive-md">
             <span class="badge badge-primary pull-right">Total Items: {{ todo_items.total }}</span>
             <table class="table table-bordered table-hover table-sm" style="table-layout: fixed; text-align: start;">
@@ -72,18 +85,12 @@
                         <td>{{ todo_item.estimated_duration_hours}}h {{todo_item.estimated_duration_minutes}}m
                         </td>
                         <td>
-                            <form action="{{url_for('todolists.delete_todoitem', todoitem_id=todo_item.id)}}"
-                                method="POST">
-                                <span><a href="{{url_for('todolists.edit_todoitem', todoitem_id=todo_item.id)}}"
-                                        class="btn" title="Edit Item"><i class="fas fa-edit" style="color: azure;"
-                                            aria-hidden="true"></i></a></span>
-                                <!-- <button type="submit" class="btn"><i class="fas fa-trash-alt" style="color: azure;"
-                                        title="Delete Item"></i></button> -->
-                                <md-button ng-click="showConfirm($event, {{ todo_item.id }} )"
-                                    class="md-primary md-raised">
-                                    Delete
-                                </md-button>
-                            </form>
+                            <span><a href="{{url_for('todolists.edit_todoitem',todolist_id=todo_list.id, todoitem_id=todo_item.id)}}"
+                                    class="btn" title="Edit Item"><i class="fas fa-edit" style="color: azure;"
+                                        aria-hidden="true"></i></a></span>
+                            <md-button ng-click="showConfirm($event, {{ todo_item.id }} )" class="md-primary md-raised">
+                                Delete
+                            </md-button>
                         </td>
                     </tr>
                     {% endfor %}

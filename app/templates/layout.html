@@ -27,7 +27,7 @@
     <!-- <script src="{{ url_for('static', filename='node_modules/popper.js/dist/popper.min.js') }}"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
         integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
-    </script>
+        </script>
     <script src="{{ url_for('static', filename='node_modules/bootstrap/dist/js/bootstrap.min.js') }}"></script>
     {% else %}
     <!-- If environment is other than local use from CDN -->
@@ -48,10 +48,10 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
         integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
-    </script>
+        </script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
-    </script>
+        </script>
     {% endif %}
 
 
@@ -77,8 +77,10 @@
     <header class="site-header">
         <nav
             class="navbar navbar-expand-md navbar-dark {% if environment == 'development' %} bg-dark {% endif %} {% if environment == 'testing' %} bg-primary {% endif %} {% if environment == 'production' %} bg-steel {% endif %} fixed-top">
-            <div class="container">
-                <a class="navbar-brand mr-4" href="/">HMS{% if environment == 'development' %}(dev){% endif %}
+            <div class="container-fluid">
+                <a class="navbar-brand mr-4" href="/"><img src="{{ url_for('static', filename='favicon.ico') }}"
+                        alt="hms" width="30px" height="30px" style="margin-right: 10px;">
+                    HMS{% if environment == 'development' %}(dev){% endif %}
                     {% if environment == 'testing' %}(test){% endif %}</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
                     aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
@@ -119,7 +121,7 @@
                                         class="fas fa-blog"></i></a>
                                 <a class="dropdown-item" href="{{ url_for('posts.new_post') }}">My Calendar<i
                                         class="fas fa-blog"></i></a>
-                                        
+
                             </div>
                         </div>
                         <div class="dropdown show">
@@ -130,14 +132,15 @@
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                 <a class="dropdown-item" href="{{ url_for('todolists.all_todolist')}}">View my ToDoLists
                                     <i class="fas fa-tasks"></i></a>
-                                <a class="dropdown-item" href="{{ url_for('todolists.new_todolist') }}">New TodoList <i
+                                <a class="dropdown-item" href="{{ url_for('todolists.new_todolist') }}">New Todo-List <i
                                         class="far fa-plus-square"></i></a>
-                                <a class="dropdown-item" href="{{ url_for('todolists.status') }}">Manage task Statuses
+                                <a class="dropdown-item" href="{{ url_for('todolists.todoitem_new', todolist_id=9999) }}">New Todo-Item <i
+                                        class="far fa-plus-square"></i></a>
+                                <a class="dropdown-item" href="{{ url_for('todolists.status') }}">Manage Statuses
                                     <i class="fas fa-thumbtack"></i></a>
-                                <a class="dropdown-item" href="{{ url_for('todolists.priority') }}">Manage task
+                                <a class="dropdown-item" href="{{ url_for('todolists.priority') }}">Manage
                                     Priorities</a>
-                                <a class="dropdown-item" href="{{ url_for('todolists.urgency') }}">Manage task
-                                    Urgency</a>
+                                <a class="dropdown-item" href="{{ url_for('todolists.urgency') }}">Manage Urgency</a>
                             </div>
                         </div>
                         <a class="nav-item nav-link" href="{{ url_for('users.logout') }}">Logout <i

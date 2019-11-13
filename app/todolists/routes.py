@@ -192,28 +192,48 @@ def todolist_details(todolist_id):
     page = request.args.get('page', 1, type=int)
     page_size = request.args.get('pagesize', 5, type=int)
     status_id = request.args.get('status_id', None, type=int)
+    today_items = request.args.get('today_items', None, type=int)
 
     todo_list = ToDoList.query.get_or_404(todolist_id)
     if todo_list.user != current_user:
-        return abort(403) 
-    if status_id is None:
-        todo_items = ToDoItem.query.filter_by(todo_list_id=todolist_id).order_by(
-            ToDoItem.scheduled_date).paginate(page=page, per_page=page_size)
+        return abort(403)
+
+    # Common query operations before filter
+    todo_items = ToDoItem.query.filter_by(todo_list_id=todolist_id)
+    todo_items_group = db.session.query(TaskStatusLu.name, TaskStatusLu.id, TaskStatusLu.style_class,  db.func.count(ToDoItem.id))\
+        .outerjoin(ToDoItem, (TaskStatusLu.id == ToDoItem.status_id) & (ToDoItem.todo_list_id == todolist_id)).group_by(TaskStatusLu.name).order_by(TaskStatusLu.name)
+    current_date = datetime(datetime.now().year, datetime.now().month, datetime.now().day)
+    if status_id is not None:
+        todo_items = todo_items.filter_by(status_id=status_id)
         todo_items_group = db.session.query(TaskStatusLu.name, TaskStatusLu.id, TaskStatusLu.style_class,  db.func.count(ToDoItem.id))\
-            .outerjoin(ToDoItem, (TaskStatusLu.id == ToDoItem.status_id) & (ToDoItem.todo_list_id == todolist_id)).group_by(TaskStatusLu.name).order_by(TaskStatusLu.name)
-    else:
-        todo_items = ToDoItem.query.filter_by(todo_list_id=todolist_id).filter_by(status_id=status_id).order_by(
-            ToDoItem.scheduled_date).paginate(page=page, per_page=page_size)
+            .outerjoin(ToDoItem, (TaskStatusLu.id == ToDoItem.status_id) & (TaskStatusLu.id == status_id) & (ToDoItem.todo_list_id == todolist_id))\
+            .group_by(TaskStatusLu.name).order_by(TaskStatusLu.name)
+    if today_items is not None:
+        todo_items = todo_items.filter_by(scheduled_date=current_date)
         todo_items_group = db.session.query(TaskStatusLu.name, TaskStatusLu.id, TaskStatusLu.style_class,  db.func.count(ToDoItem.id))\
-            .outerjoin(ToDoItem, (TaskStatusLu.id == ToDoItem.status_id) & (TaskStatusLu.id == status_id) & (ToDoItem.todo_list_id == todolist_id)).group_by(TaskStatusLu.name).order_by(TaskStatusLu.name)
-        
-    return render_template('/todolists/todolist_details.html', title=f"To-Do List: {todo_list.title}", todo_items=todo_items, todo_list=todo_list, todo_items_group=todo_items_group)
+            .outerjoin(ToDoItem, (TaskStatusLu.id == ToDoItem.status_id)
+                       & (TaskStatusLu.id == status_id) & (ToDoItem.todo_list_id == todolist_id) & (ToDoItem.scheduled_date == current_date))\
+            .group_by(TaskStatusLu.name).order_by(TaskStatusLu.name)
+
+    if status_id is not None and today_items is not None:
+        todo_items_group = db.session.query(TaskStatusLu.name, TaskStatusLu.id, TaskStatusLu.style_class,  db.func.count(ToDoItem.id))\
+            .outerjoin(ToDoItem, (TaskStatusLu.id == ToDoItem.status_id)
+                       & (TaskStatusLu.id == status_id) & (ToDoItem.todo_list_id == todolist_id) & (TaskStatusLu.id == status_id) & (ToDoItem.scheduled_date == current_date))\
+            .group_by(TaskStatusLu.name).order_by(TaskStatusLu.name)
+
+    # Common query operation after filter
+    todo_items = todo_items.order_by(ToDoItem.scheduled_date).paginate(
+        page=page, per_page=page_size)
+
+    return render_template('/todolists/todolist_details.html', title=f"To-Do List: {todo_list.title}", todo_items=todo_items, todo_list=todo_list, todo_items_group=todo_items_group, today_items=today_items )
 
 
 @todolists.route('/<int:todolist_id>/todoitems', methods=['POST', 'GET'])
 @login_required
 def todoitem_new(todolist_id):
-    todo_list = ToDoList.query.get_or_404(todolist_id)
+    if todolist_id != 9999:
+        todo_list = ToDoList.query.get_or_404(todolist_id)
+    
     form = ToDoItemForm()
     form.status_id.choices = [(status.id, status.name)
                               for status in TaskStatusLu.query.order_by('name').all()]
@@ -221,11 +241,12 @@ def todoitem_new(todolist_id):
                                 for priority in TaskPriorityLu.query.order_by('name').all()]
     form.urgency_id.choices = [(urgency.id, urgency.name)
                                for urgency in TaskUrgencyLu.query.order_by('name').all()]
+    form.todo_list_id.choices = [(todolist.id, todolist.title) for todolist in ToDoList.query.filter_by(user=current_user).all()]
     if form.validate_on_submit():
         todo_item = ToDoItem(title=form.title.data,
                              description=form.description.data, status_id=form.status_id.data,
                              priority_id=form.priority_id.data, urgency_id=form.urgency_id.data,
-                             todo_list_id=todolist_id, scheduled_date=form.scheduled_date.data,
+                             todo_list_id=form.todo_list_id.data, scheduled_date=form.scheduled_date.data,
                              estimated_duration_hours=form.estimated_duration_hours.data,
                              estimated_duration_minutes=form.estimated_duration_minutes.data)
         if form.comment.data is not None:
@@ -235,16 +256,18 @@ def todoitem_new(todolist_id):
         db.session.add(todo_item)
         db.session.add(comment)
         db.session.commit()
-        flash('New to-do item has been created','success')
-        return redirect(url_for('todolists.todolist_details', todolist_id=todolist_id))
+        flash('New to-do item has been created', 'success')
+        return redirect(url_for('todolists.todolist_details', todolist_id=form.todo_list_id.data))
     # Initialize the scheduled date to today on get request
+    if todolist_id != 9999:
+        form.todo_list_id.data = todolist_id
     form.scheduled_date.data = date.today()
     return render_template('/todolists/todo_item.html', title=f'New To-Do Item', form=form, legend='New To-Do Item')
 
 
-@todolists.route('/todoitems/edit/<int:todoitem_id>', methods=['POST', 'GET'])
+@todolists.route('/<int:todolist_id>/todoitems/edit/<int:todoitem_id>', methods=['POST', 'GET'])
 @login_required
-def edit_todoitem(todoitem_id):
+def edit_todoitem(todolist_id, todoitem_id):
     todo_item = ToDoItem.query.get_or_404(todoitem_id)
     if todo_item.todolist.user != current_user:
         abort(403)
@@ -256,6 +279,7 @@ def edit_todoitem(todoitem_id):
                                 for priority in TaskPriorityLu.query.order_by('name').all()]
     form.urgency_id.choices = [(urgency.id, urgency.name)
                                for urgency in TaskUrgencyLu.query.order_by('name').all()]
+    form.todo_list_id.choices = [(todolist.id, todolist.title) for todolist in ToDoList.query.filter_by(user=current_user).all()]
 
     if form.is_submitted() and form.validate_on_submit():
         todo_item.title = form.title.data
@@ -263,6 +287,7 @@ def edit_todoitem(todoitem_id):
         todo_item.status_id = form.status_id.data
         todo_item.priority_id = form.priority_id.data
         todo_item.urgency_id = form.urgency_id.data
+        todo_item.todo_list_id = form.todo_list_id.data
         todo_item.scheduled_date = form.scheduled_date.data
         todo_item.estimated_duration_hours = form.estimated_duration_hours.data
         todo_item.estimated_duration_minutes = form.estimated_duration_minutes.data
@@ -273,7 +298,7 @@ def edit_todoitem(todoitem_id):
         db.session.add(todo_item)
         db.session.commit()
         flash('Todo-Item has been updated', 'success')
-        return redirect(url_for('todolists.todolist_details', todolist_id=todo_item.todo_list_id))
+        return redirect(url_for('todolists.todolist_details', todolist_id=todolist_id))
     if log_workform.is_submitted() and log_workform.validate_on_submit():
         work_log = ToDoItemWorkLog(todoitem=todo_item, start_datetime=log_workform.start_datetime.data,
                                    end_datetime=log_workform.end_datetime.data, comment=log_workform.comment.data, user=current_user)
@@ -291,6 +316,7 @@ def edit_todoitem(todoitem_id):
     form.urgency_id.data = todo_item.urgency_id
     log_workform.start_datetime.data = datetime.now()
     log_workform.end_datetime.data = datetime.now()
+    form.todo_list_id.data = todolist_id
     return render_template('/todolists/todo_item.html', title=f'Edit Item: {todo_item.title} ', form=form, log_workform=log_workform, legend='Edit/Update To-Do Item')
 
 

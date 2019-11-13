@@ -37,7 +37,7 @@
                 </div>
             </div>
             <div class="form-row">
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-2">
                     {{ form.status_id.label(class="form-control-label") }}{% if form.status_id.flags.required %}<span
                         class="required-field">*</span>{% endif %}
                     {% if form.status_id.errors %}
@@ -51,7 +51,7 @@
                     {{ form.status_id(class="form-control form-control-md") }}
                     {% endif %}
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-2">
                     {{ form.priority_id.label(class="form-control-label") }}{% if form.priority_id.flags.required %}<span
                         class="required-field">*</span>{% endif %}
                     {% if form.priority_id.errors %}
@@ -105,6 +105,20 @@
                     </div>
                     {% else %}
                     {{ form.estimated_duration_minutes(class="form-control form-control-md") }}
+                    {% endif %}
+                </div>
+                <div class="form-group col-md-2">
+                        {{ form.todo_list_id.label(class="form-control-label") }}{% if form.todo_list_id.flags.required %}<span
+                        class="required-field">*</span>{% endif %}
+                    {% if form.todo_list_id.errors %}
+                    {{ form.todo_list_id(class="form-control form-control-md is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.todo_list_id.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.todo_list_id(class="form-control form-control-md") }}
                     {% endif %}
                 </div>
             </div>

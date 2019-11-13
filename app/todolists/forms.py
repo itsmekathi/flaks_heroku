@@ -27,6 +27,8 @@ class ToDoItemForm(FlaskForm):
                               validators=[DataRequired()])
     urgency_id = SelectField('Urgency', coerce=int,
                              validators=[DataRequired()])
+    todo_list_id = SelectField('List to Add',coerce=int,
+                              validators=[DataRequired()])
     scheduled_date = DateField('Scheduled Date', validators=[
                                DataRequired()], format='%Y-%m-%d', render_kw={"placeholder": "MM/dd/YYYY"})
     estimated_duration_hours = IntegerField('Estimated hours', validators=[DataRequired(), NumberRange(
