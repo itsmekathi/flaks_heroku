@@ -16,31 +16,43 @@
     <!-- If environment is local use from local server -->
     <link rel="stylesheet"
         href="{{ url_for('static', filename='node_modules/angular-material/angular-material.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/chartist/dist/chartist.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/bootstrap/dist/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/chart.js/dist/Chart.min.css') }}">
+
     <script src="{{ url_for('static', filename='node_modules/jquery/dist/jquery.min.js') }}"></script>
+
     <script src="{{ url_for('static', filename='node_modules/angular/angular.js') }}"> </script>
+
+    <!-- Files required for angular-chart -->
+    <script src="{{ url_for('static', filename='node_modules/chart.js/dist/Chart.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='node_modules/angular-chart.js/dist/angular-chart.min.js') }}"></script>
+
+    <!-- Angular material libraries -->
     <script src="{{ url_for('static', filename='node_modules/angular-animate/angular-animate.min.js') }}"></script>
     <script src="{{ url_for('static', filename='node_modules/angular-aria/angular-aria.min.js') }}"></script>
     <script src="{{ url_for('static', filename='node_modules/angular-messages/angular-messages.min.js') }}"></script>
     <script src="{{ url_for('static', filename='node_modules/angular-material/angular-material.min.js') }}"></script>
 
-    <!-- <script src="{{ url_for('static', filename='node_modules/popper.js/dist/popper.min.js') }}"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
         integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
         </script>
     <script src="{{ url_for('static', filename='node_modules/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+
     {% else %}
     <!-- If environment is other than local use from CDN -->
     <link rel="stylesheet"
         href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.12/angular-material.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+
+    <script src="https://cdnjs.com/libraries/Chart.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.8/angular-touch.min.js"
-        integrity="sha256-8pPg4jDosgTykEazR+DxLjTDZ7X8jOoIP+SeX+N2M0k=" crossorigin="anonymous"></script>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular.min.js"></script>
+    <script src="https://cdn.bootcss.com/angular-chart.js/1.1.1/angular-chart.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular-animate.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular-aria.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular-messages.min.js"></script>
@@ -134,7 +146,8 @@
                                     <i class="fas fa-tasks"></i></a>
                                 <a class="dropdown-item" href="{{ url_for('todolists.new_todolist') }}">New Todo-List <i
                                         class="far fa-plus-square"></i></a>
-                                <a class="dropdown-item" href="{{ url_for('todolists.todoitem_new', todolist_id=9999) }}">New Todo-Item <i
+                                <a class="dropdown-item"
+                                    href="{{ url_for('todolists.todoitem_new', todolist_id=9999) }}">New Todo-Item <i
                                         class="far fa-plus-square"></i></a>
                                 <a class="dropdown-item" href="{{ url_for('todolists.status') }}">Manage Statuses
                                     <i class="fas fa-thumbtack"></i></a>
@@ -159,7 +172,7 @@
     </header>
     <main role="main" class="container-fluid">
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-8" style="min-height: calc(100vh - 300px)">
                 {% block content %}{% endblock %}
             </div>
             <div class="col-md-4">

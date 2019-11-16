@@ -1,7 +1,8 @@
 {% extends "layout.html" %}
 {% block content %}
 <script src="{{ url_for('static', filename='scripts/app/todoListDetails.controller.js')}}"></script>
-<div class="todo-items-container" ng-controller="todoListDetailsController">
+<div class="todo-items-container" ng-controller="todoListDetailsController"
+    ng-init="currentToDoListId={{todo_list.id}}">
     {% if todo_items and todo_items.total > 0 %}
     <div class="content-section">
         <div class="row">
@@ -59,10 +60,15 @@
             <div class="col-md-6"></div>
         </div>
         <div class="table-responsive-md">
-            <span class="badge badge-primary pull-right">Total Items: {{ todo_items.total }}</span>
+            {% raw %}
+            <span class="badge badge-primary mb-1" ng-if="selectedItems.length > 0">Items Selected:
+                {{selectedItems.length}}</span>
+            {% endraw %}
+            <span class="badge badge-primary pull-right mb-1">Total Items: {{ todo_items.total }}</span>
             <table class="table table-bordered table-hover table-sm" style="table-layout: fixed; text-align: start;">
                 <thead class="thead-dark">
                     <tr>
+                        <th style="width: 50px;"></th>
                         <th style="width: 200px;">Title</th>
                         <th style="width: 300px;">Description</th>
                         <th>Status</th>
@@ -70,27 +76,36 @@
                         <th>Urgency</th>
                         <th>Scheduled Date</th>
                         <th>Estimated Duration</th>
-                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for todo_item in todo_items.items %}
                     <tr class="{{todo_item.task_status.style_class}}">
-                        <td> {{ todo_item.title }} </td>
+                        <td>
+                            <div style="display: block;margin-left:33%;margin-top:33%">
+                                <input type="checkbox" ng-click="itemSelected( {{todo_item.id}} )" class="text-center">
+                            </div>
+                        </td>
+                        <td>
+                            <div>{{ todo_item.title }} </div>
+                            <div>
+                                <span><a href="{{url_for('todolists.edit_todoitem',todolist_id=todo_list.id, todoitem_id=todo_item.id)}}"
+                                        class="btn" title="Edit Item"><i class="fas fa-edit" style="color: azure;"
+                                            aria-hidden="true"></i></a></span>
+                                <span><a href="#" ng-click="showConfirm($event, {{ todo_item.id }} )" class="btn"
+                                        title="Delete Item"><i class="fas fa-trash-alt"
+                                            style="color: azure;"></i></a></span>
+                                <span><a href="#" ng-click="moveItemDialog({{ todo_item.id }}, $event)" class="btn"
+                                        title="Move item"><i class="fas fa-expand-arrows-alt"
+                                            style="color: azure;"></i></a></span>
+                            </div>
+                        </td>
                         <td>{{ todo_item.description }}</td>
                         <td>{{ todo_item.task_status.name }}</td>
                         <td>{{ todo_item.task_priority.name }}</td>
                         <td>{{ todo_item.task_urgency.name }}</td>
                         <td>{{ todo_item.scheduled_date.strftime("%d %B %Y") }}</td>
                         <td>{{ todo_item.estimated_duration_hours}}h {{todo_item.estimated_duration_minutes}}m
-                        </td>
-                        <td>
-                            <span><a href="{{url_for('todolists.edit_todoitem',todolist_id=todo_list.id, todoitem_id=todo_item.id)}}"
-                                    class="btn" title="Edit Item"><i class="fas fa-edit" style="color: azure;"
-                                        aria-hidden="true"></i></a></span>
-                            <md-button ng-click="showConfirm($event, {{ todo_item.id }} )" class="md-primary md-raised">
-                                Delete
-                            </md-button>
                         </td>
                     </tr>
                     {% endfor %}
@@ -118,5 +133,41 @@
         </h2>
     </div>
     {% endif %}
+    <!-- Angular Material dialogs templates begins -->
+    <div style="visibility: hidden;">
+        <div class="md-dialog-container" id="moveTodoItemDialog">
+            <md-dialog aria-label="Move a todo item dialog">
+                <md-dialog-content>
+                    <md-input-container>
+                        <h2 class="md-title" style="margin-top: 10px;margin-left:10px">Move to List:</h2>
+                        <md-select ng-model="selectedList" style="margin:10px;min-width:350px;">
+                            <md-option ng-repeat="todoList in userToDoLists" ng-value="todoList">
+                                {% raw %} {{todoList.body.title}} {% endraw %}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
+                </md-dialog-content>
+                <md-dialog-actions>
+                    <md-button ng-click="moveTodoItem()" class="md-primary" ng-if="selectedList">
+                        Move
+                    </md-button>
+                    <md-button ng-click="closeMoveItemDialog()" class="md-primary">
+                        Cancel
+                    </md-button>
+                </md-dialog-actions>
+            </md-dialog>
+        </div>
+    </div>
+    <!-- Angular material dialogs templates ends -->
 </div>
 {% endblock content %}
+{% block sidebar %}
+<script src="{{ url_for('static', filename='scripts/app/todoListDetailsChart.Controller.js')}}"></script>
+<div class="content-section" ng-controller="todoListDetailsChartController">
+    <input id="todoListIdInput" type="text" ng-model="todoListId" hidden value="{{todo_list.id}}">
+    <canvas id="pie" class="chart chart-doughnut" chart-data="chartData.data" chart-labels="chartData.labels"
+        chart-options="options">
+    </canvas>
+</div>
+{{ super() }}
+{% endblock %}

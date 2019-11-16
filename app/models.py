@@ -112,7 +112,7 @@ class Post(db.Model):
     def to_json(self):
         json_post = {
             'url': url_for('api.get_post', id=self.id),
-            'body': {'title' : self.title, 'content': self.content, 'date_posted': self.date_posted, 'image_file': self.author.image_file}
+            'body': {'title': self.title, 'content': self.content, 'date_posted': self.date_posted, 'image_file': self.author.image_file}
         }
         return json_post
 
@@ -134,10 +134,18 @@ class ToDoList(db.Model):
     description = db.Column(db.String(200), nullable=False)
     user_id = db.Column(db.Integer(), db.ForeignKey(
         'users.id'), nullable=False)
-    todo_items = db.relationship('ToDoItem', backref='todolist', lazy=True, cascade="save-update, merge, delete")
+    todo_items = db.relationship(
+        'ToDoItem', backref='todolist', lazy=True, cascade="save-update, merge, delete")
     date_created = db.Column(db.Date(), nullable=False, default=date.today)
     date_modified = db.Column(
         db.DateTime(), nullable=False, default=datetime.utcnow)
+
+    def to_json(self):
+        json_todo_list = {
+            'url': url_for('api.todolists', todo_list_id=self.id),
+            'body': {'id': self.id, 'title': self.title, 'description': self.description, 'create_by': self.user.username}
+        }
+        return json_todo_list
 
 
 class TaskStatusLu(db.Model):
@@ -149,6 +157,15 @@ class TaskStatusLu(db.Model):
         db.String(200), nullable=False, default="text-danger")
     todo_items = db.relationship('ToDoItem', backref='task_status')
 
+    def to_json(self):
+        json_status = {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description,
+            'style_class': self.style_class
+        }
+        return json_status
+
 
 class TaskPriorityLu(db.Model):
     __tablename__ = "task_priority_lu"
@@ -159,6 +176,15 @@ class TaskPriorityLu(db.Model):
         db.String(200), nullable=False, default="text-danger")
     todo_items = db.relationship('ToDoItem', backref='task_priority')
 
+    def to_json(self):
+        json_priority = {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description,
+            'style_class': self.style_class
+        }
+        return json_priority
+
 
 class TaskUrgencyLu(db.Model):
     __tablename__ = "task_urgency_lu"
@@ -168,6 +194,15 @@ class TaskUrgencyLu(db.Model):
     style_class = db.Column(
         db.String(200), nullable=False, default="text-danger")
     todo_items = db.relationship('ToDoItem', backref='task_urgency')
+
+    def to_json(self):
+        json_urgency = {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description,
+            'style_class': self.style_class
+        }
+        return json_urgency
 
 
 class ToDoItem(db.Model):
@@ -200,11 +235,11 @@ class ToDoItem(db.Model):
         db.DateTime(), nullable=False, default=datetime.utcnow)
     date_modified = db.Column(
         db.DateTime(), nullable=False, default=datetime.utcnow)
-    
+
     def to_json(self):
         json_todo_item = {
-            'url': url_for('api.todoitems', id=self.id),
-            'body': {'title' : self.title, 'description': self.description, 'status': self.task_status.name, 'priority': self.task_priority.name , 'urgency': self.task_urgency.name, 'scheduled_date': self.scheduled_date  }
+            'url': url_for('api.todoitems', todo_item_id=self.id),
+            'body': {'id': self.id, 'title': self.title, 'description': self.description, 'status': self.task_status.name, 'priority': self.task_priority.name, 'urgency': self.task_urgency.name, 'scheduled_date': self.scheduled_date}
         }
         return json_todo_item
 
