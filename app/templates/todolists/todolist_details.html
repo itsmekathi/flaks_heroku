@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
-<script src="{{ url_for('static', filename='scripts/app/todoListDetails.controller.js')}}"></script>
+<script src="{{ url_for('static', filename='scripts/app/todolistDetailsPage.controller.js')}}"></script>
 <div class="todo-items-container" ng-controller="todoListDetailsController"
     ng-init="currentToDoListId={{todo_list.id}}">
     {% if todo_items and todo_items.total > 0 %}
