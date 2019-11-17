@@ -65,7 +65,8 @@ def get_chartdata_for_todolist(todo_list_id):
     if todo_list.user != user:
         return unauthorized('You donot have access to this list')
     todo_items_group = db.session.query(TaskStatusLu.name, db.func.count(ToDoItem.id))\
-        .outerjoin(ToDoItem, (TaskStatusLu.id == ToDoItem.status_id) & (ToDoItem.todo_list_id == todo_list_id)).group_by(TaskStatusLu.name).order_by(TaskStatusLu.name).all()
+        .outerjoin(ToDoItem, (TaskStatusLu.id == ToDoItem.status_id) & (ToDoItem.todo_list_id == todo_list_id))\
+            .group_by(TaskStatusLu.name).order_by(TaskStatusLu.name).all()
     labels = []
     data = []
     for status, item_count in todo_items_group:

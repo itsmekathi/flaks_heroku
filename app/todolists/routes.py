@@ -201,25 +201,26 @@ def todolist_details(todolist_id):
     # Common query operations before filter
     todo_items = ToDoItem.query.filter_by(todo_list_id=todolist_id)
     todo_items_group = db.session.query(TaskStatusLu.name, TaskStatusLu.id, TaskStatusLu.style_class,  db.func.count(ToDoItem.id))\
-        .outerjoin(ToDoItem, (TaskStatusLu.id == ToDoItem.status_id) & (ToDoItem.todo_list_id == todolist_id)).group_by(TaskStatusLu.name).order_by(TaskStatusLu.name)
+        .outerjoin(ToDoItem, (TaskStatusLu.id == ToDoItem.status_id) & (ToDoItem.todo_list_id == todolist_id))\
+            .group_by(TaskStatusLu.name, TaskStatusLu.id, TaskStatusLu.style_class).order_by(TaskStatusLu.name)
     current_date = datetime(datetime.now().year, datetime.now().month, datetime.now().day)
     if status_id is not None:
         todo_items = todo_items.filter_by(status_id=status_id)
         todo_items_group = db.session.query(TaskStatusLu.name, TaskStatusLu.id, TaskStatusLu.style_class,  db.func.count(ToDoItem.id))\
             .outerjoin(ToDoItem, (TaskStatusLu.id == ToDoItem.status_id) & (TaskStatusLu.id == status_id) & (ToDoItem.todo_list_id == todolist_id))\
-            .group_by(TaskStatusLu.name).order_by(TaskStatusLu.name)
+            .group_by(TaskStatusLu.name, TaskStatusLu.id, TaskStatusLu.style_class).order_by(TaskStatusLu.name)
     if today_items is not None:
         todo_items = todo_items.filter_by(scheduled_date=current_date)
         todo_items_group = db.session.query(TaskStatusLu.name, TaskStatusLu.id, TaskStatusLu.style_class,  db.func.count(ToDoItem.id))\
             .outerjoin(ToDoItem, (TaskStatusLu.id == ToDoItem.status_id)
                        & (TaskStatusLu.id == status_id) & (ToDoItem.todo_list_id == todolist_id) & (ToDoItem.scheduled_date == current_date))\
-            .group_by(TaskStatusLu.name).order_by(TaskStatusLu.name)
+            .group_by(TaskStatusLu.name, TaskStatusLu.id, TaskStatusLu.style_class).order_by(TaskStatusLu.name)
 
     if status_id is not None and today_items is not None:
         todo_items_group = db.session.query(TaskStatusLu.name, TaskStatusLu.id, TaskStatusLu.style_class,  db.func.count(ToDoItem.id))\
             .outerjoin(ToDoItem, (TaskStatusLu.id == ToDoItem.status_id)
                        & (TaskStatusLu.id == status_id) & (ToDoItem.todo_list_id == todolist_id) & (TaskStatusLu.id == status_id) & (ToDoItem.scheduled_date == current_date))\
-            .group_by(TaskStatusLu.name).order_by(TaskStatusLu.name)
+            .group_by(TaskStatusLu.name, TaskStatusLu.id, TaskStatusLu.style_class).order_by(TaskStatusLu.name)
 
     # Common query operation after filter
     todo_items = todo_items.order_by(ToDoItem.scheduled_date).paginate(
