@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
-<script src="{{ url_for('static', filename='scripts/app/allPosts.Controller.js') }}"></script>
+<script src="{{ url_for('static', filename='scripts/app/allPostsPage.controller.js') }}"></script>
 {% raw %}
 <div class="col-md-12" ng-controller="allPostsController">
     <button class="btn btn-primary" ng-click="get_all_posts()">Reload Data</button>
