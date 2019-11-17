@@ -30,7 +30,7 @@ def populateseeddata():
     """Run this command to populate dummy data into db."""
     admin_user = User(active=True, username='admin', email='admin@123.com', password='$2b$12$cNAuUAhCVvo3xVj/YoMzYOZ/4oUiqjWDvs81wnSxHX.hh0Yyo2oPK', image_file='default.jpg', first_name='admin', last_name='user')
     test_user = User(active=True, username='testuser', email='testuser@123.com', password='$2b$12$cNAuUAhCVvo3xVj/YoMzYOZ/4oUiqjWDvs81wnSxHX.hh0Yyo2oPK', image_file='default.jpg', first_name='test', last_name='user')
-    db.session.add(admin_user)
+    db.session.add_all([admin_user, test_user])
     db.session.commit()
 
     # Populate the roles data
@@ -39,16 +39,12 @@ def populateseeddata():
     role_customer = Role(name='Customer')
     role_super_customer = Role(name='SuperCustomer')
 
-    db.session.add(role_admin)
-    db.session.add(role_testuser)
-    db.session.add(role_customer)
-    db.session.add(role_super_customer)
+    db.session.add_all([role_admin, role_testuser, role_customer, role_super_customer])
     db.session.commit()
 
     admin_user.roles =[role_admin, role_testuser, role_customer, role_super_customer]
     test_user.roles =[role_testuser, role_customer]
-    db.session.add(admin_user)
-    db.session.add(test_user)
+    db.session.add_all([admin_user, test_user])
     db.session.commit()
 
     # Populate some posts for both users
@@ -65,35 +61,21 @@ def populateseeddata():
     testuser_post2 = Post(title='Post-2', content='Content for Post-2', author=test_user, date_posted= datetime(2019,10,19))
     testuser_post3 = Post(title='Post-3', content='Content for Post-3', author=test_user, date_posted= datetime(2019,10,20))
 
-    db.session.add(admin_post1)
-    db.session.add(admin_post2)
-    db.session.add(admin_post3)
-    db.session.add(admin_post4)
-    db.session.add(admin_post5)
-    db.session.add(admin_post6)
-    db.session.add(admin_post7)
-    db.session.add(admin_post8)
-
-    db.session.add(testuser_post1)
-    db.session.add(testuser_post2)
-    db.session.add(testuser_post3)
+    db.session.add_all([admin_post1,admin_post2, admin_post3, admin_post4,admin_post5, admin_post6, admin_post7, admin_post8,
+    testuser_post1, testuser_post2, testuser_post3])
 
     db.session.commit()
 
 
     # Populate task_status
-    status_created = TaskStatusLu(name='Created',description='A newly created task', style_class='green')
-    status_approved = TaskStatusLu(name='Approved',description='An approved task', style_class='orange')
-    status_assigned = TaskStatusLu(name='Assigned',description='An assigned task', style_class='green')
-    status_inprogress = TaskStatusLu(name='InProgress',description='A task for which work has started', style_class='green')
-    status_done = TaskStatusLu(name='Done',description='A task which has been completed', style_class='blue')
+    status_created = TaskStatusLu(name='Created',description='A newly created task', style_class='p-3 mb-2 bg-primary text-white')
+    status_approved = TaskStatusLu(name='Approved',description='An approved task', style_class='p-3 mb-2 bg-secondary text-white')
+    status_assigned = TaskStatusLu(name='Assigned',description='An assigned task', style_class='p-3 mb-2 bg-warning text-dark')
+    status_inprogress = TaskStatusLu(name='InProgress',description='A task for which work has started', style_class='p-3 mb-2 bg-info text-white')
+    status_done = TaskStatusLu(name='Done',description='A task which has been completed', style_class='p-3 mb-2 bg-success text-white')
+    status_to_be_refined = TaskStatusLu(name='To be refined', description='A task to be refined', style_class='p-3 mb-2 bg-white text-dark')
 
-    db.session.add(status_created)
-    db.session.add(status_approved)
-    db.session.add(status_assigned)
-    db.session.add(status_inprogress)
-    db.session.add(status_done)
-
+    db.session.add_all([status_created, status_approved, status_assigned, status_inprogress, status_done])
     db.session.commit()
 
     # Populate task_priority
@@ -101,12 +83,8 @@ def populateseeddata():
     priority_p3 = TaskPriorityLu(name='P3', description='A Medium priority task', style_class='green')
     priority_p2 = TaskPriorityLu(name='P2', description='A Priority task', style_class='orange')
     priority_p1 = TaskPriorityLu(name='P1', description='A High priority task', style_class='red')
-
-    db.session.add(priority_p4)
+    db.session.add_all([priority_p4, priority_p3, priority_p2, priority_p1])
     db.session.add(priority_p3)
-    db.session.add(priority_p2)
-    db.session.add(priority_p1)
-
     db.session.commit()
 
     # Populate task_urgency
@@ -115,11 +93,7 @@ def populateseeddata():
     urgency_u2 = TaskUrgencyLu(name='U2', description='An Urgent task', style_class='orange')
     urgency_u1 = TaskUrgencyLu(name='U1', description='A high urgency task', style_class='red')
 
-    db.session.add(urgency_u4)
-    db.session.add(urgency_u3)
-    db.session.add(urgency_u2)
-    db.session.add(urgency_u1)
-
+    db.session.add_all([urgency_u4, urgency_u3, urgency_u2, urgency_u1])
     db.session.commit()
 
     # Populate new todo-list for both users
@@ -128,10 +102,7 @@ def populateseeddata():
 
     testuser_todo_list1 = ToDoList(title='Testing',description='All testing tasks', user=test_user, date_created=date(2019,10,10))
 
-    db.session.add(admin_todo_list1)
-    db.session.add(admin_todo_list2)
-    db.session.add(testuser_todo_list1)
-
+    db.session.add_all([admin_todo_list1,admin_todo_list2, testuser_todo_list1])
     db.session.commit()
 
 
@@ -149,12 +120,8 @@ def populateseeddata():
     admin_todolist2_todoitem3 = ToDoItem(title='Learn Angular js', description='Learn angularJS integration with Flask', todolist = admin_todo_list2 ,task_status=status_approved, task_priority=priority_p3, task_urgency=urgency_u3,scheduled_date=datetime(2019,11,10),
     estimated_duration_hours=4, estimated_duration_minutes=45,date_created=datetime(2019,11,1), date_modified=datetime(2019,11,1))
 
-    db.session.add(admin_todolist1_todoitem1)
-    db.session.add(admin_todolist1_todoitem2)
-    db.session.add(admin_todolist1_todoitem3)
-    db.session.add(admin_todolist2_todoitem1)
-    db.session.add(admin_todolist2_todoitem2)
-    db.session.add(admin_todolist2_todoitem3)
+    db.session.add_all([admin_todolist1_todoitem1,admin_todolist1_todoitem2, admin_todolist1_todoitem3, admin_todolist2_todoitem1,
+    admin_todolist2_todoitem2,admin_todolist2_todoitem3])
     db.session.commit()
 
     admin_todolist1_todoitem1_comment1 = ToDoItemComments(comment="Created the task",todoitem=admin_todolist1_todoitem1, user=admin_user,comment_date=datetime(2019,10,10))
@@ -163,12 +130,8 @@ def populateseeddata():
     admin_todolist1_todoitem2_comment1 = ToDoItemComments(comment="Created the task",todoitem=admin_todolist1_todoitem2, user=admin_user,comment_date=datetime(2019,10,10))
     admin_todolist1_todoitem2_comment2 = ToDoItemComments(comment="Started the task",todoitem=admin_todolist1_todoitem2, user=admin_user,comment_date=datetime(2019,10,11))
 
-    db.session.add(admin_todolist1_todoitem1_comment1)
-    db.session.add(admin_todolist1_todoitem1_comment2)
-    db.session.add(admin_todolist1_todoitem1_comment3)
-    db.session.add(admin_todolist1_todoitem2_comment1)
-    db.session.add(admin_todolist1_todoitem2_comment2)
-
+    db.session.add_all([admin_todolist1_todoitem1_comment1, admin_todolist1_todoitem1_comment2, admin_todolist1_todoitem1_comment3,
+   admin_todolist1_todoitem2_comment1 , admin_todolist1_todoitem2_comment2])
     db.session.commit()
 
     testuser_todolist1_todoitem1 = ToDoItem(title='User creation', description='Test the User creation', todolist = testuser_todo_list1 ,task_status=status_created, task_priority=priority_p4, task_urgency=urgency_u4,scheduled_date=datetime(2019,11,1),
@@ -184,13 +147,8 @@ def populateseeddata():
     testuser_todolist1_todoitem6 = ToDoItem(title='Test urgencies', description='Test creation, modification and deletion of urgencies', todolist = testuser_todo_list1 ,task_status=status_approved, task_priority=priority_p3, task_urgency=urgency_u3,scheduled_date=datetime(2019,11,10),
     estimated_duration_hours=4, estimated_duration_minutes=45,date_created=datetime(2019,11,1), date_modified=datetime(2019,11,1))
 
-    db.session.add(testuser_todolist1_todoitem1)
-    db.session.add(testuser_todolist1_todoitem2)
-    db.session.add(testuser_todolist1_todoitem3)
-    db.session.add(testuser_todolist1_todoitem4)
-    db.session.add(testuser_todolist1_todoitem5)
-    db.session.add(testuser_todolist1_todoitem6)
-
+    db.session.add_all([testuser_todolist1_todoitem1,testuser_todolist1_todoitem2,testuser_todolist1_todoitem3,
+    testuser_todolist1_todoitem4,testuser_todolist1_todoitem5, testuser_todolist1_todoitem6])
     db.session.commit()
 
 
