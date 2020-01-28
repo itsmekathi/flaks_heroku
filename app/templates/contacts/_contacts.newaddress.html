@@ -1,0 +1,241 @@
+{% extends "layout.html" %}
+{% block content %}
+{% if addresses %}
+<div class="content-section">
+    <h2>Existing Data for {{ titile }}</h2>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <td>#</td>
+                <td>Name</td>
+                <td>Country</td>
+                <td>State</td>
+                <td>City</td>
+                <td>Address Line 1</td>
+                <td>Address Line 2</td>
+                <td>Address Line 3</td>
+                <td>Created on</td>
+                <td>Edit</td>
+                <td>Delete</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for address in addresses %}
+            <tr>
+                <td>{{address.id}}</td>
+                <td>{{ address.contact.first_name}}, {{ address.contact.middle_name }} {{ address.contact.last_name }}
+                </td>
+                <td>{{ address.country}}</td>
+                <td>{{ address.state}}</td>
+                <td>{{ address.city}}</td>
+                <td>{{ address.address_line1 }}</td>
+                <td>{{ address.address_line2 }}</td>
+                <td> {{ address.address_line3}} </td>
+                <td> {{ address.created_on }}</td>
+                <td>
+                    <a class="btn btn-warning" href="#">Edit</a>
+                </td>
+                <td>
+                    <form action="#" method="POST">
+                        <input type="submit" value="Delete" class="btn btn-danger">
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="content-section">
+    <h2>No entries found</h2>
+</div>
+{% endif %}
+<div class="content-section">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+
+            <legend class="border-bottom mb-4">{{ legend }}</legend>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    {{ form.address_type.label(class="form-control-label") }}{% if form.address_type.flags.required %}<span
+                        class="required-field">*</span>{% endif %}
+                    {% if form.address_type.errors %}
+                    {{ form.address_type(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.address_type.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.address_type(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group col-md-6">
+                    {{ form.contact.label(class="form-control-label") }}{% if form.contact.flags.required %}<span
+                        class="required-field">*</span>{% endif %}
+                    {% if form.contact.errors %}
+                    {{ form.contact(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.contact.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.contact(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    {{ form.city.label(class="form-control-label") }}{% if form.city.flags.required %}<span
+                        class="required-field">*</span>{% endif %}
+                    {% if form.city.errors %}
+                    {{ form.city(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.city.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.city(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group col-md-4">
+                    {{ form.state.label(class="form-control-label") }}{% if form.state.flags.required %}<span
+                        class="required-field">*</span>{% endif %}
+                    {% if form.state.errors %}
+                    {{ form.state(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.state.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.state(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group col-md-4">
+                    {{ form.country.label(class="form-control-label") }}{% if form.country.flags.required %}<span
+                        class="required-field">*</span>{% endif %}
+                    {% if form.country.errors %}
+                    {{ form.country(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.country.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.country(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    {{ form.address_line1.label(class="form-control-label") }}{% if form.address_line1.flags.required %}<span
+                        class="required-field">*</span>{% endif %}
+                    {% if form.address_line1.errors %}
+                    {{ form.address_line1(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.address_line1.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.address_line1(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    {{ form.address_line2.label(class="form-control-label") }}{% if form.address_line2.flags.required %}<span
+                        class="required-field">*</span>{% endif %}
+                    {% if form.address_line2.errors %}
+                    {{ form.address_line2(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.address_line2.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.address_line2(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    {{ form.address_line3.label(class="form-control-label") }}{% if form.address_line3.flags.required %}<span
+                        class="required-field">*</span>{% endif %}
+                    {% if form.address_line3.errors %}
+                    {{ form.address_line3(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.address_line3.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.address_line3(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    {{ form.latitude.label(class="form-control-label") }}{% if form.latitude.flags.required %}<span
+                        class="required-field">*</span>{% endif %}
+                    {% if form.latitude.errors %}
+                    {{ form.latitude(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.latitude.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.latitude(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group col-md-4">
+                    {{ form.longitude.label(class="form-control-label") }}{% if form.longitude.flags.required %}<span
+                        class="required-field">*</span>{% endif %}
+                    {% if form.longitude.errors %}
+                    {{ form.longitude(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.longitude.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.longitude(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    {{ form.comments.label(class="form-control-label") }}{% if form.comments.flags.required %}<span
+                        class="required-field">*</span>{% endif %}
+                    {% if form.comments.errors %}
+                    {{ form.comments(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.comments.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.comments(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <div class="form-check">
+                        {{ form.is_private(class="form-check-input") }}
+                        {{ form.is_private.label(class="form-check-label") }}
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</div>
+{% endblock content %}

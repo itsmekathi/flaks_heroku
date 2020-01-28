@@ -47,6 +47,9 @@ class User(db.Model, UserMixin):
     allComments = db.relationship(
         'ToDoItemComments', backref="user", lazy=True)
     workLogs = db.relationship('ToDoItemWorkLog', backref="user", lazy=True)
+    contacts = db.relationship('Contact', backref="created_by", lazy=True)
+    expenses = db.relationship('Expenses', backref="created_by", lazy=True)
+    addresses = db.relationship('Address', backref="created_by", lazy=True)
 
     def verify_password(self, password):
         return bcrypt.check_password_hash(self.password, password)
@@ -269,4 +272,183 @@ class ToDoItemWorkLog(db.Model):
     user_id = db.Column(db.Integer(), db.ForeignKey(
         'users.id'), nullable=False)
     date_created = db.Column(
+        db.DateTime(), nullable=False, default=datetime.utcnow)
+
+
+class ContactTypeLu(db.Model):
+    """ Master table for Contact type lookup
+    Different contact types can be Store's, person, 
+    """
+    __tablename__ = "contact_type_lu"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(300), nullable=False)
+    icon = db.Column(db.String(100), nullable=False)
+    style_class = db.Column(
+        db.String(100), nullable=False, default="text-danger")
+    contacts = db.relationship('Contact', backref='contact_type', lazy=True)
+
+
+class Contact(db.Model):
+    """ 
+    Master table for Contact.
+    Holds all contact information that the user is associated with
+    """
+    __tablename__ = "contacts"
+    id = db.Column(db.Integer, primary_key=True)
+    contact_type_id = db.Column(db.Integer, db.ForeignKey(
+        'contact_type_lu.id'), nullable=False)
+    created_by_id = db.Column(db.Integer(), db.ForeignKey(
+        'users.id'), nullable=False)
+    first_name = db.Column(db.String(100), nullable=False)
+    middle_name = db.Column(db.String(100), nullable=True)
+    last_name = db.Column(db.String(100), nullable=False)
+    image_url = db.Column(db.String(200), nullable=True)
+    email_id = db.Column(db.String(200), nullable=True)
+    phone_number = db.Column(db.String(200), nullable=True)
+    is_private = db.Column(db.Boolean, default=False)
+
+    addresses = db.relationship('Address', backref='contact', lazy=True)
+    expenses = db.relationship(
+        'Expenses', backref='contact', lazy=True)
+
+    created_on = db.Column(db.DateTime(), nullable=False,
+                           default=datetime.utcnow)
+    modified_on = db.Column(
+        db.DateTime(), nullable=False, default=datetime.utcnow)
+
+
+class AddressTypeLu(db.Model):
+    """
+    Hold's the address type lookup used while creating a new address.
+    Can be edited by the master user
+    """
+    __tablename__ = "address_type_lu"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(300), nullable=False)
+    icon = db.Column(db.String(100), nullable=False)
+    style_class = db.Column(
+        db.String(100), nullable=False, default="text-danger")
+    contacts = db.relationship('Address', backref='address_type', lazy=True)
+
+
+class Address(db.Model):
+    """
+    Master table for Address.
+    Used to store the address associated with the user contacts
+    """
+    __tablename__ = "address"
+    id = db.Column(db.Integer, primary_key=True)
+    address_type_id = db.Column(db.Integer, db.ForeignKey(
+        'address_type_lu.id'), nullable=False)
+    contact_id = db.Column(db.Integer, db.ForeignKey(
+        'contacts.id'), nullable=False)
+    created_by_id = db.Column(db.Integer(), db.ForeignKey(
+        'users.id'), nullable=False)
+    address_line1 = db.Column(db.String(200), nullable=False)
+    address_line2 = db.Column(db.String(200), nullable=False)
+    address_line3 = db.Column(db.String(200), nullable=False)
+    city = db.Column(db.String(200), nullable=False)
+    state = db.Column(db.String(200), nullable=False)
+    country = db.Column(db.String(200), nullable=False)
+    comments = db.Column(db.String(300), nullable=True)
+    latitude = db.Column(db.String(100), nullable=True)
+    longitude = db.Column(db.String(100), nullable=True)
+    is_private = db.Column(db.Boolean, default=False)
+
+    created_on = db.Column(db.DateTime(), nullable=False,
+                           default=datetime.utcnow)
+    modified_on = db.Column(
+        db.DateTime(), nullable=False, default=datetime.utcnow)
+
+
+class ExpenseTypeLu(db.Model):
+    """ Master table for Expense Type
+        Used to store the various expense types
+    """
+    __tablename__ = "expense_type_lu"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(300), nullable=False)
+    icon = db.Column(db.String(100), nullable=False)
+    style_class = db.Column(
+        db.String(100), nullable=False, default="text-danger")
+    expenses = db.relationship('Expenses', backref='expense_type', lazy=True)
+
+
+class ExpenseCategoryLu(db.Model):
+    """ Master table for Expense Type
+        Used to store the various expense types
+    """
+    __tablename__ = "expense_category_lu"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(300), nullable=False)
+    icon = db.Column(db.String(100), nullable=False)
+    style_class = db.Column(
+        db.String(100), nullable=False, default="text-danger")
+    expenses = db.relationship(
+        'Expenses', backref='expense_category', lazy=True)
+
+
+class Expenses(db.Model):
+    """ Master table for all expenses
+        Used to store the expense incurred
+    """
+    __tablename__ = "expenses"
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    expense_type_id = db.Column(db.Integer, db.ForeignKey(
+        'expense_type_lu.id'), nullable=False)
+    expense_category_id = db.Column(db.Integer, db.ForeignKey(
+        'expense_category_lu.id'), nullable=False)
+    expenses_contact_id = db.Column(db.Integer, db.ForeignKey(
+        'contacts.id'), nullable=False)
+    created_by_id = db.Column(db.Integer, db.ForeignKey(
+        'users.id'), nullable=False)
+    expense_amount = db.Column(db.Numeric(10, 2), nullable=False)
+    expense_date_time = db.Column(db.DateTime(), nullable=False,
+                                  default=datetime.utcnow)
+    description = db.Column(db.String(300), nullable=False)
+    expense_details = db.relationship(
+        'ExpenseDetails', backref='expense', lazy=True)
+    created_on = db.Column(db.DateTime(), nullable=False,
+                           default=datetime.utcnow)
+    modified_on = db.Column(
+        db.DateTime(), nullable=False, default=datetime.utcnow)
+
+
+class UnitOfMeasurementLu(db.Model):
+    """ Master table for all expense UOM
+        Used to store expense uom lookups
+    """
+    __tablename__ = "unit_of_measurement_lu"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(300), nullable=False)
+    icon = db.Column(db.String(100), nullable=False)
+    style_class = db.Column(
+        db.String(100), nullable=False, default="text-danger")
+    expense_details = db.relationship(
+        'ExpenseDetails', backref='uom', lazy=True)
+
+
+class ExpenseDetails(db.Model):
+    """ Master table for all expense items
+        Used to store item level detail of an expense
+    """
+    __tablename__ = "expense_details"
+    id = db.Column(db.Integer, primary_key=True)
+    item_name = db.Column(db.String(200), nullable=False)
+    expenses_id = db.Column(
+        db.Integer, db.ForeignKey('expenses.id'), nullable=False)
+    uom_id = db.Column(db.Integer, db.ForeignKey(
+        'unit_of_measurement_lu.id'), nullable=False)
+    unit_price = db.Column(db.Numeric(10, 2), nullable=False)
+    quantity = db.Column(db.Numeric(10, 2), nullable=False)
+    gross_price = db.Column(db.Numeric(10, 2), nullable=False)
+    created_on = db.Column(db.DateTime(), nullable=False,
+                           default=datetime.utcnow)
+    modified_on = db.Column(
         db.DateTime(), nullable=False, default=datetime.utcnow)

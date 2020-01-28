@@ -45,6 +45,12 @@ def create_app(config_name):
     from app.todolists import todolists as todolists_blueprint
     app.register_blueprint(todolists_blueprint, url_prefix='/todolists')
 
+    from app.contacts import contacts as contacts_blueprint
+    app.register_blueprint(contacts_blueprint, url_prefix='/contacts')
+
+    from app.expenses import expenses as expenses_blueprint
+    app.register_blueprint(expenses_blueprint, url_prefix='/expenses')
+
     from .api import api as api_blueprint
     app.register_blueprint(api_blueprint, url_prefix='/api/v1')
 

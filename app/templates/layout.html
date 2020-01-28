@@ -45,7 +45,7 @@
         href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.12/angular-material.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        
+
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 
@@ -121,6 +121,36 @@
                         </div>
                         <div class="dropdown show">
                             <a class="nav-item nav-link dropdown-toggle" href="#" role="button"
+                                id="contactsdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false">
+                                Contacts <i class="fas fa-th-list"></i>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="contactsdownMenuLink">
+                                <a class="dropdown-item" href="{{ url_for('contacts.new_contact') }}">New Contact<i
+                                        class="fas fa-blog"></i></a>
+                                <a class="dropdown-item" href="{{ url_for('contacts.new_address') }}">New Address<i
+                                        class="fas fa-blog"></i></a>
+                                <a class="dropdown-item" href="{{ url_for('contacts.address_types')}}">Address Types
+                                    <i class="fab fa-usps"></i></a>
+                                <a class="dropdown-item" href="{{ url_for('contacts.contact_types') }}">Contact Types<i
+                                        class="fas fa-blog"></i></a>
+                            </div>
+                        </div>
+                        <div class="dropdown show">
+                            <a class="nav-item nav-link dropdown-toggle" href="#" role="button"
+                                id="expensesdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false">
+                                Expenses <i class="fas fa-th-list"></i>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="expensesdownMenuLink">
+                                <a class="dropdown-item" href="{{ url_for('expenses.expense_types')}}">Expense Types
+                                    <i class="fab fa-usps"></i></a>
+                                <a class="dropdown-item" href="{{ url_for('expenses.expense_categories') }}">Expense
+                                    Categories<i class="fas fa-blog"></i></a>
+                            </div>
+                        </div>
+                        <!-- <div class="dropdown show">
+                            <a class="nav-item nav-link dropdown-toggle" href="#" role="button"
                                 id="personaldownMenuLink" data-toggle="dropdown" aria-haspopup="true"
                                 aria-expanded="false">
                                 Personal <i class="fas fa-th-list"></i>
@@ -132,9 +162,8 @@
                                         class="fas fa-blog"></i></a>
                                 <a class="dropdown-item" href="{{ url_for('posts.new_post') }}">My Calendar<i
                                         class="fas fa-blog"></i></a>
-
                             </div>
-                        </div>
+                        </div> -->
                         <div class="dropdown show">
                             <a class="nav-item nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
