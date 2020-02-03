@@ -143,7 +143,9 @@
                                 Expenses <i class="fas fa-th-list"></i>
                             </a>
                             <div class="dropdown-menu" aria-labelledby="expensesdownMenuLink">
-                                <a class="dropdown-item" href="{{ url_for('expenses.expense_types')}}">Expense Types
+                                <a class="dropdown-item" href="{{ url_for('expenses.current_expenses') }}">My Expense<i
+                                        class="fas fa-blog"></i></a>
+                                <a class="dropdown-item" href="{{ url_for('expenses.expense_types') }}">Expense Types
                                     <i class="fab fa-usps"></i></a>
                                 <a class="dropdown-item" href="{{ url_for('expenses.expense_categories') }}">Expense
                                     Categories<i class="fas fa-blog"></i></a>

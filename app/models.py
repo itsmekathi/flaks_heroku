@@ -288,6 +288,16 @@ class ContactTypeLu(db.Model):
         db.String(100), nullable=False, default="text-danger")
     contacts = db.relationship('Contact', backref='contact_type', lazy=True)
 
+    def to_json(self):
+        json = {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description,
+            'icon': self.icon,
+            'style_class': self.style_class
+        }
+        return json
+
 
 class Contact(db.Model):
     """ 
@@ -331,6 +341,16 @@ class AddressTypeLu(db.Model):
     style_class = db.Column(
         db.String(100), nullable=False, default="text-danger")
     contacts = db.relationship('Address', backref='address_type', lazy=True)
+
+    def to_json(self):
+        json = {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description,
+            'icon': self.icon,
+            'style_class': self.style_class
+        }
+        return json
 
 
 class Address(db.Model):
@@ -376,6 +396,16 @@ class ExpenseTypeLu(db.Model):
         db.String(100), nullable=False, default="text-danger")
     expenses = db.relationship('Expenses', backref='expense_type', lazy=True)
 
+    def to_json(self):
+        json = {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description,
+            'icon': self.icon,
+            'style_class': self.style_class
+        }
+        return json
+
 
 class ExpenseCategoryLu(db.Model):
     """ Master table for Expense Type
@@ -390,6 +420,16 @@ class ExpenseCategoryLu(db.Model):
         db.String(100), nullable=False, default="text-danger")
     expenses = db.relationship(
         'Expenses', backref='expense_category', lazy=True)
+
+    def to_json(self):
+        json = {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description,
+            'icon': self.icon,
+            'style_class': self.style_class
+        }
+        return json
 
 
 class Expenses(db.Model):
