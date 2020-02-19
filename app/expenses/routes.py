@@ -1,8 +1,8 @@
 from flask import render_template, url_for, flash, redirect, request, abort
 from flask_login import current_user, login_required
 from app import db
-from app.models import ExpenseTypeLu, ExpenseCategoryLu, Expenses, ExpenseDetails, Contact
-from .forms import ExpenseTypeLuForm, ExpenseCategoryLuForm, ExpenseForm
+from app.models import ExpenseTypeLu, ExpenseCategoryLu, Expenses, ExpenseDetails, Contact, UnitOfMeasurementLu
+from .forms import ExpenseTypeLuForm, ExpenseCategoryLuForm, ExpenseForm, ExpenseItemForm, UOMForm
 from . import expenses
 from datetime import date, datetime
 
@@ -44,6 +44,24 @@ def expense_categories():
 
 
 @login_required
+@expenses.route('/uoms', methods=['GET', 'POST'])
+def expense_uoms():
+    form = UOMForm()
+    if form.validate_on_submit():
+        uom = UnitOfMeasurementLu(
+            name=form.name.data, description=form.description.data, icon=form.icon.data, style_class=form.style_class.data)
+        db.session.add(uom)
+        db.session.commit()
+        form.name.data = ''
+        form.description.data = ''
+        form.icon.data = ''
+        form.style_class.data = ''
+        flash('New UOM has been added ', 'success')
+    uoms = UnitOfMeasurementLu.query.all()
+    return render_template('/expenses/_expenses.lookups.html', form=form, lookups=uoms, legend='Add new UOM', lookup_titile="Unit of measurements")
+
+
+@login_required
 @expenses.route('', methods=["GET", "POST"])
 def current_expenses():
     # Get the query parameters
@@ -71,14 +89,33 @@ def current_expenses():
         expenses_form.category_id.data = ''
         expenses_form.expense_amount.data = 0.0
         expenses_form.description.data = ''
-    expenses_form.expense_date_time.data = datetime.now() 
+    expenses_form.expense_date_time.data = datetime.now()
 
     user_expenses = Expenses.query.filter_by(created_by=current_user).order_by(Expenses.expense_date_time).paginate(
         page=page, per_page=page_size)
     return render_template('/expenses/_all.expenses.html', expenses=user_expenses, form=expenses_form, legend="Add New Expense")
 
+
 @login_required
 @expenses.route('/details/<int:expense_id>', methods=["GET", "POST"])
 def details(expense_id):
-    expense = Expenses.query.filter_by(id=expense_id)
-    return render_template('/expenses/_expense.details.html', expense=expense)
+    expense_item_form = ExpenseItemForm()
+    expense_item_form.uom_id.choices = [(uom.id, uom.name)
+                                        for uom in UnitOfMeasurementLu.query.all()]
+    if expense_item_form.validate_on_submit():
+        expense_item = ExpenseDetails(item_name=expense_item_form.item_name.data, expenses_id=expense_id, uom_id=expense_item_form.uom_id.data,
+                                      unit_price=expense_item_form.unit_price.data, quantity=expense_item_form.quantity.data, gross_price=expense_item_form.gross_price.data)
+        db.session.add(expense_item)
+        db.session.commit()
+        flash('Expense item was successfully added', 'Success')
+        expense_item_form.item_name.data = ''
+        expense_item_form.uom_id.data = ''
+        expense_item_form.unit_price.data = ''
+        expense_item_form.quantity.data = ''
+        expense_item_form.gross_price.data = ''
+    expense = Expenses.query.get_or_404(expense_id)
+    expense_items = ExpenseDetails.query.filter_by(
+        expenses_id=expense_id).all()
+    total_expense = sum(
+        expense_item.gross_price for expense_item in expense_items)
+    return render_template('/expenses/_expense.details.html', expense=expense, expense_items=expense_items, form=expense_item_form, legend="Add new Item", total_expense=total_expense)

@@ -20,20 +20,36 @@ class ExpenseTypeLuForm(FlaskForm):
 class ExpenseCategoryLuForm(ExpenseTypeLuForm):
     pass
 
+class UOMForm(ExpenseTypeLuForm):
+    pass
+
 
 class ExpenseForm(FlaskForm):
-    title = StringField('Title', validators=[DataRequired(), Length(min=1, max=100, message="Maximum length for title is 100 characters")])
-    contact_id=SelectField('Expense Contact', coerce=int,
-                           validators=[DataRequired()])
-    type_id=SelectField('Expense Type', coerce=int,
-                        validators=[DataRequired()])
-    category_id=SelectField('Expense Category', coerce=int,
+    title = StringField('Title', validators=[DataRequired(), Length(
+        min=1, max=100, message="Maximum length for title is 100 characters")])
+    contact_id = SelectField('Expense Contact', coerce=int,
+                             validators=[DataRequired()])
+    type_id = SelectField('Expense Type', coerce=int,
+                          validators=[DataRequired()])
+    category_id = SelectField('Expense Category', coerce=int,
                               validators=[DataRequired()])
-    expense_amount=DecimalField(
+    expense_amount = DecimalField(
         'Expense amount', places=2, validators=[DataRequired()])
-    expense_date_time=DateTimeField(
+    expense_date_time = DateTimeField(
         'Expense Date time', validators=[DataRequired()], render_kw={"placeholder": "MM/dd/YYYY HH:MM:SS"})
     description = TextAreaField('Description', validators=[DataRequired(), Length(
         max=300)], render_kw={"placeholder": "Description", "rows": "5"})
     submit = SubmitField('Create')
-    
+
+
+class ExpenseItemForm(FlaskForm):
+    item_name = StringField('Item Name', validators=[DataRequired(), Length(min=1, max=200, message="Maximum length of title is 200 characters")])
+    uom_id = SelectField('UOM',
+                         coerce=int, validators=[DataRequired()])
+    unit_price = DecimalField(
+        'Unit Price', places=2, validators=[DataRequired()])
+    quantity = DecimalField(
+        'Quantity', places=2, validators=[DataRequired()])
+    gross_price = DecimalField(
+        'Gross Price', places=2, validators=[DataRequired()])
+    submit = SubmitField('Create')
