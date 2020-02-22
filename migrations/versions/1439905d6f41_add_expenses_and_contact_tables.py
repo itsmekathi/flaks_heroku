@@ -1,8 +1,8 @@
-"""Migration for contacts and expenses
+"""add expenses and contact tables
 
-Revision ID: ddfeb209de07
+Revision ID: 1439905d6f41
 Revises: 127762c91e39
-Create Date: 2020-01-28 10:35:26.677089
+Create Date: 2020-02-22 10:20:37.174654
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'ddfeb209de07'
+revision = '1439905d6f41'
 down_revision = '127762c91e39'
 branch_labels = None
 depends_on = None
@@ -100,9 +100,9 @@ def upgrade():
     op.create_table('expenses',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(length=100), nullable=False),
-    sa.Column('expense_type_id', sa.Integer(), nullable=False),
-    sa.Column('expense_category_id', sa.Integer(), nullable=False),
-    sa.Column('expenses_contact_id', sa.Integer(), nullable=False),
+    sa.Column('expense_type_id', sa.Integer(), nullable=True),
+    sa.Column('expense_category_id', sa.Integer(), nullable=True),
+    sa.Column('expenses_contact_id', sa.Integer(), nullable=True),
     sa.Column('created_by_id', sa.Integer(), nullable=False),
     sa.Column('expense_amount', sa.Numeric(precision=10, scale=2), nullable=False),
     sa.Column('expense_date_time', sa.DateTime(), nullable=False),
@@ -119,7 +119,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('item_name', sa.String(length=200), nullable=False),
     sa.Column('expenses_id', sa.Integer(), nullable=False),
-    sa.Column('uom_id', sa.Integer(), nullable=False),
+    sa.Column('uom_id', sa.Integer(), nullable=True),
     sa.Column('unit_price', sa.Numeric(precision=10, scale=2), nullable=False),
     sa.Column('quantity', sa.Numeric(precision=10, scale=2), nullable=False),
     sa.Column('gross_price', sa.Numeric(precision=10, scale=2), nullable=False),

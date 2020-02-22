@@ -1,12 +1,12 @@
 {% extends "layout.html" %}
 {% block content %}
+{% if expenses %}
 <div class="content-section">
     <div class="row">
         <div class="col-md-8">
             <h3>All Expenses</h3>
         </div>
     </div>
-    {% if expenses %}
     <span class="badge badge-primary pull-right">Total Items: {{ expenses.total }}</span>
     <table class="table table-striped table-bordered">
         <thead>
@@ -44,12 +44,14 @@
             {% endfor %}
         </tbody>
     </table>
-    {% else %}
-    <div class="content-section">
-        <h2>No Items found</h2>
-    </div>
-    {% endif %}
 </div>
+{% else %}
+<div class="content-section">
+    <h2>No Items found</h2>
+</div>
+{% endif %}
+{% endblock content %}
+{% block sidebar %}
 <div class="content-section">
     <form method="POST" action="">
         {{ form.hidden_tag() }}
@@ -73,7 +75,7 @@
                 </div>
             </div>
             <div class="form-row">
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-6">
                     {{ form.contact_id.label(class="form-control-label") }}{% if form.contact_id.flags.required %}<span
                         class="required-field">*</span>{% endif %}
                     {% if form.contact_id.errors %}
@@ -87,7 +89,7 @@
                     {{ form.contact_id(class="form-control form-control-md") }}
                     {% endif %}
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-6">
                     {{ form.type_id.label(class="form-control-label") }}{% if form.type_id.flags.required %}<span
                         class="required-field">*</span>{% endif %}
                     {% if form.type_id.errors %}
@@ -101,7 +103,9 @@
                     {{ form.type_id(class="form-control form-control-md") }}
                     {% endif %}
                 </div>
-                <div class="form-group col-md-4">
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
                     {{ form.category_id.label(class="form-control-label") }}{% if form.category_id.flags.required %}<span
                         class="required-field">*</span>{% endif %}
                     {% if form.category_id.errors %}
@@ -115,9 +119,7 @@
                     {{ form.category_id(class="form-control form-control-md") }}
                     {% endif %}
                 </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-6">
                     {{ form.expense_amount.label(class="form-control-label") }}{% if form.expense_amount.flags.required %}<span
                         class="required-field">*</span>{% endif %}
                     {% if form.expense_amount.errors %}
@@ -131,18 +133,34 @@
                     {{ form.expense_amount(class="form-control form-control-md") }}
                     {% endif %}
                 </div>
-                <div class="form-group col-md-4">
-                    {{ form.expense_date_time.label(class="form-control-label") }}{% if form.expense_date_time.flags.required %}<span
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    {{ form.expense_date.label(class="form-control-label") }}{% if form.expense_date.flags.required %}<span
                         class="required-field">*</span>{% endif %}
-                    {% if form.expense_date_time.errors %}
-                    {{ form.expense_date_time(class="form-control form-control-md is-invalid") }}
+                    {% if form.expense_date.errors %}
+                    {{ form.expense_date(class="form-control form-control-md is-invalid") }}
                     <div class="invalid-feedback">
-                        {% for error in form.expense_date_time.errors %}
+                        {% for error in form.expense_date.errors %}
                         <span>{{ error }}</span>
                         {% endfor %}
                     </div>
                     {% else %}
-                    {{ form.expense_date_time(class="form-control form-control-md") }}
+                    {{ form.expense_date(class="form-control form-control-md") }}
+                    {% endif %}
+                </div>
+                <div class="form-group col-md-6">
+                    {{ form.expense_time.label(class="form-control-label") }}{% if form.expense_time.flags.required %}<span
+                        class="required-field">*</span>{% endif %}
+                    {% if form.expense_time.errors %}
+                    {{ form.expense_time(class="form-control form-control-md is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.expense_time.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.expense_time(class="form-control form-control-md") }}
                     {% endif %}
                 </div>
             </div>
@@ -168,4 +186,4 @@
         </div>
     </form>
 </div>
-{% endblock content %}
+{% endblock sidebar%}

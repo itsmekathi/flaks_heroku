@@ -440,16 +440,16 @@ class Expenses(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     expense_type_id = db.Column(db.Integer, db.ForeignKey(
-        'expense_type_lu.id'), nullable=False)
+        'expense_type_lu.id'), nullable=True)
     expense_category_id = db.Column(db.Integer, db.ForeignKey(
-        'expense_category_lu.id'), nullable=False)
+        'expense_category_lu.id'), nullable=True)
     expenses_contact_id = db.Column(db.Integer, db.ForeignKey(
-        'contacts.id'), nullable=False)
+        'contacts.id'), nullable=True)
     created_by_id = db.Column(db.Integer, db.ForeignKey(
         'users.id'), nullable=False)
     expense_amount = db.Column(db.Numeric(10, 2), nullable=False)
     expense_date_time = db.Column(db.DateTime(), nullable=False,
-                                  default=datetime.utcnow)
+                             default=datetime.utcnow)
     description = db.Column(db.String(300), nullable=False)
     expense_details = db.relationship(
         'ExpenseDetails', backref='expense', lazy=True)
@@ -484,7 +484,7 @@ class ExpenseDetails(db.Model):
     expenses_id = db.Column(
         db.Integer, db.ForeignKey('expenses.id'), nullable=False)
     uom_id = db.Column(db.Integer, db.ForeignKey(
-        'unit_of_measurement_lu.id'), nullable=False)
+        'unit_of_measurement_lu.id'), nullable=True)
     unit_price = db.Column(db.Numeric(10, 2), nullable=False)
     quantity = db.Column(db.Numeric(10, 2), nullable=False)
     gross_price = db.Column(db.Numeric(10, 2), nullable=False)

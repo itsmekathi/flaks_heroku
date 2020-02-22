@@ -9,7 +9,7 @@ from datetime import date, datetime
 
 @login_required
 @expenses.route('/types', methods=['GET', 'POST'])
-def expense_types():
+def types():
     form = ExpenseTypeLuForm()
     if form.validate_on_submit():
         expense_type = ExpenseTypeLu(
@@ -26,8 +26,39 @@ def expense_types():
 
 
 @login_required
+@expenses.route('/types/edit/<int:type_id>', methods=['GET', 'POST'])
+def edit_types(type_id):
+    form = ExpenseTypeLuForm()
+    expense_type = ExpenseTypeLu.query.get_or_404(type_id)
+    if form.validate_on_submit():
+        expense_type = ExpenseTypeLu(
+            name=form.name.data, description=form.description.data, icon=form.icon.data, style_class=form.style_class.data)
+        db.session.add(expense_type)
+        db.session.commit()
+        flash('The expense type has been updated', 'success')
+        return redirect(url_for('expenses.types'))
+    if request.method == 'GET':
+        form.name.data = expense_type.name
+        form.description.data = expense_type.description
+        form.icon.data = expense_type.description
+        form.style_class.data = expense_type.style_class
+    expense_types = ExpenseTypeLu.query.all()
+    return render_template('/expenses/_expenses.lookups.html', form=form, lookups=expense_types, legend='Edit Expense', lookup_titile="Expense Types")
+
+
+@login_required
+@expenses.route('/types/delete/<int:type_id>', methods=['POST'])
+def delete_types(type_id):
+    expense_type = ExpenseTypeLu.query.get_or_404(type_id)
+    db.session.delete(expense_type)
+    db.session.commit()
+    flash('The expense type has been deleted', 'success')
+    return redirect(url_for('expenses.types'))
+
+
+@login_required
 @expenses.route('/categories', methods=['GET', 'POST'])
-def expense_categories():
+def categories():
     form = ExpenseCategoryLuForm()
     if form.validate_on_submit():
         expense_category = ExpenseCategoryLu(
@@ -41,6 +72,10 @@ def expense_categories():
         flash('New expense category has been added ', 'success')
     expense_category = ExpenseCategoryLu.query.all()
     return render_template('/expenses/_expenses.lookups.html', form=form, lookups=expense_category, legend='Add new expense Category', lookup_titile="Expense Categories")
+
+# @login_required
+# @expenses.route('/categories/edit', method=['GET','POST'])
+# def edit_categories():
 
 
 @login_required
@@ -79,7 +114,7 @@ def current_expenses():
     if expenses_form.validate_on_submit():
         expense = Expenses(title=expenses_form.title.data, expense_type_id=expenses_form.type_id.data, expense_category_id=expenses_form.category_id.data,
                            expenses_contact_id=expenses_form.contact_id.data, created_by_id=current_user.id, expense_amount=expenses_form.expense_amount.data,
-                           expense_date_time=expenses_form.expense_date_time.data, description=expenses_form.description.data, created_on=datetime.utcnow())
+                           expense_date_time=expenses_form.expense_date.data, description=expenses_form.description.data, created_on=datetime.utcnow())
         db.session.add(expense)
         db.session.commit()
         flash('Expense was successfully added', 'Success')
@@ -89,7 +124,8 @@ def current_expenses():
         expenses_form.category_id.data = ''
         expenses_form.expense_amount.data = 0.0
         expenses_form.description.data = ''
-    expenses_form.expense_date_time.data = datetime.now()
+    expenses_form.expense_date.data = datetime.now()
+    expenses_form.expense_time.data = datetime.now()
 
     user_expenses = Expenses.query.filter_by(created_by=current_user).order_by(Expenses.expense_date_time).paginate(
         page=page, per_page=page_size)

@@ -145,29 +145,14 @@
                             <div class="dropdown-menu" aria-labelledby="expensesdownMenuLink">
                                 <a class="dropdown-item" href="{{ url_for('expenses.current_expenses') }}">My Expense<i
                                         class="fas fa-blog"></i></a>
-                                <a class="dropdown-item" href="{{ url_for('expenses.expense_types') }}">Expense Types
+                                <a class="dropdown-item" href="{{ url_for('expenses.types') }}">Manage Expense Types
                                     <i class="fab fa-usps"></i></a>
-                                <a href="{{ url_for('expenses.expense_uoms') }}" class="dropdown-item">UOM's
-                                    <i class="fab fa-usps"></i> </a>
-                                <a class="dropdown-item" href="{{ url_for('expenses.expense_categories') }}">Expense
+                                <a class="dropdown-item" href="{{ url_for('expenses.categories') }}">Manage Expense
                                     Categories<i class="fas fa-blog"></i></a>
+                                <a href="{{ url_for('expenses.expense_uoms') }}" class="dropdown-item">Manage UOM's
+                                    <i class="fab fa-usps"></i> </a>
                             </div>
                         </div>
-                        <!-- <div class="dropdown show">
-                            <a class="nav-item nav-link dropdown-toggle" href="#" role="button"
-                                id="personaldownMenuLink" data-toggle="dropdown" aria-haspopup="true"
-                                aria-expanded="false">
-                                Personal <i class="fas fa-th-list"></i>
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="personaldownMenuLink">
-                                <a class="dropdown-item" href="{{ url_for('posts.spa_allposts')}}">My Journals
-                                    <i class="fab fa-usps"></i></a>
-                                <a class="dropdown-item" href="{{ url_for('posts.new_post') }}">My Goals<i
-                                        class="fas fa-blog"></i></a>
-                                <a class="dropdown-item" href="{{ url_for('posts.new_post') }}">My Calendar<i
-                                        class="fas fa-blog"></i></a>
-                            </div>
-                        </div> -->
                         <div class="dropdown show">
                             <a class="nav-item nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -376,7 +361,7 @@
         <!-- Social buttons -->
 
         <!-- Copyright -->
-        <div class="footer-copyright text-center py-3">© 2019 Copyright:
+        <div class="footer-copyright text-center py-3">© 2020 Copyright:
             <a href="#"> aayudhms.com</a>
         </div>
         <!-- Copyright -->
