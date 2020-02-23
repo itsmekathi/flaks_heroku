@@ -22,7 +22,7 @@ def types():
         form.style_class.data = ''
         flash('New expense type has been added ', 'success')
     expense_types = ExpenseTypeLu.query.all()
-    return render_template('/expenses/_expenses.lookups.html', form=form, lookups=expense_types, legend='Add new expense Type', lookup_titile="Expense Types")
+    return render_template('/expenses/_expenses.lookups.html', form=form, lookups=expense_types, legend='Add new expense Type', lookup_titile="Expense Types", offsetUrl='types')
 
 
 @login_required
@@ -31,8 +31,10 @@ def edit_types(type_id):
     form = ExpenseTypeLuForm()
     expense_type = ExpenseTypeLu.query.get_or_404(type_id)
     if form.validate_on_submit():
-        expense_type = ExpenseTypeLu(
-            name=form.name.data, description=form.description.data, icon=form.icon.data, style_class=form.style_class.data)
+        expense_type.name = form.name.data
+        expense_type.description = form.description.data
+        expense_type.icon = form.icon.data
+        expense_type.style_class = form.style_class.data
         db.session.add(expense_type)
         db.session.commit()
         flash('The expense type has been updated', 'success')
@@ -43,17 +45,7 @@ def edit_types(type_id):
         form.icon.data = expense_type.description
         form.style_class.data = expense_type.style_class
     expense_types = ExpenseTypeLu.query.all()
-    return render_template('/expenses/_expenses.lookups.html', form=form, lookups=expense_types, legend='Edit Expense', lookup_titile="Expense Types")
-
-
-@login_required
-@expenses.route('/types/delete/<int:type_id>', methods=['POST'])
-def delete_types(type_id):
-    expense_type = ExpenseTypeLu.query.get_or_404(type_id)
-    db.session.delete(expense_type)
-    db.session.commit()
-    flash('The expense type has been deleted', 'success')
-    return redirect(url_for('expenses.types'))
+    return render_template('/expenses/_expenses.lookups.html', form=form, lookups=expense_types, legend='Edit Expense', lookup_titile="Expense Types", offsetUrl='types')
 
 
 @login_required
@@ -71,16 +63,35 @@ def categories():
         form.style_class.data = ''
         flash('New expense category has been added ', 'success')
     expense_category = ExpenseCategoryLu.query.all()
-    return render_template('/expenses/_expenses.lookups.html', form=form, lookups=expense_category, legend='Add new expense Category', lookup_titile="Expense Categories")
+    return render_template('/expenses/_expenses.lookups.html', form=form, lookups=expense_category, legend='Add new expense Category', lookup_titile="Expense Categories", offsetUrl='categories')
 
-# @login_required
-# @expenses.route('/categories/edit', method=['GET','POST'])
-# def edit_categories():
+
+@login_required
+@expenses.route('/categories/edit/<int:category_id>', methods=['GET', 'POST'])
+def edit_categories(category_id):
+    form = ExpenseCategoryLuForm()
+    expense_category = ExpenseCategoryLu.query.get_or_404(category_id)
+    if form.validate_on_submit():
+        expense_category.name = form.name.data
+        expense_category.description = form.description.data
+        expense_category.icon = form.icon.data
+        expense_category.style_class = form.style_class.data
+        db.session.add(expense_category)
+        db.session.commit()
+        flash('The expense category has been updated', 'success')
+        return redirect(url_for('expenses.categories'))
+    if request.method == 'GET':
+        form.name.data = expense_category.name
+        form.description.data = expense_category.description
+        form.icon.data = expense_category.description
+        form.style_class.data = expense_category.style_class
+    expense_categories = ExpenseCategoryLu.query.all()
+    return render_template('/expenses/_expenses.lookups.html', form=form, lookups=expense_categories, legend='Edit Expense category', lookup_titile="Expense categories", offsetUrl='categories')
 
 
 @login_required
 @expenses.route('/uoms', methods=['GET', 'POST'])
-def expense_uoms():
+def uoms():
     form = UOMForm()
     if form.validate_on_submit():
         uom = UnitOfMeasurementLu(
@@ -93,7 +104,30 @@ def expense_uoms():
         form.style_class.data = ''
         flash('New UOM has been added ', 'success')
     uoms = UnitOfMeasurementLu.query.all()
-    return render_template('/expenses/_expenses.lookups.html', form=form, lookups=uoms, legend='Add new UOM', lookup_titile="Unit of measurements")
+    return render_template('/expenses/_expenses.lookups.html', form=form, lookups=uoms, legend='Add new UOM', lookup_titile="Unit of measurements", offsetUrl='uoms')
+
+
+@login_required
+@expenses.route('/uom/edit/<int:uom_id>', methods=['GET', 'POST'])
+def edit_uoms(uom_id):
+    form = UOMForm()
+    expense_uom = UnitOfMeasurementLu.query.get_or_404(category_id)
+    if form.validate_on_submit():
+        expense_uom.name = form.name.data
+        expense_uom.description = form.description.data
+        expense_uom.icon = form.icon.data
+        expense_uom.style_class = form.style_class.data
+        db.session.add(expense_uom)
+        db.session.commit()
+        flash('The expense UOM has been updated', 'success')
+        return redirect(url_for('expenses.expense_uoms'))
+    if request.method == 'GET':
+        form.name.data = expense_uom.name
+        form.description.data = expense_uom.description
+        form.icon.data = expense_uom.description
+        form.style_class.data = expense_uom.style_class
+    expense_uoms = UnitOfMeasurementLu.query.all()
+    return render_template('/expenses/_expenses.lookups.html', form=form, lookups=expense_uoms, legend="Edit UOM", lookup_titile="Unit of measurements", offsetUrl='uoms')
 
 
 @login_required
@@ -114,7 +148,9 @@ def current_expenses():
     if expenses_form.validate_on_submit():
         expense = Expenses(title=expenses_form.title.data, expense_type_id=expenses_form.type_id.data, expense_category_id=expenses_form.category_id.data,
                            expenses_contact_id=expenses_form.contact_id.data, created_by_id=current_user.id, expense_amount=expenses_form.expense_amount.data,
-                           expense_date_time=expenses_form.expense_date.data, description=expenses_form.description.data, created_on=datetime.utcnow())
+                           expense_date_time=datetime.combine(
+                               date=expenses_form.expense_date.data, time=expenses_form.expense_time.data),
+                           description=expenses_form.description.data, created_on=datetime.utcnow())
         db.session.add(expense)
         db.session.commit()
         flash('Expense was successfully added', 'Success')

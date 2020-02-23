@@ -28,8 +28,7 @@ class UOMForm(ExpenseTypeLuForm):
 class ExpenseForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired(), Length(
         min=1, max=100, message="Maximum length for title is 100 characters")])
-    contact_id = SelectField('Expense Contact', coerce=int,
-                             validators=[DataRequired()])
+    contact_id = SelectField('Expense Contact', coerce=int)
     type_id = SelectField('Expense Type', coerce=int,
                           validators=[DataRequired()])
     category_id = SelectField('Expense Category', coerce=int,

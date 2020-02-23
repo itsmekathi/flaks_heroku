@@ -2,13 +2,16 @@
     'use strict';
     angular.module('app')
         .controller('expensesLookupsController', ['$scope', '$log', '$mdDialog', '$http', '$window',
-            function ($scope, $log, $mdDialog, $http, $window) {
+            function ($scope, $log, $mdDialog, $http, $window, toaster) {
                 $log.log('Expenses Lookups controller initialized');
                 $scope.status = '  ';
+                $scope.lookupName = '';
                 $scope.customFullscreen = false;
-                $scope.itemUrl = '/api/v1/todo_list/'
+                $scope.itemUrl = '/api/v1/expenses/'
 
                 $scope.deleteMethod = 'DELETE';
+                $scope.getMethod = 'GET';
+                $scope.postMethod = 'POST';
                 $scope.currentItemId = 0;
 
                 // Angular material dialog
@@ -32,7 +35,7 @@
                 var deleteItem = function () {
                     $http({
                         method: $scope.deleteMethod,
-                        url: $scope.itemUrl + $scope.currentItemId
+                        url: $scope.itemUrl + $scope.lookupName + '/' + $scope.currentItemId
                     }).then(function (response) {
                         $scope.status = response.status;
                         $window.location.reload();

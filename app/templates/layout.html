@@ -21,7 +21,6 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/chart.js/dist/Chart.min.css') }}">
 
     <script src="{{ url_for('static', filename='node_modules/jquery/dist/jquery.min.js') }}"></script>
-
     <script src="{{ url_for('static', filename='node_modules/angular/angular.js') }}"> </script>
 
     <!-- Files required for angular-chart -->
@@ -72,6 +71,7 @@
     <!-- Fontawesome kit link -->
     <script src="https://kit.fontawesome.com/1d10738437.js" crossorigin="anonymous"></script>
 
+    {{ toastr.include_toastr_js() }}
     <!-- Angular module and controllers -->
     <script src="{{ url_for('static', filename='scripts/app/app.module.js')}}"></script>
     <script src="{{ url_for('static', filename='scripts/app/app.directives.js')}}"></script>
@@ -149,7 +149,7 @@
                                     <i class="fab fa-usps"></i></a>
                                 <a class="dropdown-item" href="{{ url_for('expenses.categories') }}">Manage Expense
                                     Categories<i class="fas fa-blog"></i></a>
-                                <a href="{{ url_for('expenses.expense_uoms') }}" class="dropdown-item">Manage UOM's
+                                <a href="{{ url_for('expenses.uoms') }}" class="dropdown-item">Manage UOM's
                                     <i class="fab fa-usps"></i> </a>
                             </div>
                         </div>
@@ -368,7 +368,9 @@
 
     </footer>
     {% endblock %}
-    {{ toastr.include_toastr_js() }}
+    {% block scripts %}
+    <!-- Put all the page specific scripts here -->
+    {% endblock %}
 </body>
 
 </html>
