@@ -1,0 +1,137 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-2">{{ legend }}</legend>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    {{ form.title.label(class="form-control-label") }}
+                    {% if form.title.flags.required %}<span class="required-field">*</span>
+                    {% endif %}
+                    {% if form.title.errors %}
+                    {{ form.title(class="form-control form-control-md is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.title.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.title(class="form-control form-control-md") }}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    {{ form.contact_id.label(class="form-control-label") }}{% if form.contact_id.flags.required %}<span
+                        class="required-field">*</span>{% endif %}
+                    {% if form.contact_id.errors %}
+                    {{ form.contact_id(class="form-control form-control-md is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.contact_id.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.contact_id(class="form-control form-control-md") }}
+                    {% endif %}
+                </div>
+                <div class="form-group col-md-6">
+                    {{ form.type_id.label(class="form-control-label") }}{% if form.type_id.flags.required %}<span
+                        class="required-field">*</span>{% endif %}
+                    {% if form.type_id.errors %}
+                    {{ form.type_id(class="form-control form-control-md is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.type_id.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.type_id(class="form-control form-control-md") }}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    {{ form.category_id.label(class="form-control-label") }}{% if form.category_id.flags.required %}<span
+                        class="required-field">*</span>{% endif %}
+                    {% if form.category_id.errors %}
+                    {{ form.category_id(class="form-control form-control-md is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.category_id.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.category_id(class="form-control form-control-md") }}
+                    {% endif %}
+                </div>
+                <div class="form-group col-md-6">
+                    {{ form.expense_amount.label(class="form-control-label") }}{% if form.expense_amount.flags.required %}<span
+                        class="required-field">*</span>{% endif %}
+                    {% if form.expense_amount.errors %}
+                    {{ form.expense_amount(class="form-control form-control-md is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.expense_amount.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.expense_amount(class="form-control form-control-md") }}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    {{ form.expense_date.label(class="form-control-label") }}{% if form.expense_date.flags.required %}<span
+                        class="required-field">*</span>{% endif %}
+                    {% if form.expense_date.errors %}
+                    {{ form.expense_date(class="form-control form-control-md is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.expense_date.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.expense_date(class="form-control form-control-md") }}
+                    {% endif %}
+                </div>
+                <div class="form-group col-md-6">
+                    {{ form.expense_time.label(class="form-control-label") }}{% if form.expense_time.flags.required %}<span
+                        class="required-field">*</span>{% endif %}
+                    {% if form.expense_time.errors %}
+                    {{ form.expense_time(class="form-control form-control-md is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.expense_time.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.expense_time(class="form-control form-control-md") }}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    {{ form.description.label(class="form-control-label") }}{% if form.description.flags.required %}<span
+                        class="required-field">*</span>{% endif %}
+                    {% if form.description.errors %}
+                    {{ form.description(class="form-control form-control-md is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.description.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.description(class="form-control form-control-md") }}
+                    {% endif %}
+                </div>
+            </div>
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</div>
+{% endblock content%}

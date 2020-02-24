@@ -1,10 +1,16 @@
 {% extends "layout.html" %}
 {% block content %}
 {% if expenses %}
-<div class="content-section">
+<script src="{{ url_for('static', filename='scripts/app/expenses/expenses.controller.js')}}"></script>
+<div class="content-section" ng-controller="expensesController">
     <div class="row">
         <div class="col-md-8">
             <h3>All Expenses</h3>
+        </div>
+        <div class="col-md-4">
+            <a class="btn btn-primary mb-4 pull-right" title="Add New"
+                href="{{ url_for('expenses.add_expenses') }}">Add New <i
+                    class="fas fa-plus-circle"></i></a>
         </div>
     </div>
     <span class="badge badge-primary pull-right">Total Items: {{ expenses.total }}</span>
@@ -12,13 +18,12 @@
         <thead>
             <tr>
                 <td>Title</td>
-                <td>Created on</td>
+                <td>Expense Date</td>
                 <td>Type</td>
                 <td>Category</td>
                 <td>Contact Name</td>
                 <td>Expense Amount</td>
                 <td>Description</td>
-                <td>CreatedOn</td>
                 <td>Items</td>
                 <td>Actions</td>
             </tr>
@@ -27,18 +32,19 @@
             {% for expense in expenses.items %}
             <tr>
                 <td>{{ expense.title }}</td>
-                <td>{{ expense.expense_date_time }}</td>
+                <td>{{ expense.expense_date_time.strftime("%d %B %Y") }}</td>
                 <td>{{ expense.expense_type.name }}</td>
                 <td>{{ expense.expense_category.name }}</td>
                 <td>{{ expense.contact.first_name }}</td>
                 <td>{{ expense.expense_amount }}</td>
                 <td>{{ expense.description }}</td>
-                <td>{{ expense.created_on.strftime("%d %B %Y") }}</td>
-                <td>{% if expense.expense_details %}{{ expense.expense_details|length }} {% else %} No items {% endif %}
+                <td>{% if expense.expense_details %}{{ expense.expense_details|length }} {% else %} -- {% endif %}
                 </td>
                 <td>
                     <span><a href="{{url_for('expenses.details', expense_id=expense.id)}}" class="btn"
                             title="Edit Item"><i class="fas fa-edit" aria-hidden="true"></i></a></span>
+                    <span><a href="#" ng-click="showConfirm($event, {{ expense.id }} )" class="btn"
+                            title="Delete Item"><i class="fas fa-trash-alt" style="color: chocolate;"></i></a></span>
                 </td>
             </tr>
             {% endfor %}
@@ -51,139 +57,3 @@
 </div>
 {% endif %}
 {% endblock content %}
-{% block sidebar %}
-<div class="content-section">
-    <form method="POST" action="">
-        {{ form.hidden_tag() }}
-        <fieldset class="form-group">
-            <legend class="border-bottom mb-2">{{ legend }}</legend>
-            <div class="form-row">
-                <div class="form-group col-md-12">
-                    {{ form.title.label(class="form-control-label") }}
-                    {% if form.title.flags.required %}<span class="required-field">*</span>
-                    {% endif %}
-                    {% if form.title.errors %}
-                    {{ form.title(class="form-control form-control-md is-invalid") }}
-                    <div class="invalid-feedback">
-                        {% for error in form.title.errors %}
-                        <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                    {% else %}
-                    {{ form.title(class="form-control form-control-md") }}
-                    {% endif %}
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    {{ form.contact_id.label(class="form-control-label") }}{% if form.contact_id.flags.required %}<span
-                        class="required-field">*</span>{% endif %}
-                    {% if form.contact_id.errors %}
-                    {{ form.contact_id(class="form-control form-control-md is-invalid") }}
-                    <div class="invalid-feedback">
-                        {% for error in form.contact_id.errors %}
-                        <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                    {% else %}
-                    {{ form.contact_id(class="form-control form-control-md") }}
-                    {% endif %}
-                </div>
-                <div class="form-group col-md-6">
-                    {{ form.type_id.label(class="form-control-label") }}{% if form.type_id.flags.required %}<span
-                        class="required-field">*</span>{% endif %}
-                    {% if form.type_id.errors %}
-                    {{ form.type_id(class="form-control form-control-md is-invalid") }}
-                    <div class="invalid-feedback">
-                        {% for error in form.type_id.errors %}
-                        <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                    {% else %}
-                    {{ form.type_id(class="form-control form-control-md") }}
-                    {% endif %}
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    {{ form.category_id.label(class="form-control-label") }}{% if form.category_id.flags.required %}<span
-                        class="required-field">*</span>{% endif %}
-                    {% if form.category_id.errors %}
-                    {{ form.category_id(class="form-control form-control-md is-invalid") }}
-                    <div class="invalid-feedback">
-                        {% for error in form.category_id.errors %}
-                        <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                    {% else %}
-                    {{ form.category_id(class="form-control form-control-md") }}
-                    {% endif %}
-                </div>
-                <div class="form-group col-md-6">
-                    {{ form.expense_amount.label(class="form-control-label") }}{% if form.expense_amount.flags.required %}<span
-                        class="required-field">*</span>{% endif %}
-                    {% if form.expense_amount.errors %}
-                    {{ form.expense_amount(class="form-control form-control-md is-invalid") }}
-                    <div class="invalid-feedback">
-                        {% for error in form.expense_amount.errors %}
-                        <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                    {% else %}
-                    {{ form.expense_amount(class="form-control form-control-md") }}
-                    {% endif %}
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    {{ form.expense_date.label(class="form-control-label") }}{% if form.expense_date.flags.required %}<span
-                        class="required-field">*</span>{% endif %}
-                    {% if form.expense_date.errors %}
-                    {{ form.expense_date(class="form-control form-control-md is-invalid") }}
-                    <div class="invalid-feedback">
-                        {% for error in form.expense_date.errors %}
-                        <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                    {% else %}
-                    {{ form.expense_date(class="form-control form-control-md") }}
-                    {% endif %}
-                </div>
-                <div class="form-group col-md-6">
-                    {{ form.expense_time.label(class="form-control-label") }}{% if form.expense_time.flags.required %}<span
-                        class="required-field">*</span>{% endif %}
-                    {% if form.expense_time.errors %}
-                    {{ form.expense_time(class="form-control form-control-md is-invalid") }}
-                    <div class="invalid-feedback">
-                        {% for error in form.expense_time.errors %}
-                        <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                    {% else %}
-                    {{ form.expense_time(class="form-control form-control-md") }}
-                    {% endif %}
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-12">
-                    {{ form.description.label(class="form-control-label") }}{% if form.description.flags.required %}<span
-                        class="required-field">*</span>{% endif %}
-                    {% if form.description.errors %}
-                    {{ form.description(class="form-control form-control-md is-invalid") }}
-                    <div class="invalid-feedback">
-                        {% for error in form.description.errors %}
-                        <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                    {% else %}
-                    {{ form.description(class="form-control form-control-md") }}
-                    {% endif %}
-                </div>
-            </div>
-        </fieldset>
-        <div class="form-group">
-            {{ form.submit(class="btn btn-outline-info") }}
-        </div>
-    </form>
-</div>
-{% endblock sidebar%}

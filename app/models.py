@@ -449,7 +449,7 @@ class Expenses(db.Model):
         'users.id'), nullable=False)
     expense_amount = db.Column(db.Numeric(10, 2), nullable=False)
     expense_date_time = db.Column(db.DateTime(), nullable=False,
-                             default=datetime.utcnow)
+                                  default=datetime.utcnow)
     description = db.Column(db.String(300), nullable=False)
     expense_details = db.relationship(
         'ExpenseDetails', backref='expense', lazy=True)
@@ -457,6 +457,16 @@ class Expenses(db.Model):
                            default=datetime.utcnow)
     modified_on = db.Column(
         db.DateTime(), nullable=False, default=datetime.utcnow)
+    def to_json(self):
+        json = {
+            'id': self.id,
+            'title': self.title,
+            'type_id': self.expense_type_id,
+            'expense_date': self.expense_date_time,
+            'expense_amount': self.expense_amount,
+            'description': self.description
+        }
+        return json
 
 
 class UnitOfMeasurementLu(db.Model):
@@ -488,7 +498,19 @@ class ExpenseDetails(db.Model):
     unit_price = db.Column(db.Numeric(10, 2), nullable=False)
     quantity = db.Column(db.Numeric(10, 2), nullable=False)
     gross_price = db.Column(db.Numeric(10, 2), nullable=False)
-    created_on = db.Column(db.DateTime(), nullable=False,
-                           default=datetime.utcnow)
+    created_on = db.Column(db.DateTime(), nullable=False)
     modified_on = db.Column(
-        db.DateTime(), nullable=False, default=datetime.utcnow)
+        db.DateTime(), nullable=True)
+
+    def to_json(self):
+        json = {
+            'id': self.id,
+            'name': self.item_name,
+            'uom_id': self.uom_id,
+            'uom_name': self.uom.name,
+            'unit_price': self.unit_price,
+            'quantity': self.quantity,
+            'gross_price': self.gross_price,
+            'created_on': self.created_on
+        }
+        return json
