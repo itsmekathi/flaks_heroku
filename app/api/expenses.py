@@ -8,7 +8,7 @@ from .authentication import auth
 
 
 @api.route('/expenses/types/<int:type_id>', methods=['GET', 'DELETE', 'POST'])
-def types(type_id):
+def expenses_types(type_id):
     expense_type = ExpenseTypeLu.query.get_or_404(type_id)
     if request.method == "GET":
         return jsonify(expense_type.to_json())
@@ -22,7 +22,7 @@ def types(type_id):
 
 
 @api.route('/expenses/categories/<int:category_id>', methods=['GET', 'DELETE', 'POST'])
-def categories(category_id):
+def expenses_categories(category_id):
     expenses_category = ExpenseCategoryLu.query.get_or_404(category_id)
     if request.method == "GET":
         return jsonify(category_id.to_json())
@@ -36,7 +36,7 @@ def categories(category_id):
 
 
 @api.route('/expenses/uoms/<int:uom_id>', methods=['GET', 'DELETE', 'POST'])
-def uoms(uom_id):
+def expenses_uoms(uom_id):
     expenses_uom = UnitOfMeasurementLu.query.get_or_404(uom_id)
     if request.method == "GET":
         return jsonify(expenses_uom.to_json())
@@ -64,7 +64,7 @@ def expense(expenses_id):
 
 
 @api.route('/expenses/details/<int:expense_details_id>', methods=['GET', 'DELETE', 'POST'])
-def details(expense_details_id):
+def expenses_details(expense_details_id):
     expense_detail = ExpenseDetails.query.get_or_404(expense_details_id)
     if request.method == "GET":
         return jsonify(expense_detail.to_json())

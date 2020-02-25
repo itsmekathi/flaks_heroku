@@ -209,6 +209,9 @@ class TaskUrgencyLu(db.Model):
 
 
 class ToDoItem(db.Model):
+    # -*- coding: utf-8 -*-
+    """ Master table for To-Do items
+    """
     __tablename__ = "todo_items"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
@@ -260,6 +263,10 @@ class ToDoItemComments(db.Model):
 
 
 class ToDoItemWorkLog(db.Model):
+    # -*- coding: utf-8 -*-
+    """ Master table for storing work log's or time
+    spent on a particular task
+    """
     __tablename__ = "todo_item_worklogs"
     id = db.Column(db.Integer, primary_key=True)
     todo_item_id = db.Column(db.Integer(), db.ForeignKey(
@@ -276,6 +283,7 @@ class ToDoItemWorkLog(db.Model):
 
 
 class ContactTypeLu(db.Model):
+    # -*- coding: utf-8 -*-
     """ Master table for Contact type lookup
     Different contact types can be Store's, person, 
     """
@@ -307,7 +315,7 @@ class Contact(db.Model):
     __tablename__ = "contacts"
     id = db.Column(db.Integer, primary_key=True)
     contact_type_id = db.Column(db.Integer, db.ForeignKey(
-        'contact_type_lu.id'), nullable=False)
+        'contact_type_lu.id'), nullable=True)
     created_by_id = db.Column(db.Integer(), db.ForeignKey(
         'users.id'), nullable=False)
     first_name = db.Column(db.String(100), nullable=False)
@@ -325,7 +333,7 @@ class Contact(db.Model):
     created_on = db.Column(db.DateTime(), nullable=False,
                            default=datetime.utcnow)
     modified_on = db.Column(
-        db.DateTime(), nullable=False, default=datetime.utcnow)
+        db.DateTime(), nullable=True)
 
 
 class AddressTypeLu(db.Model):
@@ -361,7 +369,7 @@ class Address(db.Model):
     __tablename__ = "address"
     id = db.Column(db.Integer, primary_key=True)
     address_type_id = db.Column(db.Integer, db.ForeignKey(
-        'address_type_lu.id'), nullable=False)
+        'address_type_lu.id'), nullable=True)
     contact_id = db.Column(db.Integer, db.ForeignKey(
         'contacts.id'), nullable=False)
     created_by_id = db.Column(db.Integer(), db.ForeignKey(
@@ -380,7 +388,7 @@ class Address(db.Model):
     created_on = db.Column(db.DateTime(), nullable=False,
                            default=datetime.utcnow)
     modified_on = db.Column(
-        db.DateTime(), nullable=False, default=datetime.utcnow)
+        db.DateTime(), nullable=True)
 
 
 class ExpenseTypeLu(db.Model):
@@ -456,12 +464,16 @@ class Expenses(db.Model):
     created_on = db.Column(db.DateTime(), nullable=False,
                            default=datetime.utcnow)
     modified_on = db.Column(
-        db.DateTime(), nullable=False, default=datetime.utcnow)
+        db.DateTime(), nullable=True)
+
     def to_json(self):
         json = {
             'id': self.id,
             'title': self.title,
             'type_id': self.expense_type_id,
+            'type_name': self.expense_type.name,
+            'category_id': self.expense_category_id,
+            'category_name': self.expense_category.name,
             'expense_date': self.expense_date_time,
             'expense_amount': self.expense_amount,
             'description': self.description
@@ -482,6 +494,16 @@ class UnitOfMeasurementLu(db.Model):
         db.String(100), nullable=False, default="text-danger")
     expense_details = db.relationship(
         'ExpenseDetails', backref='uom', lazy=True)
+
+    def to_json(self):
+        json = {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description,
+            'icon': self.icon,
+            'style_class': self.style_class,
+        }
+        return json
 
 
 class ExpenseDetails(db.Model):

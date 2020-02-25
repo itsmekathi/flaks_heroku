@@ -8,21 +8,91 @@ from datetime import date, datetime
 
 
 @login_required
-@contacts.route('/contacttype', methods=['GET', 'POST'])
-def contact_types():
+@contacts.route('/types', methods=['GET', 'POST'])
+def types():
+    contact_types = ContactTypeLu.query.all()
+    return render_template('/contacts/_contacts.lookups.html', lookups=contact_types, lookup_title='Contact Types')
+
+
+@login_required
+@contacts.route('/types/add', methods=['GET', 'POST'])
+def add_types():
     form = ContactTypeLuForm()
     if form.validate_on_submit():
         contact_type = ContactTypeLu(
             name=form.name.data, description=form.description.data, icon=form.icon.data, style_class=form.style_class.data)
         db.session.add(contact_type)
         db.session.commit()
+        flash('New contact type has been added ', 'success')
+        return redirect(url_for('contacts.types'))
+    return render_template('/contacts/_add.contacts.lookups.html', form=form,  legend='Add new contact Type')
+
+
+@login_required
+@contacts.route('/types/edit/<int:type_id>', methods=['GET', 'POST'])
+def edit_types(type_id):
+    form = ContactTypeLuForm()
+    contact_type = ContactTypeLu.query.get_or_404(type_id)
+    if form.validate_on_submit():
+        contact_type.name = form.name.data
+        contact_type.description = form.description.data
+        contact_type.icon = form.icon.data
+        contact_type.style_class = form.style_class.data
+        db.session.add(contact_type)
+        db.session.commit()
+        flash('Contact type has been Updated ', 'success')
+        return redirect(url_for('contacts.types'))
+    form.name.data = contact_type.name
+    form.description.data = contact_type.description
+    form.icon.data = contact_type.icon
+    form.style_class.data = contact_type.style_class
+    return render_template('/contacts/_add.contacts.lookups.html', form=form, legend='Edit contact Type')
+
+
+@login_required
+@contacts.route('/addresstype', methods=['GET', 'POST'])
+def address_types():
+    address_types = AddressTypeLu.query.all()
+    return render_template('/contacts/_contacts.lookups.html', lookups=address_types, lookup_title="Address Types")
+
+
+@login_required
+@contacts.route('/addresstype/add', methods=['GET', 'POST'])
+def add_address_types():
+    form = AddressTypeLuForm()
+    if form.validate_on_submit():
+        address_type = AddressTypeLu(
+            name=form.name.data, description=form.description.data, icon=form.icon.data, style_class=form.style_class.data)
+        db.session.add(address_type)
+        db.session.commit()
         form.name.data = ''
         form.description.data = ''
         form.icon.data = ''
         form.style_class.data = ''
-        flash('New contact type has been added ', 'success')
-    contact_types = ContactTypeLu.query.all()
-    return render_template('/contacts/_contacts.lookups.html', form=form, lookups=contact_types, legend='Add new contact Type', lookup_titile="Contact Types")
+        flash('New address type has been added ', 'success')
+        return redirect(url_for('contacts.address_types'))
+    return render_template('/contacts/_add.contacts.lookups.html', form=form, legend='Add New Address Type')
+
+
+@login_required
+@contacts.route('/addresstype/edit/<int:type_id>', methods=['GET', 'POST'])
+def edit_address_types(type_id):
+    form = AddressTypeLuForm()
+    address_type = AddressTypeLu.query.get_or_404(type_id)
+    if form.validate_on_submit():
+        address_type.name = form.name.data
+        address_type.description = form.description.data
+        address_type.icon = form.icon.data
+        address_type.style_class = form.style_class.data
+        db.session.add(address_type)
+        db.session.commit()
+        flash('Address type has been updated ', 'success')
+        return redirect(url_for('contacts.address_types'))
+    form.name.data = address_type.name
+    form.description.data = address_type.description
+    form.icon.data = address_type.icon
+    form.style_class.data = address_type.style_class
+    return render_template('/contacts/_add.contacts.lookups.html', form=form, legend='Edit Address Type')
 
 
 @login_required
@@ -56,24 +126,6 @@ def new_contact():
 
     existing_contacts = Contact.query.filter_by(created_by=current_user).all()
     return render_template('/contacts/_contacts.newcontacts.html', form=form, contacts=existing_contacts, title='All contacts', legend='New Contact')
-
-
-@login_required
-@contacts.route('/addresstype', methods=['GET', 'POST'])
-def address_types():
-    form = AddressTypeLuForm()
-    if form.validate_on_submit():
-        address_type = AddressTypeLu(
-            name=form.name.data, description=form.description.data, icon=form.icon.data, style_class=form.style_class.data)
-        db.session.add(address_type)
-        db.session.commit()
-        form.name.data = ''
-        form.description.data = ''
-        form.icon.data = ''
-        form.style_class.data = ''
-        flash('New address type has been added ', 'success')
-    address_types = AddressTypeLu.query.all()
-    return render_template('/contacts/_contacts.lookups.html', form=form, lookups=address_types, legend='Add New Address Type', lookup_titile="Address Types")
 
 
 @login_required

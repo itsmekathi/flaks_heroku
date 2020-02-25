@@ -1,8 +1,8 @@
 """add expenses and contact tables
 
-Revision ID: 1439905d6f41
+Revision ID: 605e01be1d78
 Revises: 127762c91e39
-Create Date: 2020-02-22 10:20:37.174654
+Create Date: 2020-02-25 10:50:09.635288
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '1439905d6f41'
+revision = '605e01be1d78'
 down_revision = '127762c91e39'
 branch_labels = None
 depends_on = None
@@ -60,7 +60,7 @@ def upgrade():
     )
     op.create_table('contacts',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('contact_type_id', sa.Integer(), nullable=False),
+    sa.Column('contact_type_id', sa.Integer(), nullable=True),
     sa.Column('created_by_id', sa.Integer(), nullable=False),
     sa.Column('first_name', sa.String(length=100), nullable=False),
     sa.Column('middle_name', sa.String(length=100), nullable=True),
@@ -70,14 +70,14 @@ def upgrade():
     sa.Column('phone_number', sa.String(length=200), nullable=True),
     sa.Column('is_private', sa.Boolean(), nullable=True),
     sa.Column('created_on', sa.DateTime(), nullable=False),
-    sa.Column('modified_on', sa.DateTime(), nullable=False),
+    sa.Column('modified_on', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['contact_type_id'], ['contact_type_lu.id'], ),
     sa.ForeignKeyConstraint(['created_by_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('address',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('address_type_id', sa.Integer(), nullable=False),
+    sa.Column('address_type_id', sa.Integer(), nullable=True),
     sa.Column('contact_id', sa.Integer(), nullable=False),
     sa.Column('created_by_id', sa.Integer(), nullable=False),
     sa.Column('address_line1', sa.String(length=200), nullable=False),
@@ -91,7 +91,7 @@ def upgrade():
     sa.Column('longitude', sa.String(length=100), nullable=True),
     sa.Column('is_private', sa.Boolean(), nullable=True),
     sa.Column('created_on', sa.DateTime(), nullable=False),
-    sa.Column('modified_on', sa.DateTime(), nullable=False),
+    sa.Column('modified_on', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['address_type_id'], ['address_type_lu.id'], ),
     sa.ForeignKeyConstraint(['contact_id'], ['contacts.id'], ),
     sa.ForeignKeyConstraint(['created_by_id'], ['users.id'], ),
@@ -108,7 +108,7 @@ def upgrade():
     sa.Column('expense_date_time', sa.DateTime(), nullable=False),
     sa.Column('description', sa.String(length=300), nullable=False),
     sa.Column('created_on', sa.DateTime(), nullable=False),
-    sa.Column('modified_on', sa.DateTime(), nullable=False),
+    sa.Column('modified_on', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['created_by_id'], ['users.id'], ),
     sa.ForeignKeyConstraint(['expense_category_id'], ['expense_category_lu.id'], ),
     sa.ForeignKeyConstraint(['expense_type_id'], ['expense_type_lu.id'], ),
@@ -124,7 +124,7 @@ def upgrade():
     sa.Column('quantity', sa.Numeric(precision=10, scale=2), nullable=False),
     sa.Column('gross_price', sa.Numeric(precision=10, scale=2), nullable=False),
     sa.Column('created_on', sa.DateTime(), nullable=False),
-    sa.Column('modified_on', sa.DateTime(), nullable=False),
+    sa.Column('modified_on', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['expenses_id'], ['expenses.id'], ),
     sa.ForeignKeyConstraint(['uom_id'], ['unit_of_measurement_lu.id'], ),
     sa.PrimaryKeyConstraint('id')
