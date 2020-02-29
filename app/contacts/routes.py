@@ -103,7 +103,7 @@ def all_contacts():
 
 
 @login_required
-@contacts.route('/new')
+@contacts.route('/new', methods=['GET', 'POST'])
 def new_contact():
     form = ContactForm()
     form.contact_type.choices = [(contact_type.id, contact_type.name)
@@ -126,7 +126,7 @@ def new_contact():
 
 
 @login_required
-@contacts.route('/edit/<int:contact_id>')
+@contacts.route('/edit/<int:contact_id>', methods=['GET', 'POST'])
 def edit_contact(contact_id):
     contact = Contact.query.get_or_404(contact_id)
     form = ContactForm()
@@ -142,6 +142,7 @@ def edit_contact(contact_id):
         contact.email_id = form.email_id.data,
         contact.phone_number = form.phone_number.data,
         contact.is_private = form.is_private.data
+        contact.modified_on = datetime.utcnow()
         db.session.add(contact)
         db.session.commit()
         flash('Contact has been updated', 'Success')
@@ -218,6 +219,7 @@ def edit_address(address_id):
         address.latitude = form.latitude.data
         address.longitude = form.longitude.data
         address.is_private = form.is_private.data
+        address.modified_on = datetime.utcnow()
         db.session.add(address)
         db.session.commit()
         flash('Address has been Edited', 'Success')

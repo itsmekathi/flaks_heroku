@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
-{% if expenses %}
+{% if expenses.total > 0 %}
 <script src="{{ url_for('static', filename='scripts/app/expenses/expenses.controller.js')}}"></script>
 <div class="content-section" ng-controller="expensesController">
     <div class="row">
@@ -53,7 +53,16 @@
 </div>
 {% else %}
 <div class="content-section">
-    <h2>No Items found</h2>
+    <div class="row">
+        <div class="col-md-8">
+            <h3>No items found</h3>
+        </div>
+        <div class="col-md-4">
+            <a class="btn btn-primary mb-4 pull-right" title="Add New"
+                href="{{ url_for('expenses.add_expenses') }}">Add New <i
+                    class="fas fa-plus-circle"></i></a>
+        </div>
+    </div>
 </div>
 {% endif %}
 {% endblock content %}

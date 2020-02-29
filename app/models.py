@@ -335,6 +335,18 @@ class Contact(db.Model):
     modified_on = db.Column(
         db.DateTime(), nullable=True)
 
+    def to_json(self):
+        json = {
+            'id': self.id,
+            'contactTypeId': self.contact_type_id,
+            'firstName': self.first_name,
+            'middleName': self.middle_name,
+            'lastName': self.last_name,
+            'emailId': self.email_id,
+            'phoneNumber': self.phone_number
+        }
+        return json
+
 
 class AddressTypeLu(db.Model):
     """
@@ -389,6 +401,21 @@ class Address(db.Model):
                            default=datetime.utcnow)
     modified_on = db.Column(
         db.DateTime(), nullable=True)
+
+    def to_json(self):
+        json = {
+            'id': self.id,
+            'addressTypeid': self.address_type_id,
+            'contactId': self.contact_id,
+            'createdBy': self.created_by.username,
+            'state': self.state,
+            'city': self.state,
+            'country': self.country,
+            'address_line1': self.address_line1,
+            'address_line2': self.address_line2,
+            'address_line3': self.address_line3
+        }
+        return json
 
 
 class ExpenseTypeLu(db.Model):
