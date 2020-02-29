@@ -126,13 +126,13 @@
                                 Contacts <i class="fas fa-th-list"></i>
                             </a>
                             <div class="dropdown-menu" aria-labelledby="contactsdownMenuLink">
-                                <a class="dropdown-item" href="{{ url_for('contacts.new_contact') }}">New Contact<i
+                                <a class="dropdown-item" href="{{ url_for('contacts.all_contacts') }}">Contacts<i
                                         class="fas fa-blog"></i></a>
-                                <a class="dropdown-item" href="{{ url_for('contacts.new_address') }}">New Address<i
+                                <a class="dropdown-item" href="{{ url_for('contacts.all_address') }}">Addresses<i
                                         class="fas fa-blog"></i></a>
                                 <a class="dropdown-item" href="{{ url_for('contacts.address_types')}}">Address Types
                                     <i class="fab fa-usps"></i></a>
-                                <a class="dropdown-item" href="{{ url_for('contacts.types') }}">Contact Types<i
+                                <a class="dropdown-item" href="{{ url_for('contacts.contact_types') }}">Contact Types<i
                                         class="fas fa-blog"></i></a>
                             </div>
                         </div>

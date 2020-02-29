@@ -1,55 +1,5 @@
 {% extends "layout.html" %}
 {% block content %}
-{% if addresses %}
-<div class="content-section">
-    <h2>Existing Data for {{ titile }}</h2>
-    <table class="table table-striped table-bordered">
-        <thead>
-            <tr>
-                <td>#</td>
-                <td>Name</td>
-                <td>Country</td>
-                <td>State</td>
-                <td>City</td>
-                <td>Address Line 1</td>
-                <td>Address Line 2</td>
-                <td>Address Line 3</td>
-                <td>Created on</td>
-                <td>Edit</td>
-                <td>Delete</td>
-            </tr>
-        </thead>
-        <tbody>
-            {% for address in addresses %}
-            <tr>
-                <td>{{address.id}}</td>
-                <td>{{ address.contact.first_name}}, {{ address.contact.middle_name }} {{ address.contact.last_name }}
-                </td>
-                <td>{{ address.country}}</td>
-                <td>{{ address.state}}</td>
-                <td>{{ address.city}}</td>
-                <td>{{ address.address_line1 }}</td>
-                <td>{{ address.address_line2 }}</td>
-                <td> {{ address.address_line3}} </td>
-                <td> {{ address.created_on }}</td>
-                <td>
-                    <a class="btn btn-warning" href="#">Edit</a>
-                </td>
-                <td>
-                    <form action="#" method="POST">
-                        <input type="submit" value="Delete" class="btn btn-danger">
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-{% else %}
-<div class="content-section">
-    <h2>No entries found</h2>
-</div>
-{% endif %}
 <div class="content-section">
     <form method="POST" action="">
         {{ form.hidden_tag() }}

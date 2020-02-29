@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block content %}
+{% if contacts %}
+<div class="content-section">
+    <h2>Existing Data for {{ title }}</h2>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <td>#</td>
+                <td>Name</td>
+                <td>EmailId</td>
+                <td>PhoneNumber</td>
+                <td>IsPrivate</td>
+                <td>Edit</td>
+                <td>Delete</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for contact in contacts %}
+            <tr>
+                <td>{{ contact.id }}</td>
+                <td>{{ contact.first_name}}, {{ contact.middle_name }} {{ contact.last_name }}</td>
+                <td>{{ contact.email_id }}</td>
+                <td>{{ contact.phone_number }}</td>
+                <td> {{ contact.is_private}} </td>
+                <td>
+                    <!-- <a class="btn btn-warning"
+                        href="{{url_for('todolists.edit_urgency', urgency_id=contact.id)}}">Edit</a> -->
+                    <a class="btn btn-warning" href="#">Edit</a>
+                </td>
+                <td>
+                    <!-- <form action="{{url_for('todolists.delete_urgency', urgency_id=contact.id)}}" method="POST">
+                        <input type="submit" value="Delete" class="btn btn-danger">
+                    </form> -->
+                    <form action="#" method="POST">
+                        <input type="submit" value="Delete" class="btn btn-danger">
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="content-section">
+    <h2>No entries found</h2>
+</div>
+{% endif %}
+{% endblock content %}
