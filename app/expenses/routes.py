@@ -89,6 +89,7 @@ def details(expense_id):
 @expenses.route('/details/add/<int:expense_id>', methods=["GET", "POST"])
 def add_details(expense_id):
     expense_item_form = ExpenseItemForm()
+    expense = Expenses.query.get_or_404(expense_id)
     expense_item_form.uom_id.choices = [(uom.id, uom.name)
                                         for uom in UnitOfMeasurementLu.query.all()]
     if expense_item_form.validate_on_submit():
@@ -98,16 +99,19 @@ def add_details(expense_id):
                                       modified_on=datetime.utcnow())
         db.session.add(expense_item)
         db.session.commit()
+        update_expense_header(expense_id)
         flash('Expense item was successfully added', 'Success')
         return redirect(url_for('expenses.details', expense_id=expense_item.expenses_id))
-    expense_item_form.item_name.data = ''
-    expense_item_form.uom_id.data = ''
-    expense_item_form.unit_price.data = 0.0
-    expense_item_form.quantity.data = 0
-    expense_item_form.gross_price.data = 0.0
-    expense = Expenses.query.get_or_404(expense_id)
     return render_template('/expenses/_add.expenses.details.html', expense=expense, form=expense_item_form, legend="Add new Item")
 
+def update_expense_header(expense_id):
+    expense = Expenses.query.get_or_404(expense_id)
+    expense_items = ExpenseDetails.query.filter_by( expenses_id=expense_id).all()
+    total_expense = sum(expense_item.gross_price for expense_item in expense_items)
+    expense.expense_amount = total_expense
+    db.session.add(expense)
+    db.session.commit()
+    return
 
 @login_required
 @expenses.route('/details/edit/<int:expense_detail_id>', methods=["GET", "POST"])

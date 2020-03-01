@@ -4,7 +4,12 @@
     <form method="POST" action="">
         {{ form.hidden_tag() }}
         <fieldset class="form-group">
-            <legend class="border-bottom mb-2">{{ legend }}</legend>
+            <legend class="border-bottom mb-2">{{ legend }}
+                <div class="pull-right mb-2">
+                    <a class="btn btn-primary" href="{{ url_for('expenses.details', expense_id=expense.id)}}"><i
+                            class="fas fa-arrow-circle-left"> Back</i></a>
+                </div>
+            </legend>
             <div class="form-row">
                 <div class="form-group col-md-4">
                     {{ form.item_name.label(class="form-control-label") }}

@@ -7,9 +7,13 @@
             <p>{{expense.description}}, Total Expense: {{total_expense}} </p>
         </div>
         <div class="col-md-4">
-            <a class="btn btn-primary mb-4 pull-right" title="Add New"
-                href="{{ url_for('expenses.add_details', expense_id = expense.id ) }}">Add New <i
-                    class="fas fa-plus-circle"></i></a>
+            <div class="pull-right">
+                <a class="btn btn-primary mb-4" href="{{ url_for('expenses.current_expenses') }}"><i
+                        class="fas fa-arrow-circle-left"> Back</i></a>
+                <a class="btn btn-primary mb-4" title="Add New"
+                    href="{{ url_for('expenses.add_details', expense_id = expense.id ) }}">Add New <i
+                        class="fas fa-plus-circle"></i></a>
+            </div>
         </div>
     </div>
     {% if expense_items %}

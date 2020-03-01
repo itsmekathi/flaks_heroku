@@ -8,9 +8,8 @@
             <h3>All Expenses</h3>
         </div>
         <div class="col-md-4">
-            <a class="btn btn-primary mb-4 pull-right" title="Add New"
-                href="{{ url_for('expenses.add_expenses') }}">Add New <i
-                    class="fas fa-plus-circle"></i></a>
+            <a class="btn btn-primary mb-4 pull-right" title="Add New" href="{{ url_for('expenses.add_expenses') }}">Add
+                New <i class="fas fa-plus-circle"></i></a>
         </div>
     </div>
     <span class="badge badge-primary pull-right">Total Items: {{ expenses.total }}</span>
@@ -41,8 +40,10 @@
                 <td>{% if expense.expense_details %}{{ expense.expense_details|length }} {% else %} -- {% endif %}
                 </td>
                 <td>
+                    <span><a href="{{url_for('expenses.edit_expenses', expense_id=expense.id)}}" class="btn"
+                            title="Edit expense"><i class="far fa-edit"></i></a></span>
                     <span><a href="{{url_for('expenses.details', expense_id=expense.id)}}" class="btn"
-                            title="Edit Item"><i class="fas fa-edit" aria-hidden="true"></i></a></span>
+                            title="Add sub Item"><i class="far fa-plus-square"></i></a></span>
                     <span><a href="#" ng-click="showConfirm($event, {{ expense.id }} )" class="btn"
                             title="Delete Item"><i class="fas fa-trash-alt" style="color: chocolate;"></i></a></span>
                 </td>
@@ -58,9 +59,8 @@
             <h3>No items found</h3>
         </div>
         <div class="col-md-4">
-            <a class="btn btn-primary mb-4 pull-right" title="Add New"
-                href="{{ url_for('expenses.add_expenses') }}">Add New <i
-                    class="fas fa-plus-circle"></i></a>
+            <a class="btn btn-primary mb-4 pull-right" title="Add New" href="{{ url_for('expenses.add_expenses') }}">Add
+                New <i class="fas fa-plus-circle"></i></a>
         </div>
     </div>
 </div>
