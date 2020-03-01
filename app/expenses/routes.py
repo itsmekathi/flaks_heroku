@@ -208,13 +208,13 @@ def categories():
 @login_required
 @expenses.route('/categories/add', methods=['GET', 'POST'])
 def add_categories():
-    form = ExpenseTypeLuForm()
+    form = ExpenseCategoryLuForm()
     if form.validate_on_submit():
-        expense_type = ExpenseTypeLu(name = form.name.data,description = form.description.data,icon = form.icon.data,style_class = form.style_class.data)
-        db.session.add(expense_type)
+        expense_category = ExpenseCategoryLu(name = form.name.data,description = form.description.data,icon = form.icon.data,style_class = form.style_class.data)
+        db.session.add(expense_category)
         db.session.commit()
-        flash('The expense type has been Added', 'success')
-        return redirect(url_for('expenses.types'))
+        flash('New expense category has been Added', 'success')
+        return redirect(url_for('expenses.categories'))
     return render_template('/expenses/_add.expenses.lookups.html', form=form, legend='Add Expense Category')
 
 @login_required
@@ -266,7 +266,7 @@ def add_uoms():
         db.session.add(expense_uom)
         db.session.commit()
         flash('The expense UOM has been added', 'success')
-        return redirect(url_for('expenses.expense_uoms'))
+        return redirect(url_for('expenses.uoms'))
     return render_template('/expenses/_add.expenses.lookups.html', form=form, legend="Add UOM")
 
 @login_required
@@ -282,7 +282,7 @@ def edit_uoms(uom_id):
         db.session.add(expense_uom)
         db.session.commit()
         flash('The expense UOM has been updated', 'success')
-        return redirect(url_for('expenses.expense_uoms'))
+        return redirect(url_for('expenses.uoms'))
     if request.method == 'GET':
         form.name.data = expense_uom.name
         form.description.data = expense_uom.description
