@@ -186,7 +186,7 @@ def edit_types(type_id):
     if request.method == 'GET':
         form.name.data = expense_type.name
         form.description.data = expense_type.description
-        form.icon.data = expense_type.description
+        form.icon.data = expense_type.icon
         form.style_class.data = expense_type.style_class
     expense_types = ExpenseTypeLu.query.all()
     return render_template('/expenses/_add.expenses.lookups.html', form=form, legend='Edit Expense Types')
@@ -238,7 +238,7 @@ def edit_categories(category_id):
     if request.method == 'GET':
         form.name.data = expense_category.name
         form.description.data = expense_category.description
-        form.icon.data = expense_category.description
+        form.icon.data = expense_category.icon
         form.style_class.data = expense_category.style_class
     return render_template('/expenses/_add.expenses.lookups.html', form=form, legend='Edit Expense category')
 
@@ -290,7 +290,7 @@ def edit_uoms(uom_id):
     if request.method == 'GET':
         form.name.data = expense_uom.name
         form.description.data = expense_uom.description
-        form.icon.data = expense_uom.description
+        form.icon.data = expense_uom.icon
         form.style_class.data = expense_uom.style_class
     expense_uoms = UnitOfMeasurementLu.query.all()
     return render_template('/expenses/_add.expenses.lookups.html', form=form, legend="Edit UOM")
