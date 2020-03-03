@@ -48,7 +48,7 @@ def add_expenses():
 @expenses.route('/edit/<int:expense_id>', methods=["GET", "POST"])
 def edit_expenses(expense_id):
     expenses_form = ExpenseForm()
-    expense_item = ExpenseDetails.query.get_or_404(expense_id)
+    expense_item = Expenses.query.get_or_404(expense_id)
 
     expenses_form.contact_id.choices = [(contact.id, contact.first_name)
                                         for contact in Contact.query.filter_by(created_by=current_user).all()]
