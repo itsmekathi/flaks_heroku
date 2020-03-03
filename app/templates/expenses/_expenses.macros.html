@@ -1,0 +1,36 @@
+{% macro input(name, value='', type='text') -%}
+<input type="{{ type }}" value="{{ value|e }}" name="{{ name }}">
+{%- endmacro %}
+
+{%- macro textarea(name, value='', rows=10, cols=40) -%}
+<textarea name="{{ name }}" rows="{{ rows }}" cols="{{ cols
+        }}">{{ value|e }}</textarea>
+{%- endmacro %}
+
+{%- macro expenseHeader(expense) -%}
+<article class="media content-section">
+    <img src="{{ url_for('static', filename='profile_pics/' + expense.created_by.image_file) }}"
+        class="rounded-circle article-img">
+    <div class="media-body">
+        <div class="article-metadata">
+            <a class="mr-2" href="{{ url_for('expenses.current_expenses')}}">{{ expense.title }}</a>
+            <small class="text-muted">{{ expense.expense_date_time.strftime("%b %d %Y %I:%M %p") }}</small>
+            <div>
+                <span><a href="{{url_for('expenses.edit_expenses', expense_id=expense.id)}}" class="btn"
+                        title="Edit expense"><i class="far fa-edit"></i></a></span>
+                <span><a href="{{url_for('expenses.details', expense_id=expense.id)}}" class="btn"
+                        title="Add sub Item"><i class="far fa-plus-square"></i></a></span>
+                <span><a href="#" ng-click="showConfirm($event, {{ expense.id }} )" class="btn" title="Delete Item"><i
+                            class="fas fa-trash-alt" style="color: chocolate;"></i></a></span>
+            </div>
+        </div>
+        <p class="article-content">Type: {{ expense.expense_type.name }}</p>
+        <p class="article-content">Category: {{ expense.expense_category.name }}</p>
+        <p class="article-content">First Name: {{ expense.contact.first_name }}</p>
+        <p class="article-content">Amount: {{ expense.expense_amount }}</p>
+        <p class="article-content">Description: {{ expense.description }}</p>
+        <p class="article-content">Items: {% if expense.expense_details %}{{ expense.expense_details|length }}
+            {% else %} -- {% endif %}</p>
+    </div>
+</article>
+{%- endmacro %}

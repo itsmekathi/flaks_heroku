@@ -13,6 +13,17 @@
         </div>
     </div>
     <span class="badge badge-primary pull-right">Total Items: {{ expenses.total }}</span>
+    <div class="col-md-4">
+        {% import 'expenses/_expenses.macros.html' as forms %}
+        <div class="row">
+            {% for expense in expenses.items %}
+            <div class="col-md-4">
+                {{ forms.expenseHeader(expense)}}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
     <table class="table table-striped table-bordered">
         <thead>
             <tr>
