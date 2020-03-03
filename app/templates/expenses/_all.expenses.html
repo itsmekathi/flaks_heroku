@@ -31,7 +31,7 @@
             {% for expense in expenses.items %}
             <tr>
                 <td>{{ expense.title }}</td>
-                <td>{{ expense.expense_date_time.strftime("%d %B %Y") }}</td>
+                <td>{{ expense.expense_date_time.strftime("%b %d %Y %I:%M %p") }}</td>
                 <td>{{ expense.expense_type.name }}</td>
                 <td>{{ expense.expense_category.name }}</td>
                 <td>{{ expense.contact.first_name }}</td>

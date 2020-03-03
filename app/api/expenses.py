@@ -55,6 +55,7 @@ def expense(expenses_id):
     if request.method == "GET":
         return jsonify(expense.to_json())
     if request.method == "DELETE":
+        ExpenseDetails.query.filter_by(expenses_id = expenses_id).delete()
         db.session.delete(expense)
         db.session.commit()
         return jsonify({'status': 'deleted'})
