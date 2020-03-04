@@ -1,0 +1,29 @@
+{%- macro lookupCard(lookups, items_per_row) -%}
+<div class="row">
+    {% for lookup in lookups %}
+    <div class="col-md-{{ (12 / items_per_row) | int }}">
+        <div class="card text-white bg-secondary mb-3" style="width: 18rem;">
+            <div class="card-header">
+                {{ lookup.name }}
+            </div>
+            <div class="card-body">
+                <p class="card-text">{{ lookup.description }}</p>
+            </div>
+            <ul class="list-group list-group-flush text-black-50">
+                <li class="list-group-item">Style class: {{ lookup.style_class}} </li>
+                <li class="list-group-item">Icon: {{ lookup.icon}} </li>
+            </ul>
+            <div class="card-body text-black-50 bg-light">
+                <span><a href="{{ lookup.edit_link }}" class="btn" title="Edit Item"><i class="fas fa-edit"
+                            aria-hidden="true"></i></a></span>
+                <span><a href="#" ng-click="showConfirm($event, {{ lookup.id }} )" class="btn" title="Delete Item"><i
+                            class="fas fa-trash-alt" style="color:chocolate;"></i></a></span>
+            </div>
+            <div class="card-footer text-white">
+                <small>{{ lookup.name }}</small>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{%- endmacro %}

@@ -156,19 +156,15 @@ def edit_details(expense_detail_id):
 @login_required
 @expenses.route('/types', methods=['GET', 'POST'])
 def types():
-    form = ExpenseTypeLuForm()
-    if form.validate_on_submit():
-        expense_type = ExpenseTypeLu(
-            name=form.name.data, description=form.description.data, icon=form.icon.data, style_class=form.style_class.data)
-        db.session.add(expense_type)
-        db.session.commit()
-        form.name.data = ''
-        form.description.data = ''
-        form.icon.data = ''
-        form.style_class.data = ''
-        flash('New expense type has been added ', 'success')
-    expense_types = ExpenseTypeLu.query.all()
-    return render_template('/expenses/_expenses.lookups.html', form=form, lookups=expense_types, legend='Add new expense Type', lookup_titile="Expense Types", offsetUrl='types')
+    expense_types = [construct_type_with_editLink(
+        expense_type) for expense_type in ExpenseTypeLu.query.all()]
+    return render_template('/expenses/_expenses.lookups.html', lookups=expense_types, lookup_titile="Expense Types", offsetUrl='types')
+
+
+def construct_type_with_editLink(expense_type):
+    expense_type.edit_link = url_for(
+        'expenses.edit_types', type_id=expense_type.id)
+    return expense_type
 
 
 @login_required
@@ -211,19 +207,15 @@ def edit_types(type_id):
 @login_required
 @expenses.route('/categories', methods=['GET', 'POST'])
 def categories():
-    form = ExpenseCategoryLuForm()
-    if form.validate_on_submit():
-        expense_category = ExpenseCategoryLu(
-            name=form.name.data, description=form.description.data, icon=form.icon.data, style_class=form.style_class.data)
-        db.session.add(expense_category)
-        db.session.commit()
-        form.name.data = ''
-        form.description.data = ''
-        form.icon.data = ''
-        form.style_class.data = ''
-        flash('New expense category has been added ', 'success')
-    expense_category = ExpenseCategoryLu.query.all()
-    return render_template('/expenses/_expenses.lookups.html', form=form, lookups=expense_category, legend='Add new expense Category', lookup_titile="Expense Categories", offsetUrl='categories')
+    expense_category = [construct_category_with_editLink(
+        category) for category in ExpenseCategoryLu.query.all()]
+    return render_template('/expenses/_expenses.lookups.html',  lookups=expense_category,  lookup_titile="Expense Categories", offsetUrl='categories')
+
+
+def construct_category_with_editLink(category):
+    category.edit_link = url_for(
+        'expenses.edit_categories', category_id=category.id)
+    return category
 
 
 @login_required
@@ -265,19 +257,14 @@ def edit_categories(category_id):
 @login_required
 @expenses.route('/uoms', methods=['GET', 'POST'])
 def uoms():
-    form = UOMForm()
-    if form.validate_on_submit():
-        uom = UnitOfMeasurementLu(
-            name=form.name.data, description=form.description.data, icon=form.icon.data, style_class=form.style_class.data)
-        db.session.add(uom)
-        db.session.commit()
-        form.name.data = ''
-        form.description.data = ''
-        form.icon.data = ''
-        form.style_class.data = ''
-        flash('New UOM has been added ', 'success')
-    uoms = UnitOfMeasurementLu.query.all()
-    return render_template('/expenses/_expenses.lookups.html', form=form, lookups=uoms, legend='Add new UOM', lookup_titile="Unit of measurements", offsetUrl='uoms')
+    uoms = [construct_uom_witheditlink(uom)
+            for uom in UnitOfMeasurementLu.query.all()]
+    return render_template('/expenses/_expenses.lookups.html',  lookups=uoms,  lookup_titile="Unit of measurements", offsetUrl='uoms')
+
+
+def construct_uom_witheditlink(uom):
+    uom.edit_link = url_for('expenses.edit_uoms', uom_id=uom.id)
+    return uom
 
 
 @login_required
