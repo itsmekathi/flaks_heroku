@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, TextAreaField, SelectField, IntegerField, DateTimeField, \
-    BooleanField, DecimalField
+    BooleanField, DecimalField, SelectMultipleField
 from wtforms.validators import DataRequired, Length, NumberRange, ValidationError, Email
 from wtforms.fields.html5 import DateField, TimeField
 
@@ -23,6 +23,17 @@ class ExpenseCategoryLuForm(ExpenseTypeLuForm):
 
 class UOMForm(ExpenseTypeLuForm):
     pass
+
+
+class ExpenseFilterForm(FlaskForm):
+    contact_id = SelectField('Expense Contact', coerce=int)
+    type_id = SelectField('Expense Types', coerce=int)
+    category_id = SelectField('Expense Category', coerce=int)
+    from_date = DateField('Expense From Date', validators=[
+                          DataRequired()], render_kw={"placeholder": "MM/dd/YYYY"})
+    to_date = DateField('Expense To Date', validators=[
+                        DataRequired()], render_kw={"placeholder": "MM/dd/YYYY"})
+    submit = SubmitField('Search')
 
 
 class ExpenseForm(FlaskForm):
