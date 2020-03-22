@@ -17,6 +17,9 @@ def current_expenses():
     user_expenses_query = Expenses.query.filter_by(created_by=current_user)
 
     form = ExpenseFilterForm()
+    form.from_date.data = get_first_dateofthemonth()
+    form.to_date.data = date.today()
+
     form.contact_id.choices = [(contact.id, contact.first_name)
                                for contact in Contact.query.filter_by(created_by=current_user).all()]
     form.type_id.choices = [
@@ -24,22 +27,25 @@ def current_expenses():
     form.category_id.choices = [
         (category.id, category.name) for category in ExpenseCategoryLu.query.all()]
 
-    form.from_date.data = get_first_dateofthemonth()
-    form.to_date.data = date.today()
+    form.category_id.choices.insert(0, (0, "All"))
+    form.type_id.choices.insert(0, (0, "All"))
+    form.contact_id.choices.insert(0, (0, "All"))
+
+    user_expenses_query = user_expenses_query.filter(
+        Expenses.expense_date_time >= form.from_date.data)
+    user_expenses_query = user_expenses_query.filter(
+        Expenses.expense_date_time <= form.to_date.data)
+
     if(form.validate_on_submit):
-        if form.contact_id.data != None:
+        if form.contact_id.data != None and form.contact_id.data != 0:
             user_expenses_query = user_expenses_query.filter_by(
                 expenses_contact_id=form.contact_id.data)
-        if form.type_id.data != None:
+        if form.type_id.data != None and form.type_id.data != 0:
             user_expenses_query = user_expenses_query.filter_by(
-                expense_type_id=form.type_id.data)
-        if form.category_id.data != None:
+                expense_type_id= form.type_id.data)
+        if form.category_id.data != None and form.category_id.data != 0:
             user_expenses_query = user_expenses_query.filter_by(
                 expense_category_id=form.category_id.data)
-        if form.from_date.data != None:
-            pass
-        if form.to_date.data != None:
-            pass
     user_expenses = user_expenses_query.order_by(Expenses.expense_date_time).paginate(
         page=page, per_page=page_size)
     return render_template('/expenses/_all.expenses.html', expenses=user_expenses,
