@@ -4,8 +4,9 @@ from app import db
 from app.models import ExpenseTypeLu, ExpenseCategoryLu, Expenses, ExpenseDetails, Contact, UnitOfMeasurementLu
 from .forms import ExpenseTypeLuForm, ExpenseCategoryLuForm, ExpenseForm, ExpenseItemForm, UOMForm, ExpenseFilterForm
 from . import expenses
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
+import app.expenses.helpers as h
 
 
 @login_required
@@ -17,8 +18,6 @@ def current_expenses():
     user_expenses_query = Expenses.query.filter_by(created_by=current_user)
 
     form = ExpenseFilterForm()
-    form.from_date.data = get_first_dateofthemonth()
-    form.to_date.data = date.today()
 
     form.contact_id.choices = [(contact.id, contact.first_name)
                                for contact in Contact.query.filter_by(created_by=current_user).all()]
@@ -31,10 +30,13 @@ def current_expenses():
     form.type_id.choices.insert(0, (0, "All"))
     form.contact_id.choices.insert(0, (0, "All"))
 
+    if(form.from_date.data == None):
+        form.from_date.data = h.get_first_dateofthemonth()
+    if(form.to_date.data == None):
+        form.to_date.data = date.today()
     user_expenses_query = user_expenses_query.filter(
-        Expenses.expense_date_time >= form.from_date.data)
-    user_expenses_query = user_expenses_query.filter(
-        Expenses.expense_date_time <= form.to_date.data)
+        Expenses.expense_date_time >= form.from_date.data)\
+        .filter(Expenses.expense_date_time <= (form.to_date.data + timedelta(days=1)))
 
     if(form.validate_on_submit):
         if form.contact_id.data != None and form.contact_id.data != 0:
@@ -42,7 +44,7 @@ def current_expenses():
                 expenses_contact_id=form.contact_id.data)
         if form.type_id.data != None and form.type_id.data != 0:
             user_expenses_query = user_expenses_query.filter_by(
-                expense_type_id= form.type_id.data)
+                expense_type_id=form.type_id.data)
         if form.category_id.data != None and form.category_id.data != 0:
             user_expenses_query = user_expenses_query.filter_by(
                 expense_category_id=form.category_id.data)
@@ -50,16 +52,6 @@ def current_expenses():
         page=page, per_page=page_size)
     return render_template('/expenses/_all.expenses.html', expenses=user_expenses,
                            form=form, legend='Filter Expenses')
-
-
-def get_first_dateofthemonth():
-    today = date.today()
-    first_day = today.replace(day=1)
-    if today.day > 25:
-        first_day = (first_day + relativedelta(months=1))
-    else:
-        first_day = first_day
-    return first_day
 
 
 @login_required
