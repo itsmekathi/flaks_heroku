@@ -12,18 +12,15 @@
                 New <i class="fas fa-plus-circle"></i></a>
         </div>
     </div>
-    <span class="badge badge-primary pull-right">Total Items: {{ expenses.total }}</span>
-    <!-- <div class="col-md-4">
-        {% import 'expenses/_expenses.macros.html' as forms %}
-        <div class="row">
-            {% for expense in expenses.items %}
-            <div class="col-md-4">
-                {{ forms.expenseHeader(expense)}}
-            </div>
-            {% endfor %}
+    {% import 'shared/_pagination.macros.html' as pagination_macro %}
+    <div class="row">
+        <div class="col-md-10">
+            {{ pagination_macro.PaginatorV1(expenses, 'expenses.current_expenses', 5)}}
         </div>
-    </div> -->
-
+        <div class="col-md-2">
+            <span class="badge badge-primary pull-right">Total Items: {{ expenses.total }}</span>
+        </div>
+    </div>
     <table class="table table-striped table-bordered">
         <thead>
             <tr>

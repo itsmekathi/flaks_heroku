@@ -12,11 +12,11 @@ import app.expenses.helpers as h
 @login_required
 @expenses.route('', methods=["GET", "POST"])
 def current_expenses():
-    # Get the query parameters
+    # Set the optional query parameters
     page = request.args.get('page', 1, type=int)
     page_size = request.args.get('pagesize', 5, type=int)
+    
     user_expenses_query = Expenses.query.filter_by(created_by=current_user)
-
     form = ExpenseFilterForm()
 
     form.contact_id.choices = [(contact.id, contact.first_name)
