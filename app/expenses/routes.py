@@ -6,8 +6,6 @@ from .forms import ExpenseTypeLuForm, ExpenseCategoryLuForm, ExpenseForm, Expens
 from . import expenses
 from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
-import app.expenses.helpers as h
-
 
 @login_required
 @expenses.route('', methods=["GET", "POST"])
@@ -31,7 +29,7 @@ def current_expenses():
     form.contact_id.choices.insert(0, (0, "All"))
 
     if(form.from_date.data == None):
-        form.from_date.data = h.get_first_dateofthemonth()
+        form.from_date.data = get_first_dateofthemonth()
     if(form.to_date.data == None):
         form.to_date.data = date.today()
     user_expenses_query = user_expenses_query.filter(
@@ -52,6 +50,15 @@ def current_expenses():
         page=page, per_page=page_size)
     return render_template('/expenses/_all.expenses.html', expenses=user_expenses,
                            form=form, legend='Filter Expenses')
+
+def get_first_dateofthemonth():
+    today = date.today()
+    first_day = today.replace(day=1)
+    if today.day > 25:
+        first_day = (first_day + relativedelta(months=1))
+    else:
+        first_day = first_day
+    return first_day
 
 
 @login_required
