@@ -7,12 +7,12 @@ from flask_mail import Mail
 from config import config
 from flask_toastr import Toastr
 
-
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 login_manager = LoginManager()
 mail = Mail()
 toastr = Toastr()
+
 
 login_manager.login_view = 'users.login'
 login_manager.login_message = 'Please login to continue'

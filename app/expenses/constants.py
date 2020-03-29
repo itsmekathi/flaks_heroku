@@ -1,0 +1,5 @@
+from_date_name = 'from_date'
+to_date_name = 'to_date'
+selected_contact_id_name = 'selected_contact_id'
+selected_type_id_name = 'selected_type_id'
+selected_category_id_name = 'selected_category_id'

@@ -1,11 +1,15 @@
-from flask import render_template, url_for, flash, redirect, request, abort
+from flask import render_template, url_for, flash, redirect, request, abort, session
 from flask_login import current_user, login_required
 from app import db
+from app.utils import get_first_dateofthemonth
+from app.constants import date_time_format
 from app.models import ExpenseTypeLu, ExpenseCategoryLu, Expenses, ExpenseDetails, Contact, UnitOfMeasurementLu
 from .forms import ExpenseTypeLuForm, ExpenseCategoryLuForm, ExpenseForm, ExpenseItemForm, UOMForm, ExpenseFilterForm
 from . import expenses
 from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
+from .constants import from_date_name, to_date_name, selected_category_id_name, selected_contact_id_name, selected_type_id_name
+
 
 @login_required
 @expenses.route('', methods=["GET", "POST"])
@@ -13,9 +17,21 @@ def current_expenses():
     # Set the optional query parameters
     page = request.args.get('page', 1, type=int)
     page_size = request.args.get('pagesize', 5, type=int)
-    
+
+    isPaginationRequest = request.args.get(
+        'page', type=int) != None and request.args.get('pagesize', type=int) != None and request.method == 'GET'
+
     user_expenses_query = Expenses.query.filter_by(created_by=current_user)
     form = ExpenseFilterForm()
+
+    if(isPaginationRequest):
+        form.from_date.data = datetime.strptime(
+            session.get(from_date_name), date_time_format)
+        form.to_date.data = datetime.strptime(
+            session.get(to_date_name), date_time_format)
+        form.category_id.data = session.get(selected_category_id_name)
+        form.type_id.data = session.get(selected_type_id_name)
+        form.contact_id.data = session.get(selected_contact_id_name)
 
     form.contact_id.choices = [(contact.id, contact.first_name)
                                for contact in Contact.query.filter_by(created_by=current_user).all()]
@@ -28,13 +44,21 @@ def current_expenses():
     form.type_id.choices.insert(0, (0, "All"))
     form.contact_id.choices.insert(0, (0, "All"))
 
+    # Init Form fields
     if(form.from_date.data == None):
         form.from_date.data = get_first_dateofthemonth()
     if(form.to_date.data == None):
         form.to_date.data = date.today()
+    if(form.category_id.data == None):
+        form.category_id.data = 0
+    if(form.type_id.data == None):
+        form.type_id.data = 0
+    if(form.contact_id.data == None):
+        form.contact_id.data = 0
+
     user_expenses_query = user_expenses_query.filter(
         Expenses.expense_date_time >= form.from_date.data)\
-        .filter(Expenses.expense_date_time <= (form.to_date.data + timedelta(days=1)))
+        .filter(Expenses.expense_date_time <= form.to_date.data)
 
     if(form.validate_on_submit):
         if form.contact_id.data != None and form.contact_id.data != 0:
@@ -46,19 +70,27 @@ def current_expenses():
         if form.category_id.data != None and form.category_id.data != 0:
             user_expenses_query = user_expenses_query.filter_by(
                 expense_category_id=form.category_id.data)
+
+        session[from_date_name] = form.from_date.data.strftime(
+            date_time_format)
+        session[to_date_name] = form.to_date.data.strftime(date_time_format)
+        session[selected_contact_id_name] = form.contact_id.data
+        session[selected_type_id_name] = form.type_id.data
+        session[selected_category_id_name] = form.category_id.data
+
+    total_expense = sum(
+        expense.expense_amount for expense in user_expenses_query.all())
+
+    expense_filters = [f'From date: {form.from_date.data.strftime(date_time_format)}',
+                       f'To date: {form.to_date.data.strftime(date_time_format)}',
+                       f'Type: {form.type_id.data}',
+                       f'Category: {form.category_id.data}', f'Contact Id: {form.contact_id.data}',
+                       f'Page Number : {page}',
+                       f'Page Size: {page_size}']
     user_expenses = user_expenses_query.order_by(Expenses.expense_date_time).paginate(
         page=page, per_page=page_size)
     return render_template('/expenses/_all.expenses.html', expenses=user_expenses,
-                           form=form, legend='Filter Expenses')
-
-def get_first_dateofthemonth():
-    today = date.today()
-    first_day = today.replace(day=1)
-    if today.day > 25:
-        first_day = (first_day + relativedelta(months=1))
-    else:
-        first_day = first_day
-    return first_day
+                           form=form, legend='Filter Expenses', total_expense=total_expense, expense_filters=expense_filters)
 
 
 @login_required
