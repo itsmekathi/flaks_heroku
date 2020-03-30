@@ -28,7 +28,6 @@ def create_app(config_name):
     mail.init_app(app)
     toastr.init_app(app)
 
-
     if app.config['SSL_REDIRECT']:
         from flask_sslify import SSLify
         sslify = SSLify(app)
@@ -51,14 +50,22 @@ def create_app(config_name):
     from app.expenses import expenses as expenses_blueprint
     app.register_blueprint(expenses_blueprint, url_prefix='/expenses')
 
+    from app.inventory import inventory as inventory_blueprint
+    app.register_blueprint(inventory_blueprint, url_prefix='/inventory')
+
+    from app.bookmarks import bookmarks as bookmarks_blueprint
+    app.register_blueprint(bookmarks_blueprint, url_prefix='/bookmarks')
+
+    from app.lists import lists as lists_blueprint
+    app.register_blueprint(lists_blueprint, url_prefix='/lists')
+
     from .api import api as api_blueprint
     app.register_blueprint(api_blueprint, url_prefix='/api/v1')
 
- 
     @app.context_processor
     def inject_environment_variables():
-        return dict(environment=config_name) 
-        
+        return dict(environment=config_name)
+
     @app.context_processor
     def utility_processor():
         def square_number(number):

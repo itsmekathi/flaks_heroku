@@ -32,6 +32,20 @@
                         </div>
                     </div>
                     <div class="dropdown show">
+                        <a class="nav-item nav-link dropdown-toggle" href="#" role="button" id="utilityMenuLink"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Utilities <i class="fas fa-th-list"></i>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="utilityMenuLink">
+                            <a class="dropdown-item" href="{{ url_for('bookmarks.search')}}">Bookmarks
+                                <i class="fab fa-usps"></i></a>
+                            <a class="dropdown-item" href="{{ url_for('lists.search') }}">Lists<i
+                                    class="fas fa-blog"></i></a>
+                            <a class="dropdown-item" href="{{ url_for('inventory.search') }}">Inventory<i
+                                    class="fas fa-blog"></i></a>
+                        </div>
+                    </div>
+                    <div class="dropdown show">
                         <a class="nav-item nav-link dropdown-toggle" href="#" role="button" id="contactsdownMenuLink"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Contacts <i class="fas fa-th-list"></i>
