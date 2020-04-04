@@ -1,0 +1,51 @@
+<md-dialog aria-label="Add new Type">
+    <form ng-cloak>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Add New type</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    <!-- <md-icon md-svg-src="static/images/icons/cancel-24px.svg" aria-label="Close dialog"></md-icon> -->
+                    x
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+            <div class="md-dialog-content">
+                <form novalidate name="ListForm">
+                    <md-input-container flex>
+                        <label for="lblName">Name</label>
+                        <input id="lblName" type="text" data-ng-model="list.listName" />
+                    </md-input-container>
+                    <md-input-container flex>
+                        <label for="lblIconClass">Icon Class</label>
+                        <input id="lblIconClass" type="text" data-ng-model="list.iconClass" />
+                    </md-input-container>
+                    <md-input-container flex>
+                        <label for="lblStyleClass">Style Class</label>
+                        <input id="lblStyleClass" type="text" data-ng-model="list.styleClass" />
+                    </md-input-container>
+                    <md-input-container flex>
+                        <label for="lblSortOrder">Sort Order</label>
+                        <input id="lblSortOrder" type="number" data-ng-model="list.sortOrder" />
+                    </md-input-container>
+                    <md-input-container flex>
+                        <label for="lblDescription">Description</label>
+                        <textarea id="lblDescription" columns="2" data-ng-model="list.description"></textarea>
+                    </md-input-container>
+                </form>
+            </div>
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+            <pre>Data : {{list}}</pre>
+            <md-button ng-class="{'md-raised md-hue-1' : (ListForm.$dirty && ListForm.$valid )}" ng-click="save()">
+                Save
+            </md-button>
+            <md-button ng-click="cancel()">
+                Cancel
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

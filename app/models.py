@@ -50,6 +50,7 @@ class User(db.Model, UserMixin):
     contacts = db.relationship('Contact', backref="created_by", lazy=True)
     expenses = db.relationship('Expenses', backref="created_by", lazy=True)
     addresses = db.relationship('Address', backref="created_by", lazy=True)
+    lists = db.relationship('ListHeader', backref="created_by", lazy=True)
 
     def verify_password(self, password):
         return bcrypt.check_password_hash(self.password, password)
@@ -561,5 +562,98 @@ class ExpenseDetails(db.Model):
             'quantity': self.quantity,
             'gross_price': self.gross_price,
             'created_on': self.created_on
+        }
+        return json
+
+
+# All tables related to lists
+
+class ListTypeLu(db.Model):
+    """ Master table for List type
+        Used to store the various list types eg., bookmarks, reminders, etc.,
+    """
+    __tablename__ = "list_type_lu"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(300), nullable=False)
+    icon = db.Column(db.String(100), nullable=False)
+    style_class = db.Column(
+        db.String(100), nullable=False, default="text-danger")
+    sort_order = db.Column(db.Integer, nullable=False)
+    lists = db.relationship(
+        'ListHeader', backref='list_type', lazy=True)
+
+    def to_json(self):
+        json = {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description,
+            'icon': self.icon,
+            'style_class': self.style_class,
+            'sort_order': self.sort_order,
+            'resource_uri': url_for('api.list_type', type_id=self.id)
+        }
+        return json
+
+
+class ListHeader(db.Model):
+    """ Master table for all list header.
+        Should contain the title and sort orders
+    """
+    __tablename__ = "list_header"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    type_id = db.Column(db.Integer, db.ForeignKey(
+        'list_type_lu.id'), nullable=False)
+    description = db.Column(db.String(300), nullable=True)
+    sort_order = db.Column(db.Integer, nullable=True)
+    created_by_id = db.Column(db.Integer, db.ForeignKey(
+        'users.id'), nullable=False)
+    list_items = db.relationship('ListItem', backref="list_header", lazy=True)
+    created_on = db.Column(db.DateTime(), nullable=False,
+                           default=datetime.utcnow)
+    modified_on = db.Column(
+        db.DateTime(), nullable=True)
+
+    def to_json(self):
+        json = {
+            'id': self.id,
+            'name': self.name,
+            'type': self.list_type.name,
+            'description': self.description,
+            'sortOrder': self.sort_order,
+            'createdBy': self.created_by.username,
+            'createdOn': self.created_on,
+            'modifiedOn': self.modified_on,
+            'resource_uri': url_for('api.list_header', list_id=self.id)
+        }
+        return json
+
+
+class ListItem(db.Model):
+    """ Master table for all list detail.
+        Should contain the list detail
+    """
+    __tablename__ = "list_item"
+    id = db.Column(db.Integer, primary_key=True)
+    list_id = db.Column(db.Integer, db.ForeignKey(
+        'list_header.id'), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(300), nullable=True)
+    sort_order = db.Column(db.Integer, nullable=True)
+    stars = db.Column(db.Integer, nullable=True)
+    created_on = db.Column(db.DateTime(), nullable=False,
+                           default=datetime.utcnow)
+    modified_on = db.Column(
+        db.DateTime(), nullable=True)
+
+    def to_json(self):
+        json = {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description,
+            'sortOrder': self.sort_order,
+            'created_on': self.created_on,
+            'modified_on': self.modified_on
         }
         return json
