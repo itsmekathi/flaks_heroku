@@ -5,8 +5,8 @@
                 <h2>Add New type</h2>
                 <span flex></span>
                 <md-button class="md-icon-button" ng-click="cancel()">
-                    <!-- <md-icon md-svg-src="static/images/icons/cancel-24px.svg" aria-label="Close dialog"></md-icon> -->
-                    x
+                    <!-- <md-icon md-svg-src="/static/images/icons/cancel-24px.svg" aria-label="Close dialog"></md-icon> -->
+                    X
                 </md-button>
             </div>
         </md-toolbar>
@@ -39,7 +39,6 @@
         </md-dialog-content>
 
         <md-dialog-actions layout="row">
-            <pre>Data : {{list}}</pre>
             <md-button ng-class="{'md-raised md-hue-1' : (ListForm.$dirty && ListForm.$valid )}" ng-click="save()">
                 Save
             </md-button>

@@ -1,9 +1,8 @@
 (function () {
     'use strict';
     angular.module('app')
-        .controller('AddNewListController', ['$scope', '$mdDialog', 'ListDataService',
+        .controller('AddNewListController', ['$scope', '$mdDialog',
             function ($scope, $mdDialog, ListDataService) {
-                $scope.fullscreen = true;
                 var toastr = window.toastr;
                 var self = this;
                 $scope.hide = function () {
@@ -28,8 +27,8 @@
                         });
                 };
             }])
-        .controller('ListsController', ['$scope', '$log', '$mdDialog',
-            function ($scope, $log, $mdDialog) {
+        .controller('ListsController', ['$scope', '$log', '$mdDialog', 'ListDataService',
+            function ($scope, $log, $mdDialog,ListDataService) {
                 $log.log('Lists controller initialized');
 
                 // Angular material dialog
