@@ -58,7 +58,7 @@ def current_expenses():
 
     user_expenses_query = user_expenses_query.filter(
         Expenses.expense_date_time >= form.from_date.data)\
-        .filter(Expenses.expense_date_time <= form.to_date.data)
+        .filter(Expenses.expense_date_time <= (form.to_date.data + timedelta(days=1)))
 
     if(form.validate_on_submit):
         if form.contact_id.data != None and form.contact_id.data != 0:
