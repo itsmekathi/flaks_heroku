@@ -53,18 +53,17 @@
 
                 this.getListTypes = function(){
                     ListDataService.getListTypeLookups()
-                    .then(function(response){
-                        toastr.success('List type lookups fetched', 'Success');
-                        $scope.listTypes = response.data;
+                    .then(function(data){
+                        $scope.listTypes = data;
                     }, function(error){
                         toastr.error('Failed to fetch List Types', 'Error');
-                        $log.log('Error: ' + JSON.stringify(error));
                     })
                 };
                 this.saveListType = function(listType){
                     ListDataService.addNewListType(listType)
-                        .then(function () {
+                        .then(function (data) {
                             toastr.success('New type has been updated', 'Data Saved');
+                            $scope.listTypes.push(data);
                         }, function () {
                             toastr.error('Unable to save data', 'Error');
                         });

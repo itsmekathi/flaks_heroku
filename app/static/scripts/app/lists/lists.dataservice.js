@@ -11,8 +11,8 @@
                 function getListTypeLookups() {
                     var def = $q.defer();
                     $http.get(ListConstants.ListTypeLookupsUri)
-                        .then(function (data) {
-                            def.resolve(data);
+                        .then(function (response) {
+                            def.resolve(response.data);
                         }, function (error) {
                             $log.log('Error occured while retrieving data.');
                             $log.log(JSON.stringify(error));
@@ -24,8 +24,8 @@
                 function addNewListType(listType) {
                     var def = $q.defer();
                     $http.post(ListConstants.ListTypeLookupsUri, listType)
-                        .then(function (data) {
-                            def.resolve(data);
+                        .then(function (response) {
+                            def.resolve(response.data);
                         }, function (error) {
                             $log.log('Error occured while retrieving data.');
                             $log.log(JSON.stringify(error));
