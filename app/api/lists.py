@@ -69,9 +69,9 @@ def list_type(type_id):
         db.session.commit()
         return jsonify({'status': 'deleted'})
     if request.method == "POST":
-        list_type.name = request.json['listName']
+        list_type.name = request.json['name']
         list_type.description = request.json['description']
-        list_type.icon = request.json['iconClass']
+        list_type.icon = request.json['icon']
         list_type.style_class = request.json['styleClass']
         list_type.sort_order = request.json['sortOrder']
         db.session.commit()

@@ -75,7 +75,8 @@
     <!-- Angular module and controllers -->
     <script src="{{ url_for('static', filename='scripts/app/app.module.js')}}"></script>
     <script src="{{ url_for('static', filename='scripts/app/app.directives.js')}}"></script>
-    <script src="{{ url_for('static', filename='scripts/app/wordcount.controller.js')}}"></script>
+    <script src="{{ url_for('static', filename='scripts/app/commonservices/toastr.service.js')}}"></script>
+
     <!-- {{ toastr.include_jquery() }} -->
     {{ toastr.include_toastr_css() }}
     {{ toastr.message() }}

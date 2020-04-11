@@ -589,7 +589,7 @@ class ListTypeLu(db.Model):
             'name': self.name,
             'description': self.description,
             'icon': self.icon,
-            'style_class': self.style_class,
+            'styleClass': self.style_class,
             'sortOrder': self.sort_order,
             'resourceUri': url_for('api.list_type', type_id=self.id)
         }

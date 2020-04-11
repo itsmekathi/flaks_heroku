@@ -11,16 +11,16 @@
                     $mdDialog.hide($scope.list);
                 };
             }])
-        .controller('ListsController', ['$scope', '$log', '$mdDialog','ListDataService',
-            function ($scope, $log, $mdDialog, ListDataService) {
+        .controller('ListsController', ['$scope', '$log', '$mdDialog', 'ListDataService', 'ToastrService',
+            function ($scope, $log, $mdDialog, ListDataService, ToastrService) {
                 $log.log('Lists controller initialized');
                 var self = this;
-                var toastr = window.toastr;
                 $scope.listTypes = [];
+                self.listTypesCopy = [];
 
                 // Angular material dialog
-                $scope.showConfirm = function (ev, itemId) {
-                    $scope.currentItemId = itemId;
+                $scope.showConfirm = function (ev, item) {
+                    $scope.currentItem = item;
                     var confirm = $mdDialog.confirm()
                         .title('Would you like to delete this item')
                         .textContent('This is an Irreversible action')
@@ -29,7 +29,13 @@
                         .cancel('Cancel');
 
                     $mdDialog.show(confirm).then(function () {
-                        $log.log('Delete item action initialted');
+                        ListDataService.deleteListType($scope.currentItem.resourceUri)
+                            .then(function (data) {
+                                ToastrService.showSuccess('Item deleted successfully', 'Success');
+                                self.getListTypes();
+                            }, function () {
+                                $log.log('Delete action Failed');
+                            });
                     }, function () {
                         $log.log('Cancel action initialted');
                     });
@@ -45,29 +51,42 @@
                         clickOutsideToClose: true,
                         fullscreen: $scope.customFullscreen // Only for -xs, -sm breakpoints.
                     }).then(function (listType) {
-                        self.saveListType(listType);
+                        self.addListType(listType);
                     }, function () {
                         $log.log('Cancelled Save');
                     });
                 };
 
-                this.getListTypes = function(){
+                // Save the edited list type
+                $scope.saveItem = function (listTypeItem) {
+                    ListDataService.saveListType(listTypeItem)
+                        .then(function (data) {
+                            ToastrService.showSuccess('Updated item', 'Success');
+                            self.getListTypes();
+                        }, function (error) {
+                            ToastrService.showError('Error updating item', 'Error');
+                        });
+                }
+
+                self.getListTypes = function () {
                     ListDataService.getListTypeLookups()
-                    .then(function(data){
-                        $scope.listTypes = data;
-                    }, function(error){
-                        toastr.error('Failed to fetch List Types', 'Error');
-                    })
+                        .then(function (data) {
+                            $scope.listTypes = data;
+                        }, function () {
+                            ToastrService.showError('Failed to fetch List Types', 'Error');
+                        })
                 };
-                this.saveListType = function(listType){
+
+                self.addListType = function (listType) {
                     ListDataService.addNewListType(listType)
                         .then(function (data) {
-                            toastr.success('New type has been updated', 'Data Saved');
+                            ToastrService.showSuccess('New type has been updated', 'Data Saved');
                             $scope.listTypes.push(data);
+                            self.listTypesCopy.push(data);
                         }, function () {
-                            toastr.error('Unable to save data', 'Error');
+                            ToastrService.showError('Unable to save data', 'Error');
                         });
                 };
-                this.getListTypes();
+                self.getListTypes();
             }]);
 })();

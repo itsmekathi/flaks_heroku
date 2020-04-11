@@ -32,6 +32,8 @@
                 <td>#</td>
                 <td>Name</td>
                 <td>Description</td>
+                <td>Icon</td>
+                <td>Style</td>
                 <td>SortOrder</td>
                 <td>Actions</td>
             </tr>
@@ -39,30 +41,36 @@
         <tbody>
             {% raw %}
             <tr ng-repeat="listType in listTypes">
-                <td>{{ listType.id }}</td>
-                <td><span ng-if="!listType.isEdit">{{ listType.name }}</span> <span ng-if="listType.isEdit"><input
-                            type="text" class="form-control" ng-model="listType.name"></span></td>
+                <td>{{$index + 1 }}</td>
+                <td><span ng-if="!listType.isEdit">{{ listType.name }}</span>
+                    <span ng-if="listType.isEdit"><input type="text" class="form-control"
+                            ng-model="listType.name"></span>
+                </td>
                 <td><span ng-if="!listType.isEdit">{{ listType.description }}</span>
                     <span ng-if="listType.isEdit"><input type="text" class="form-control"
                             ng-model="listType.description"></span>
                 </td>
+                <td><span ng-if="!listType.isEdit">{{ listType.icon}}</span>
+                    <span ng-if="listType.isEdit"><input type="text" class="form-control"
+                            ng-model="listType.icon"></span>
+                </td>
+                <td><span ng-if="!listType.isEdit">{{ listType.styleClass}}</span>
+                    <span ng-if="listType.isEdit"><input type="text" class="form-control"
+                            ng-model="listType.styleClass"></span>
+                </td>
                 <td><span ng-if="!listType.isEdit">{{ listType.sortOrder}}</span>
                     <span ng-if="listType.isEdit"><input type="number" class="form-control"
-                            ng-model="listType.sortOrder"></span></td>
+                            ng-model="listType.sortOrder"></span>
+                </td>
                 <td>
                     <div>
                         <span ng-if="!listType.isEdit"><a href="#" class="btn" title="Edit Item"
                                 ng-click="listType.isEdit = true"><i class="fas fa-edit" style="color:antiquewhite;"
                                     aria-hidden="true"></i></a></span>
-                        <span ng-if="!listType.isEdit"><a href="#" ng-click="showConfirm($event, {{ listType.id }} )"
-                                class="btn" title="Delete Item"><i class="fas fa-trash-alt"
-                                    style="color:red;"></i></a></span>
-                        <span ng-if="!listType.isEdit"><a href="#" ng-click="moveItemDialog( $event, {{ listType.id }})"
-                                class="btn" title="Move item"><i class="fas fa-expand-arrows-alt"
-                                    style="color:cadetblue;"></i></a></span>
-                        <span ng-if="listType.isEdit"><a href="#" ng-click="saveItem({{ listType.id }})" class="btn"
-                                title="Save Changes"><i class="fas fa-save"
-                                    style="color:lightseagreen;"></i></a></span>
+                        <span ng-if="!listType.isEdit"><a href="#" ng-click="showConfirm($event, listType )" class="btn"
+                                title="Delete Item"><i class="fas fa-trash-alt" style="color:red;"></i></a></span>
+                        <span ng-if="listType.isEdit"><a href="#" ng-click="saveItem( listType )" class="btn"
+                                title="Save Changes"><i class="fas fa-save" style="color:lightseagreen;"></i></a></span>
                         <span ng-if="listType.isEdit" ng-click="listType.isEdit = false">
                             <a class="btn" href="#" title="Cancel"><i class="fas fa-window-close"
                                     style="color:brown;"></i></a></span>
