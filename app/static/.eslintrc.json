@@ -1,0 +1,21 @@
+{
+    "env": {
+      "browser": true
+    },
+    "globals":{
+        "Insert Global Here": true
+    },
+    "rules": {
+      "linebreak-style": [
+        "error",
+        "windows"
+      ],
+      "semi": [
+        "error",
+        "always"
+      ],
+      "no-console": "off",
+      "no-debugger": "warn",
+      "angular/di": [ "error", "$inject" ]
+    }
+  }

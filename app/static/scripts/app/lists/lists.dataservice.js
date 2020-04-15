@@ -9,7 +9,7 @@
                     getListTypeLookups: getListTypeLookups,
                     addNewListType: addNewListType,
                     deleteListType: deleteListType
-                }
+                };
                 function saveListType(listType) {
                     var def = $q.defer();
                     $http.post(listType.resourceUri, listType)
