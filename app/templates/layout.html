@@ -25,8 +25,6 @@
 
     <!-- Files required for angular-chart -->
     <script src="{{ url_for('static', filename='node_modules/chart.js/dist/Chart.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='node_modules/angular-chart.js/dist/angular-chart.min.js') }}"></script>
-
     <!-- Angular material libraries -->
     <script src="{{ url_for('static', filename='node_modules/angular-animate/angular-animate.min.js') }}"></script>
     <script src="{{ url_for('static', filename='node_modules/angular-aria/angular-aria.min.js') }}"></script>
@@ -50,7 +48,6 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-    <script src="https://cdn.bootcss.com/angular-chart.js/1.1.1/angular-chart.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular-animate.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular-aria.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular-messages.min.js"></script>
@@ -73,6 +70,8 @@
 
     {{ toastr.include_toastr_js() }}
     <!-- Angular module and controllers -->
+    <!-- Add angular-charts directly as CDN for the same is slow and breaking the pages because of dependencies -->
+    <script src="{{ url_for('static', filename='scripts/lib/angular-chart.min.js') }}"></script> 
     <script src="{{ url_for('static', filename='scripts/app/app.module.js')}}"></script>
     <script src="{{ url_for('static', filename='scripts/app/app.directives.js')}}"></script>
     <script src="{{ url_for('static', filename='scripts/app/commonservices/toastr.service.js')}}"></script>
