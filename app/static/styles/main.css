@@ -174,7 +174,7 @@ a.article-title:hover {
 .app-footer{
   width: 100%;
   bottom: 0;
-  position: absolute;
+  position: fixed;
   background: #FFF;
   height: 30px;
   border-top: 1px solid #eaedf3;
