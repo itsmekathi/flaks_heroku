@@ -1,8 +1,8 @@
 <div class="app-footer">
     <div class="row footer-row">
         <div class="col footer-text">
-            <span class="year">© 2020 Aayud HMS</span>
-            <span class="version">1.0.0</span>
+            <span class="year">© {{ moment().format('YYYY') }} Aayud HMS</span>
+            <span class="version">{{config.APP_VERSION}}</span>
         </div>
         <div class="col text-right">
             <a href="www.google.com" class="footer-link">Terms of Use</a>

@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
 {% if lookups %}
-<script src="{{ url_for('static', filename='scripts/app/expenses/expenses.lookups.controller.js')}}"></script>
+<script src="{{ url_for('static', filename='scripts/app/controllers/expenses/expenses.lookups.controller.js')}}"></script>
 <div class="content-section" ng-controller="expensesLookupsController" ng-init="lookupName='{{offsetUrl}}'">
     <div class="row">
         <div class="col-md-6">

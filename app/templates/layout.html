@@ -16,7 +16,6 @@
     <!-- If environment is local use from local server -->
     <link rel="stylesheet"
         href="{{ url_for('static', filename='node_modules/angular-material/angular-material.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/chartist/dist/chartist.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/bootstrap/dist/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/chart.js/dist/Chart.min.css') }}">
 
@@ -73,12 +72,13 @@
     <!-- Add angular-charts directly as CDN for the same is slow and breaking the pages because of dependencies -->
     <script src="{{ url_for('static', filename='scripts/app/libraries/angular-chart.min.js') }}"></script> 
     <script src="{{ url_for('static', filename='scripts/app/app.module.js')}}"></script>
-    <script src="{{ url_for('static', filename='scripts/app/app.directives.js')}}"></script>
-    <script src="{{ url_for('static', filename='scripts/app/commonservices/toastr.service.js')}}"></script>
+    <script src="{{ url_for('static', filename='scripts/app/directives/httprequest.directive.js')}}"></script>
+    <script src="{{ url_for('static', filename='scripts/app/sharedservices/toastr.service.js')}}"></script>
 
     <!-- {{ toastr.include_jquery() }} -->
     {{ toastr.include_toastr_css() }}
     {{ toastr.message() }}
+    {{ moment.include_moment() }}
 </head>
 
 <body ng-app="app" ng-cloak>

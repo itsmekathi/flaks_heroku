@@ -6,12 +6,15 @@ from flask_login import LoginManager
 from flask_mail import Mail
 from config import config
 from flask_toastr import Toastr
+from datetime import datetime
+from flask_moment import Moment
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 login_manager = LoginManager()
 mail = Mail()
 toastr = Toastr()
+moment = Moment()
 
 
 login_manager.login_view = 'users.login'
@@ -27,6 +30,7 @@ def create_app(config_name):
     login_manager.init_app(app)
     mail.init_app(app)
     toastr.init_app(app)
+    moment.init_app(app)
 
     if app.config['SSL_REDIRECT']:
         from flask_sslify import SSLify
@@ -65,6 +69,14 @@ def create_app(config_name):
     @app.context_processor
     def inject_environment_variables():
         return dict(environment=config_name)
+
+    @app.context_processor
+    def inject_configuration():
+        return dict(config=config[config_name])
+
+    @app.context_processor
+    def inject_now():
+        return {'now': datetime.utcnow()}
 
     @app.context_processor
     def utility_processor():

@@ -17,7 +17,7 @@
         </div>
     </div>
     {% if expense_items %}
-    <script src="{{ url_for('static', filename='scripts/app/expenses/expenses.details.controller.js')}}"></script>
+    <script src="{{ url_for('static', filename='scripts/app/controllers/expenses/expenses.details.controller.js')}}"></script>
     <span class="badge badge-primary pull-right">Total Items: {{ expense_items | length }}</span>
     <div ng-controller="expensesDetailsController">
         <table class="table table-striped table-bordered">
