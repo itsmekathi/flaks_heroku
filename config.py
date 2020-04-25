@@ -15,7 +15,7 @@ class Config:
     SSL_REDIRECT = False
 
     # Application specific variables
-    APP_NAME = 'Aayud hms'
+    APP_NAME = 'AAYUD HMS'
     APP_VERSION = '1.0.0'
 
     @staticmethod

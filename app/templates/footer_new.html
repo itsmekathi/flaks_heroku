@@ -1,13 +1,15 @@
 <div class="app-footer">
     <div class="row footer-row">
         <div class="col footer-text">
-            <span class="year">© {{ moment().format('YYYY') }} Aayud HMS</span>
+            <span class="year">© {{ moment().format('YYYY') }} {{config.APP_NAME}}</span>
             <span class="version">{{config.APP_VERSION}}</span>
+            
         </div>
         <div class="col text-right">
             <a href="www.google.com" class="footer-link">Terms of Use</a>
             <a href="www.google.com" class="footer-link">Privacy Policy</a>
             <a href="www.google.com" class="footer-link">Cookie Policy</a>
+            <span my-current-time="'M/d/yyyy h:mm a'" style="padding-right: 10px;"></span>
         </div>
     </div>
 </div>
