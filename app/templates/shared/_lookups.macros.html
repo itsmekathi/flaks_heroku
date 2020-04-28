@@ -27,3 +27,32 @@
     {% endfor %}
 </div>
 {%- endmacro %}
+
+{%- macro lookupCardV2(lookups) -%}
+<div class="row my-5 card-wrapper">
+    {% if lookups%}
+    {% for lookup in lookups %}
+    <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <a href="{{ lookup.edit_link }}">
+                    <h2 class="card-title">{{lookup.name}}</h2>
+                </a>
+                <h5>Style class: {{ lookup.style_class}}</h5>
+                <h5>Icon: {{ lookup.icon}}</h5>
+                <p class="card-text">{{lookup.description}}</p>
+            </div>
+            <div class="card-footer">
+                <span><a href="{{ lookup.edit_link }}" class="btn" title="Edit Item"><i class="fas fa-edit"
+                            aria-hidden="true"></i></a></span>
+                <span><a href="#" ng-click="showConfirm($event, {{ lookup.id }} )" class="btn" title="Delete Item"><i
+                            class="fas fa-trash-alt" style="color:chocolate;"></i></a></span>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <h2 class="offset-lg-3">No items to show.</h2>
+    {% endif %}
+</div>
+{%- endmacro %}
