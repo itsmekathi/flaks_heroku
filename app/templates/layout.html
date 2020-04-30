@@ -70,7 +70,18 @@
     {{ toastr.include_toastr_js() }}
     <!-- Add angular-charts directly as CDN for the same is slow and breaking the pages because of dependencies -->
     <script src="{{ url_for('static', filename='scripts/app/libraries/angular-chart.min.js') }}"></script>
-    
+
+    <!-- angularjs grid -->
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.7.0/angular-touch.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/angular-ui/bower-ui-grid/ui-grid.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/angular-ui/bower-ui-grid/ui-grid.min.css" type="text/css">
+
+    <!-- <script src="http://ui-grid.info/release/ui-grid.js"></script> 
+    <link rel="stylesheet" href="http://ui-grid.info/release/ui-grid.css" type="text/css"> -->
+
+    <!-- <script src="{{ url_for('static', filename='scripts/app/libraries/ui-grid.js')}}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/ui-grid.css')}}" type="text/css"> -->
+
     <!-- Angular module and controllers -->
     <script src="{{ url_for('static', filename='scripts/app/app.module.js')}}"></script>
     <script src="{{ url_for('static', filename='scripts/app/directives/httprequest.directive.js')}}"></script>

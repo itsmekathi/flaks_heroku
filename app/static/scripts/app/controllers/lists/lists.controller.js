@@ -16,7 +16,26 @@
                 $log.log('Lists controller initialized');
                 var self = this;
                 $scope.listTypes = [];
-                self.listTypesCopy = [];
+
+                $scope.gridOptions = {
+                    enableSorting: false,
+                    columnDefs: [
+                        { field: 'name' },
+                        { field: 'description' },
+                        { field: 'icon' },
+                        { field: 'styleClass' },
+                        { field: 'sortOrder', enableSorting: true, type: 'number' }
+                    ],
+                    onRegisterApi: function (gridApi) {
+                        $scope.gridApi = gridApi;
+                        gridApi.rowEdit.on.saveRow($scope, $scope.saveRow);
+                    }
+                };
+
+                $scope.saveRow = function (rowEntity) {
+                    console.log("Save initiated");
+                    console.log(JSON.stringify(rowEntity));
+                }
 
                 // Angular material dialog
                 $scope.showConfirm = function (ev, item) {
@@ -45,7 +64,7 @@
                 $scope.showAdvanced = function (ev) {
                     $mdDialog.show({
                         controller: 'AddNewListController',
-                        templateUrl: '/static/scripts/app/lists/addlist.tmpl.html',
+                        templateUrl: '/static/scripts/app/controllers/lists/addlist.tmpl.html',
                         parent: angular.element(document.body),
                         targetEvent: ev,
                         clickOutsideToClose: true,
@@ -72,6 +91,7 @@
                     ListDataService.getListTypeLookups()
                         .then(function (data) {
                             $scope.listTypes = data;
+                            $scope.gridOptions.data = data;
                         }, function () {
                             ToastrService.showError('Failed to fetch List Types', 'Error');
                         })
