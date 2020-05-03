@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block content %}
+{% include 'lists/_list.constants.html'%}
+<script src="{{ url_for('static', filename='scripts/app/controllers/lists/lists.dataservice.js')}}"></script>
+<script src="{{ url_for('static', filename='scripts/app/controllers/lists/lists-details.controller.js')}}"></script>
+<div class="content-section" ng-controller="ListsDetailsController as vm">
+    <div class="row">
+        <div class="col-md-8">
+            {% raw %}
+            <h2 class="ml-4">{{vm.listData.name}} <span class="badge badge-pill badge-info"
+                    style="font-size: medium;">{{vm.listData.listItems.length}}
+                    Items</span></h2>
+            <h3 ng-if="vm.listData.listItems.length == 0">No items found</h3>
+            {% endraw %}
+        </div>
+        <div class="col-md-4">
+            <a class="btn btn-success mb-4 pull-right"
+                href="{{ url_for('lists.add_list_item', list_id= list_header.id) }}">Add New <i
+                    class="fas fa-plus-circle"></i> </a>
+        </div>
+    </div>
+    <div id="grid1" ui-grid="vm.gridOptions" ui-grid-edit ui-grid-row-edit ui-grid-cellNav class="grid"></div>
+</div>
+{% endblock content %}

@@ -2,7 +2,7 @@
     'use strict';
     angular.module('app')
         .controller('contactsController', ['$scope', '$log', '$mdDialog', '$http', '$window',
-            function ($scope, $log, $mdDialog, $http, $window, toaster) {
+            function ($scope, $log, $mdDialog, $http, $window) {
                 $log.log('Contacts controller initialized');
                 $scope.status = '  ';
                 $scope.lookupName = '';

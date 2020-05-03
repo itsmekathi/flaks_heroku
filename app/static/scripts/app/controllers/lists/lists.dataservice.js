@@ -7,22 +7,44 @@
                 var service = {
                     saveListType: saveListType,
                     getListTypeLookups: getListTypeLookups,
+                    getListDetails: getListDetails,
+                    updateListDetail: updateListDetail,
                     addNewListType: addNewListType,
                     deleteListType: deleteListType
                 };
-                function saveListType(listType) {
+                function updateListDetail(listItem) {
                     var def = $q.defer();
-                    $http.post(listType.resourceUri, listType)
+                    $http.post(listItem.updateUrl, listItem)
                         .then(function (response) {
                             def.resolve(response.data);
                         }, function (error) {
                             def.reject(error);
                         });
-                    return def;
+                    return def.promise;
+                };
+                function getListDetails() {
+                    var def = $q.defer();
+                    $http.get(ListConstants.CurrentListHeader.detailUrl)
+                        .then(function (response) {
+                            def.resolve(response.data);
+                        }, function (error) {
+                            def.reject(error);
+                        });
+                    return def.promise;
+                }
+                function saveListType(listType) {
+                    var def = $q.defer();
+                    $http.post(listType.resourceUrl, listType)
+                        .then(function (response) {
+                            def.resolve(response.data);
+                        }, function (error) {
+                            def.reject(error);
+                        });
+                    return def.promise;
                 };
                 function getListTypeLookups() {
                     var def = $q.defer();
-                    $http.get(ListConstants.ListTypeLookupsUri)
+                    $http.get(ListConstants.ListTypeLookupsUrl)
                         .then(function (response) {
                             def.resolve(response.data);
                         }, function (error) {
@@ -35,7 +57,7 @@
 
                 function addNewListType(listType) {
                     var def = $q.defer();
-                    $http.post(ListConstants.ListTypeLookupsUri, listType)
+                    $http.post(ListConstants.ListTypeLookupsUrl, listType)
                         .then(function (response) {
                             def.resolve(response.data);
                         }, function (error) {

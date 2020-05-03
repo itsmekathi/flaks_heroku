@@ -1,0 +1,12 @@
+<script type="text/javascript">
+    (function () {
+        'use strict';
+        angular.module('app')
+            .constant('ListConstants',
+                {
+                    "ListsHeaderUrl": "{{ url_for('api.list_headers') }}",
+                    'ListTypeLookupsUrl': "{{ url_for('api.list_types') }}",
+                    'CurrentListHeader': JSON.parse(`{% if list_header %} {{ list_header.to_json() | tojson }}  {% else %} { } {% endif %}`)
+                });
+    })();
+</script>

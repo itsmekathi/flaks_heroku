@@ -76,3 +76,28 @@ def list_type(type_id):
         list_type.sort_order = request.json['sortOrder']
         db.session.commit()
         return jsonify(list_type.to_json())
+
+
+@api.route('/lists/<int:list_id>/items', methods=['GET', 'DELETE', 'POST'])
+def list_item(list_id):
+    if request.method == "GET":
+        return jsonify([item.to_json() for item in ListItem.query.filter_by(list_id=list_id)])
+    if request.method == "DELETE":
+        """ Deletes the entity
+        """
+        list_item = ListItem.query.get_or_404(int(request.json["id"]))
+        db.session.delete(list_item)
+        db.session.commit()
+        return jsonify({'status': 'deleted'})
+    if request.method == "POST":
+        """ Updates the entity if POST and Id is valid, create should always be done
+        through form
+        """
+        list_item = ListItem.query.get_or_404(int(request.json["id"]))
+        list_item.modified_on = datetime.utcnow()
+        list_item.name = request.json['name']
+        list_item.description = request.json['description']
+        list_item.sort_order = request.json['sortOrder']
+        list_item.stars = request.json['stars']
+        db.session.commit()
+        return jsonify(list_item.to_json())

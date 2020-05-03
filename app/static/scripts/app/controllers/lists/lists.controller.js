@@ -24,7 +24,13 @@
                         { field: 'description' },
                         { field: 'icon' },
                         { field: 'styleClass' },
-                        { field: 'sortOrder', enableSorting: true, type: 'number' }
+                        { field: 'sortOrder', enableSorting: true, type: 'number' },
+                        {
+                            field: 'Actions',
+                            cellTemplate:
+                                `<span><a href="#" ng-click="grid.appScope.showConfirm($event, row.entity )" class="btn"
+                        title="Delete Item"><i class="fas fa-trash-alt" style="color:red;"></i></a></span>`
+                        }
                     ],
                     onRegisterApi: function (gridApi) {
                         $scope.gridApi = gridApi;
@@ -32,9 +38,9 @@
                     }
                 };
 
-                $scope.saveRow = function (rowEntity) {
-                    console.log("Save initiated");
-                    console.log(JSON.stringify(rowEntity));
+                $scope.saveRow = function (listType) {
+                    var promise = ListDataService.saveListType(listType);
+                    $scope.gridApi.rowEdit.setSavePromise(listType, promise);
                 }
 
                 // Angular material dialog
@@ -48,7 +54,7 @@
                         .cancel('Cancel');
 
                     $mdDialog.show(confirm).then(function () {
-                        ListDataService.deleteListType($scope.currentItem.resourceUri)
+                        ListDataService.deleteListType($scope.currentItem.resourceUrl)
                             .then(function (data) {
                                 ToastrService.showSuccess('Item deleted successfully', 'Success');
                                 self.getListTypes();
@@ -102,7 +108,6 @@
                         .then(function (data) {
                             ToastrService.showSuccess('New type has been updated', 'Data Saved');
                             $scope.listTypes.push(data);
-                            self.listTypesCopy.push(data);
                         }, function () {
                             ToastrService.showError('Unable to save data', 'Error');
                         });

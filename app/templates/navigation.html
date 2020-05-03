@@ -39,7 +39,9 @@
                         <div class="dropdown-menu" aria-labelledby="utilityMenuLink">
                             <a class="dropdown-item" href="{{ url_for('bookmarks.search')}}">Bookmarks
                                 <i class="fab fa-usps"></i></a>
-                            <a class="dropdown-item" href="{{ url_for('lists.list_types') }}">Lists<i
+                            <a class="dropdown-item" href="{{ url_for('lists.all_lists') }}">Lists<i
+                                    class="fas fa-blog"></i></a>
+                            <a class="dropdown-item" href="{{ url_for('lists.list_types') }}">Manage List Types<i
                                     class="fas fa-blog"></i></a>
                             <a class="dropdown-item" href="{{ url_for('inventory.search') }}">Inventory<i
                                     class="fas fa-blog"></i></a>

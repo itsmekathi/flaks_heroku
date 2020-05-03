@@ -1,16 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
-<script type="text/javascript">
-    (function () {
-        'use strict';
-        angular.module('app')
-            .constant('ListConstants',
-                {
-                    "ListsHeaderUri": "{{ url_for('api.list_headers') }}",
-                    'ListTypeLookupsUri': "{{ url_for('api.list_types') }}"
-                });
-    })();
-</script>
+{% include 'lists/_list.constants.html'%}
 <script src="{{ url_for('static', filename='scripts/app/controllers/lists/lists.dataservice.js')}}"></script>
 <script src="{{ url_for('static', filename='scripts/app/controllers/lists/lists.controller.js')}}"></script>
 <div class="content-section" ng-controller="ListsController">

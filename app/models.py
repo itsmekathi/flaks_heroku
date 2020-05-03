@@ -591,7 +591,7 @@ class ListTypeLu(db.Model):
             'icon': self.icon,
             'styleClass': self.style_class,
             'sortOrder': self.sort_order,
-            'resourceUri': url_for('api.list_type', type_id=self.id)
+            'resourceUrl': url_for('api.list_type', type_id=self.id)
         }
         return json
 
@@ -625,7 +625,8 @@ class ListHeader(db.Model):
             'createdBy': self.created_by.username,
             'createdOn': self.created_on,
             'modifiedOn': self.modified_on,
-            'resource_uri': url_for('api.list_header', list_id=self.id)
+            'resourceUrl': url_for('api.list_header', list_id=self.id,),
+            'detailUrl': url_for('lists.list_details', list_id=self.id, ajax=1)
         }
         return json
 
@@ -652,8 +653,10 @@ class ListItem(db.Model):
             'id': self.id,
             'name': self.name,
             'description': self.description,
+            'stars': self.stars,
             'sortOrder': self.sort_order,
-            'created_on': self.created_on,
-            'modified_on': self.modified_on
+            'createdOn': self.created_on,
+            'modifiedOn': self.modified_on,
+            'updateUrl': url_for('api.list_item', list_id=self.list_id)
         }
         return json

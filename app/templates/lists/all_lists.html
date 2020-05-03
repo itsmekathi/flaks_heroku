@@ -1,0 +1,78 @@
+{% extends "layout.html" %}
+{% block content %}
+{% include 'lists/_list.constants.html'%}
+<script src="{{ url_for('static', filename='scripts/app/controllers/lists/allLists.controller.js')}}"></script>
+<div class="container-fluid" ng-controller="allListsController as vm">
+    {% if items %}
+    <div class="row mb-3">
+        <div class="col-md-8">
+            <h2>All List Data.</h2>
+        </div>
+        <div class="col-md-4">
+            <a class="btn btn-success pull-right" href="{{ url_for('lists.new_lists') }}"><span></span>Add New <i
+                    class="fas fa-plus-circle"></i></a>
+        </div>
+    </div>
+    <div class="accordion" id="allLists">
+        {% for item in items %}
+        <div class="card">
+            <div class="card-header" id="list-{{item.id}}">
+                <h2 class="mb-0">{{ item.name }}
+                    <button class="btn btn-link pull-right" type="button" data-toggle="collapse"
+                        style="text-decoration: none;" data-target="#list-card-{{item.id}}" aria-expanded="false"
+                        aria-controls="list-card-{{item.id}}">
+                        >
+                    </button>
+                </h2>
+            </div>
+            <div id="list-card-{{item.id}}" class="collapse" aria-labelledby="list-{{item.id}}" data-parent="#allLists">
+                <div class="card-body">
+                    {{ item.description }}
+                    <div class="pull-right">
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <a class="btn btn-primary" href="{{ url_for('lists.list_details', list_id=item.id) }}">Show
+                                Items</a>
+                            <a class="btn btn-danger"
+                                href="{{ url_for('lists.delete_list', list_id=item.id) }}">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <h1 class="offset-lg-3">No items to show.</h1>
+    {% endif %}
+    <div class="col-md-6 col-md-offset-3">
+        <button ng-click="vm.openModal('delete-list-modal')">Delete</button>
+        <button ng-click="vm.openModal('save-list-modal')">Save</button>
+        <button ng-click="vm.openModal('custom-modal-1')">custom modal</button>
+    </div>
+    <custom-modal id="delete-list-modal">
+        <div class="custom-modal">
+            <div class="custom-modal-body">
+                <div class="row">
+                    <div class="col-md-10">
+                        <h1>A Custom Modal!</h1>
+                    </div>
+                    <div class="col-md-2">
+                        <span class="pull-right custom-modal-close-button">&times;</span>
+                    </div>
+                </div>
+                {% raw %}
+                <p>
+                    A simple text from controller {{ vm.title }}
+                    asdfasjdlfjasldj lsdjflasdfj asd
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Dignissimos, itaque at natus deleniti
+                    accusamus hic culpa error quod beatae ea, veritatis maiores quisquam repudiandae laudantium ratione
+                    voluptatibus? Facilis, quis iste?
+                </p>
+                {% endraw %}
+                <button ng-click="vm.closeModal('delete-list-modal');">Close</button>
+            </div>
+        </div>
+        <div class="custom-modal-background"></div>
+    </custom-modal>
+</div>
+{% endblock content %}

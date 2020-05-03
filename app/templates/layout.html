@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/chart.js/dist/Chart.min.css') }}">
 
     <script src="{{ url_for('static', filename='node_modules/jquery/dist/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='node_modules/underscore/underscore.js') }}"></script>
     <script src="{{ url_for('static', filename='node_modules/angular/angular.js') }}"> </script>
 
     <!-- Files required for angular-chart -->
@@ -44,6 +45,8 @@
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"
+        crossorigin="anonymous"></script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
@@ -63,6 +66,8 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/modal.css') }}">
+    <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.3/less.min.js"></script> -->
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <!-- Fontawesome kit link -->
     <script src="https://kit.fontawesome.com/1d10738437.js" crossorigin="anonymous"></script>
@@ -84,10 +89,14 @@
 
     <!-- Angular module and controllers -->
     <script src="{{ url_for('static', filename='scripts/app/app.module.js')}}"></script>
+    <!-- Custom Angular service -->
+    <script src="{{ url_for('static', filename='scripts/app/sharedservices/toastr.service.js')}}"></script>
+    <script src="{{ url_for('static', filename='scripts/app/sharedservices/modal.service.js')}}"></script>
+    <script src="{{ url_for('static', filename='scripts/app/sharedservices/ui.modal.service.js')}}"></script>
+    <!-- Custom Angular Directives -->
     <script src="{{ url_for('static', filename='scripts/app/directives/httprequest.directive.js')}}"></script>
     <script src="{{ url_for('static', filename='scripts/app/directives/currentTime.directive.js')}}"></script>
-    <script src="{{ url_for('static', filename='scripts/app/sharedservices/toastr.service.js')}}"></script>
-
+    <script src="{{ url_for('static', filename='scripts/app/directives/modal.directive.js')}}"></script>
     <!-- {{ toastr.include_jquery() }} -->
     {{ toastr.include_toastr_css() }}
     {{ toastr.message() }}
