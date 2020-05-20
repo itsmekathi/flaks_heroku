@@ -87,7 +87,7 @@ def current_expenses():
                        f'Category: {form.category_id.data}', f'Contact Id: {form.contact_id.data}',
                        f'Page Number : {page}',
                        f'Page Size: {page_size}']
-    user_expenses = user_expenses_query.order_by(Expenses.expense_date_time).paginate(
+    user_expenses = user_expenses_query.order_by(Expenses.expense_date_time.desc()).paginate(
         page=page, per_page=page_size)
     return render_template('/expenses/_all.expenses.html', expenses=user_expenses,
                            form=form, legend='Filter Expenses', total_expense=total_expense, expense_filters=expense_filters)

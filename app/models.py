@@ -10,9 +10,10 @@ from .exceptions import ValidationError
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-
 # Define the User data-model.
 # NB: Make sure to add flask_user UserMixin !!!
+
+
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
 
@@ -51,6 +52,10 @@ class User(db.Model, UserMixin):
     expenses = db.relationship('Expenses', backref="created_by", lazy=True)
     addresses = db.relationship('Address', backref="created_by", lazy=True)
     lists = db.relationship('ListHeader', backref="created_by", lazy=True)
+    bookmarks_folder = db.relationship(
+        'BookmarksFolder', backref="created_by", lazy=True)
+    bookmarks_items = db.relationship(
+        'BookmarksItems', backref="created_by", lazy=True)
 
     def verify_password(self, password):
         return bcrypt.check_password_hash(self.password, password)
@@ -660,3 +665,41 @@ class ListItem(db.Model):
             'updateUrl': url_for('api.list_item', list_id=self.list_id)
         }
         return json
+
+
+class BookmarksFolder(db.Model):
+    """
+    Master table for all bookmark folder.
+    Will contain all folders under which book marks are stored
+    """
+    __tablename__ = "bookmarks_folder"
+    id = db.Column(db.Integer, primary_key=True)
+    folder_name = db.Column(db.String(250), nullable=False)
+    description = db.Column(db.String(300), nullable=True)
+    bookmark_items = db.relationship(
+        'BookmarksItems', backref="bookmark_folder", lazy=True)
+    created_by_id = db.Column(db.Integer, db.ForeignKey(
+        'users.id'), nullable=False)
+    created_on = db.Column(db.DateTime(), nullable=False,
+                           default=datetime.utcnow)
+    modified_on = db.Column(
+        db.DateTime(), nullable=True)
+
+
+class BookmarksItems(db.Model):
+    """
+    ## Master table for all bookmark items.
+    ### Will contain only bookmarks with parent folder_id which can be nullable
+    """
+    __tablename__ = "bookmark_items"
+    id = db.Column(db.Integer, primary_key=True)
+    folder_id = db.Column(db.Integer, db.ForeignKey(
+        'bookmarks_folder.id'), nullable=True)
+    resource_url = db.Column(db.String(500), nullable=False)
+    description = db.Column(db.String(300), nullable=True)
+    created_by_id = db.Column(db.Integer, db.ForeignKey(
+        'users.id'), nullable=False)
+    created_on = db.Column(db.DateTime(), nullable=False,
+                           default=datetime.utcnow)
+    modified_on = db.Column(
+        db.DateTime(), nullable=True)

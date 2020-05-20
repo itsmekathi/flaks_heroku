@@ -21,6 +21,7 @@ module.exports = function (grunt) {
                             'scripts/app/directives/currentTime.directive.js',
                             'scripts/app/directives/httprequest.directive.js',
                             'scripts/app/directives/modal.directive.js',
+                            'scripts/app/directives/simpleModal.directive.js',
                             'scripts/app/sharedservices/modal.service.js',
                             'scripts/app/sharedservices/toastr.service.js',
                             'scripts/app/sharedservices/ui.modal.service.js',

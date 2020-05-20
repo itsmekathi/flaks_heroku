@@ -46,8 +46,7 @@
     {% endif %}
     <div class="col-md-6 col-md-offset-3">
         <button ng-click="vm.openModal('delete-list-modal')">Delete</button>
-        <button ng-click="vm.openModal('save-list-modal')">Save</button>
-        <button ng-click="vm.openModal('custom-modal-1')">custom modal</button>
+        <button ng-click="vm.showModal2=true">Show Modal2 </button>
     </div>
     <custom-modal id="delete-list-modal">
         <div class="custom-modal">
@@ -74,5 +73,8 @@
         </div>
         <div class="custom-modal-background"></div>
     </custom-modal>
+    <modal-window show="vm.showModal2"  title="'Simple modal dialog 2'" width='800px' height=60%>
+        <p>Hello simple Modal Window</p>
+    </modal-window>
 </div>
 {% endblock content %}

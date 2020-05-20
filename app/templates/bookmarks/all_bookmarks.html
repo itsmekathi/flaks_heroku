@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+    <div class="row">
+        <div class="col-md-8">
+            <h3>All Bookmarks</h3>
+        </div>
+        <div class="col-md-4">
+            <a class="btn btn-primary mb-4 pull-right" title="Add New" href="{{ url_for('bookmarks.new_folder') }}">Add
+                New <i class="fas fa-plus-circle"></i></a>
+        </div>
+    </div>
+    <div class="row">
+        {% if bookmarks_folders%}
+        {% for bookmark_folder in bookmarks_folders %}
+        ID: {{bookmark_folder.id}} , Name: {{ bookmark_folder.folder_name }}<br>
+        Description: {{bookmark_folder.description }}
+        Items: {% if bookmark_folder.bookmark_items %}{{ bookmark_folder.bookmark_items|length }} {% else %} --
+        {% endif %}
+        {% endfor %}
+        {% else %}
+        <h2>No Items Found</h2>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

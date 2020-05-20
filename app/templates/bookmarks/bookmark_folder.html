@@ -1,0 +1,5 @@
+{% extends "layout.html" %}
+{% block content %}
+{% from "/bookmarks/macros/bookmarks.macros.html" import bookmark_folder_form %}
+{{ bookmark_folder_form(form, legend ) }}
+{% endblock content %}

@@ -70,8 +70,9 @@
     <!-- Custom style sheets, should be loaded after bootstrap -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/main.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/modal.css') }}">
+    <link rel="stylesheet/less" type="text/css" href="{{ url_for('static', filename='styles/simple-modal.less') }}">
 
-    <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.3/less.min.js"></script> -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/3.9.0/less.min.js"></script>
 
     <!-- Fontawesome kit link -->
     <script src="https://kit.fontawesome.com/1d10738437.js" crossorigin="anonymous"></script>
@@ -100,8 +101,9 @@
     <script src="{{ url_for('static', filename='scripts/app/directives/httprequest.directive.js')}}"></script>
     <script src="{{ url_for('static', filename='scripts/app/directives/currentTime.directive.js')}}"></script>
     <script src="{{ url_for('static', filename='scripts/app/directives/modal.directive.js')}}"></script>
+    <script src="{{ url_for('static', filename='scripts/app/directives/simpleModal.directive.js')}}"></script>
     {% else %}
-    <!-- Serve minified and bundled content on production -->
+    <!-- Serve minified and bundled content on non-development environment -->
     <script src="{{ url_for('static', filename='scripts/distribution/app.module.min.js')}}"></script>
     {% endif %}
     {{ toastr.include_toastr_css() }}

@@ -6,6 +6,7 @@
             vm.title = "AllListsController";
             vm.openModal = openModal;
             vm.closeModal = closeModal;
+            vm.showModal2 = false;
 
             function openModal(id) {
                 console.log("Opening modal with id: " + id);

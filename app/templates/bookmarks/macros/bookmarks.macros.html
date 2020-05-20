@@ -1,0 +1,48 @@
+{% macro bookmark_folder_form(form, legend) %}
+<div class="content-section">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-2">{{legend}}</legend>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    {{ form.folder_name.label(class="form-control-label") }}
+                    {% if form.folder_name.flags.required %}<span class="required-field">*</span>
+                    {% endif %}
+                    {% if form.folder_name.errors %}
+                    {{ form.folder_name(class="form-control form-control-md is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.folder_name.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.folder_name(class="form-control form-control-md") }}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    {{ form.description.label(class="form-control-label") }}
+                    {% if form.description.flags.required %}
+                    <span class="required-field">*</span>
+                    {% endif %}
+                    {% if form.description.errors %}
+                    {{ form.description(class="form-control form-control-md is-invalid", rows=3) }}
+                    <div class="invalid-feedback">
+                        {% for error in form.description.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.description(class="form-control form-control-md", rows=3) }}
+                    {% endif %}
+                </div>
+            </div>
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</div>
+{% endmacro %}
