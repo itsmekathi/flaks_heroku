@@ -52,7 +52,12 @@ class ExpenseForm(FlaskForm):
         'Expense time', validators=[DataRequired()], render_kw={"placeholder": "HH:MM:SS"})
     description = TextAreaField('Description', validators=[DataRequired(), Length(
         max=300)], render_kw={"placeholder": "Description", "rows": "3"})
+
+class AddExpenseForm(ExpenseForm):
     submit = SubmitField('Create')
+
+class EditExpenseForm(ExpenseForm):
+    submit = SubmitField('Update')
 
 
 class ExpenseItemForm(FlaskForm):
@@ -66,4 +71,9 @@ class ExpenseItemForm(FlaskForm):
         'Quantity', places=2, validators=[DataRequired()])
     gross_price = DecimalField(
         'Gross Price', places=2, validators=[DataRequired()])
+
+class AddExpenseItemForm(ExpenseItemForm):
     submit = SubmitField('Create')
+
+class EditExpenseItemForm(ExpenseItemForm):
+    submit = SubmitField('Update')

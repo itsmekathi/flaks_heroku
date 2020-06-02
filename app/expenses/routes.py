@@ -4,7 +4,7 @@ from app import db
 from app.utils import get_first_dateofthemonth
 from app.constants import date_time_format
 from app.models import ExpenseTypeLu, ExpenseCategoryLu, Expenses, ExpenseDetails, Contact, UnitOfMeasurementLu
-from .forms import ExpenseTypeLuForm, ExpenseCategoryLuForm, ExpenseForm, ExpenseItemForm, UOMForm, ExpenseFilterForm
+from .forms import ExpenseTypeLuForm, ExpenseCategoryLuForm, AddExpenseForm, EditExpenseForm, AddExpenseItemForm, EditExpenseItemForm, UOMForm, ExpenseFilterForm
 from . import expenses
 from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
@@ -96,7 +96,7 @@ def current_expenses():
 @login_required
 @expenses.route('/add', methods=["GET", "POST"])
 def add_expenses():
-    expenses_form = ExpenseForm()
+    expenses_form = AddExpenseForm()
     expenses_form.contact_id.choices = [(contact.id, contact.first_name)
                                         for contact in Contact.query.filter_by(created_by=current_user).all()]
     expenses_form.type_id.choices = [
@@ -122,7 +122,7 @@ def add_expenses():
 @login_required
 @expenses.route('/edit/<int:expense_id>', methods=["GET", "POST"])
 def edit_expenses(expense_id):
-    expenses_form = ExpenseForm()
+    expenses_form = EditExpenseForm()
     expense_item = Expenses.query.get_or_404(expense_id)
 
     expenses_form.contact_id.choices = [(contact.id, contact.first_name)
@@ -172,7 +172,7 @@ def details(expense_id):
 @login_required
 @expenses.route('/details/add/<int:expense_id>', methods=["GET", "POST"])
 def add_details(expense_id):
-    expense_item_form = ExpenseItemForm()
+    expense_item_form = AddExpenseItemForm()
     expense = Expenses.query.get_or_404(expense_id)
     expense_item_form.uom_id.choices = [(uom.id, uom.name)
                                         for uom in UnitOfMeasurementLu.query.all()]
@@ -205,7 +205,7 @@ def update_expense_header(expense_id):
 @expenses.route('/details/edit/<int:expense_detail_id>', methods=["GET", "POST"])
 def edit_details(expense_detail_id):
     expense_item = ExpenseDetails.query.get_or_404(expense_detail_id)
-    expense_item_form = ExpenseItemForm()
+    expense_item_form = EditExpenseItemForm()
     expense_item_form.uom_id.choices = [(uom.id, uom.name)
                                         for uom in UnitOfMeasurementLu.query.all()]
     if expense_item_form.validate_on_submit():

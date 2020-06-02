@@ -10,13 +10,29 @@
                 New <i class="fas fa-plus-circle"></i></a>
         </div>
     </div>
-    <div class="row">
+    <div class="bookmarks-container">
         {% if bookmarks_folders%}
         {% for bookmark_folder in bookmarks_folders %}
-        ID: {{bookmark_folder.id}} , Name: {{ bookmark_folder.folder_name }}<br>
-        Description: {{bookmark_folder.description }}
-        Items: {% if bookmark_folder.bookmark_items %}{{ bookmark_folder.bookmark_items|length }} {% else %} --
-        {% endif %}
+        <div class="row mb-2 border rounded-pill">
+            <div class="col-md-3">{{ bookmark_folder.folder_name }}
+                <span
+                    class="badge badge-primary">{% if bookmark_folder.bookmark_items %}{{ bookmark_folder.bookmark_items|length }}
+                    {% else %} 0
+                    {% endif %} Items</span></div>
+            <div class="col-md-3"><span>{{bookmark_folder.description}}</span></div>
+            <div class="col-md-6">
+                <div class="pull-right">
+                    <span><a href="{{ url_for('bookmarks.edit_folder', folder_id=bookmark_folder.id) }}" class="btn"
+                            title="Edit Folder"><i class="far fa-edit"></i></a></span>
+                    <span><a href="{{ url_for('bookmarks.add_bookmark_item', folder_id=bookmark_folder.id) }}"
+                            class="btn" title="Add new item"><i class="far fa-plus-square"></i></a></span>
+                    <form action="{{ url_for('bookmarks.delete_folder', folder_id=bookmark_folder.id) }}" method="POST">
+                        {{delete_folder_form.hidden_tag()}}
+                        {{delete_folder_form.submit(class="btn btn-danger", onClick="return confirm('Are you sure you want to delete this item?')") }}
+                    </form>
+                </div>
+            </div>
+        </div>
         {% endfor %}
         {% else %}
         <h2>No Items Found</h2>

@@ -46,3 +46,67 @@
     </form>
 </div>
 {% endmacro %}
+
+{% macro bookmark_item_form(form, legend) %}
+<div class="content-section">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-2">{{legend}}</legend>
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    {{ form.folder_id.label(class="form-control-label") }}
+                    {% if form.folder_id.flags.required %}<span class="required-field">*</span>
+                    {% endif %}
+                    {% if form.folder_id.errors %}
+                    {{ form.folder_id(class="form-control form-control-md is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.folder_id.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.folder_id(class="form-control form-control-md") }}
+                    {% endif %}
+                </div>
+                <div class="form-group col-md-9">
+                    {{ form.bookmark_link.label(class="form-control-label") }}
+                    {% if form.bookmark_link.flags.required %}<span class="required-field">*</span>
+                    {% endif %}
+                    {% if form.bookmark_link.errors %}
+                    {{ form.bookmark_link(class="form-control form-control-md is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.bookmark_link.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.bookmark_link(class="form-control form-control-md") }}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    {{ form.description.label(class="form-control-label") }}
+                    {% if form.description.flags.required %}
+                    <span class="required-field">*</span>
+                    {% endif %}
+                    {% if form.description.errors %}
+                    {{ form.description(class="form-control form-control-md is-invalid", rows=3) }}
+                    <div class="invalid-feedback">
+                        {% for error in form.description.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.description(class="form-control form-control-md", rows=3) }}
+                    {% endif %}
+                </div>
+            </div>
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</div>
+{% endmacro %}

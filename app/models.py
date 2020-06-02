@@ -685,6 +685,16 @@ class BookmarksFolder(db.Model):
     modified_on = db.Column(
         db.DateTime(), nullable=True)
 
+    def to_json(self):
+        json = {
+            'id': self.id,
+            'name': self.folder_name,
+            'description': self.description,
+            'createdOn': self.created_on,
+            'modifiedOn': self.modified_on,
+        }
+        return json
+
 
 class BookmarksItems(db.Model):
     """
@@ -703,3 +713,14 @@ class BookmarksItems(db.Model):
                            default=datetime.utcnow)
     modified_on = db.Column(
         db.DateTime(), nullable=True)
+
+    def to_json(self):
+        json = {
+            'id': self.id,
+            'folder_id': self.folder_id,
+            'url': self.resource_url,
+            'description': self.description,
+            'createdOn': self.created_on,
+            'modifiedOn': self.modified_on,
+        }
+        return json
