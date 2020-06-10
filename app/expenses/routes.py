@@ -200,7 +200,7 @@ def add_details(expense_id):
         update_expense_header(expense_id)
         return jsonify({'status': 'added'})
     return render_template('/expenses/_addExpensesDetails.partial.html', form=expense_item_form, legend="Add new item",
-                           expense=expense, form_class='add-expense-detail-form', action_name=url_for('expenses.add_details_ajax', expense_id=expense_id)), 422
+                           expense=expense, form_class='add-expense-detail-form', action_name=url_for('expenses.add_details', expense_id=expense_id)), 422
 
 
 @login_required
