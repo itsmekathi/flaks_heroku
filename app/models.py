@@ -534,7 +534,7 @@ class UnitOfMeasurementLu(db.Model):
             'name': self.name,
             'description': self.description,
             'icon': self.icon,
-            'style_class': self.style_class,
+            'styleClass': self.style_class,
         }
         return json
 
@@ -561,12 +561,12 @@ class ExpenseDetails(db.Model):
         json = {
             'id': self.id,
             'name': self.item_name,
-            'uom_id': self.uom_id,
-            'uom_name': self.uom.name,
-            'unit_price': self.unit_price,
+            'uomId': self.uom_id,
+            'uomName': self.uom.name,
+            'unitPrice': self.unit_price,
             'quantity': self.quantity,
-            'gross_price': self.gross_price,
-            'created_on': self.created_on
+            'grossPrice': self.gross_price,
+            'createdOn': self.created_on
         }
         return json
 

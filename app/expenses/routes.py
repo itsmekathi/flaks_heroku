@@ -1,4 +1,4 @@
-from flask import render_template, url_for, flash, redirect, request, abort, session
+from flask import render_template, jsonify, url_for, flash, redirect, request, abort, session
 from flask_login import current_user, login_required
 from app import db
 from app.utils import get_first_dateofthemonth
@@ -166,11 +166,14 @@ def details(expense_id):
         expenses_id=expense_id).all()
     total_expense = sum(
         expense_item.gross_price for expense_item in expense_items)
-    return render_template('/expenses/_expense.details.html', expense=expense, expense_items=expense_items, total_expense=total_expense)
+    expense_item_form = AddExpenseItemForm()
+    expense_item_form.uom_id.choices = [(uom.id, uom.name)
+                                        for uom in UnitOfMeasurementLu.query.all()]
+    return render_template('/expenses/_expense.details.html', expense=expense, expense_items=expense_items, total_expense=total_expense, form=expense_item_form, legend="Add new item")
 
 
 @login_required
-@expenses.route('/details/add/<int:expense_id>', methods=["GET", "POST"])
+@expenses.route('/<int:expense_id>/details/add', methods=["POST"])
 def add_details(expense_id):
     expense_item_form = AddExpenseItemForm()
     expense = Expenses.query.get_or_404(expense_id)
@@ -184,9 +187,50 @@ def add_details(expense_id):
         db.session.add(expense_item)
         db.session.commit()
         update_expense_header(expense_id)
-        flash('Expense item was successfully added', 'Success')
-        return redirect(url_for('expenses.details', expense_id=expense_item.expenses_id))
-    return render_template('/expenses/_add.expenses.details.html', expense=expense, form=expense_item_form, legend="Add new Item")
+        return jsonify({'status': 'added'})
+    return render_template('/expenses/_addExpensesDetails.partial.html', form=expense_item_form, legend="Add new item",
+                           expense=expense, form_class='add-expense-detail-form', action_name=url_for('expenses.add_details_ajax', expense_id=expense_id)), 422
+
+
+@login_required
+@expenses.route('/<int:expense_id>/details/<int:expense_item_id>', methods=["POST", "GET", "DELETE"])
+def detail_item(expense_id, expense_item_id):
+    edit_expenses_item_form = EditExpenseItemForm()
+
+    expense = Expenses.query.get_or_404(expense_id)
+    expense_item = ExpenseDetails.query.get_or_404(expense_item_id)
+
+    if request.method == "DELETE":
+        db.session.delete(expense_item)
+        db.session.commit()
+        update_expense_header(expense_id)
+        return jsonify({'status': 'deleted'})
+
+    edit_expenses_item_form.uom_id.choices = [(uom.id, uom.name)
+                                              for uom in UnitOfMeasurementLu.query.all()]
+
+    if edit_expenses_item_form.validate_on_submit():
+        expense_item.item_name = edit_expenses_item_form.item_name.data
+        expense_item.expenses_id = expense_id
+        expense_item.unit_price = edit_expenses_item_form.unit_price.data
+        expense_item.quantity = edit_expenses_item_form.quantity.data
+        expense_item.gross_price = edit_expenses_item_form.gross_price.data
+        expense_item.modified_on = datetime.utcnow()
+        db.session.commit()
+        update_expense_header(expense_id)
+        return jsonify({'status': 'updated'})
+    edit_expenses_item_form.item_name.data = expense_item.item_name
+    edit_expenses_item_form.unit_price.data = expense_item.unit_price
+    edit_expenses_item_form.quantity.data = expense_item.quantity
+    edit_expenses_item_form.gross_price.data = expense_item.gross_price
+    if request.method == "GET":
+        return render_template('/expenses/_addExpensesDetails.partial.html', form=edit_expenses_item_form, legend="Edit item",
+                               expense=expense, form_class='edit-expense-item-form',
+                               action_name=url_for('expenses.detail_item', expense_id=expense_id, expense_item_id=expense_item.id))
+    else:
+        return render_template('/expenses/_addExpensesDetails.partial.html', form=edit_expenses_item_form, legend="Edit item",
+                               expense=expense, form_class='edit-expense-item-form',
+                               action_name=url_for('expenses.detail_item', expense_id=expense_id, expense_item_id=expense_item.id)), 422
 
 
 def update_expense_header(expense_id):
@@ -199,33 +243,6 @@ def update_expense_header(expense_id):
     db.session.add(expense)
     db.session.commit()
     return
-
-
-@login_required
-@expenses.route('/details/edit/<int:expense_detail_id>', methods=["GET", "POST"])
-def edit_details(expense_detail_id):
-    expense_item = ExpenseDetails.query.get_or_404(expense_detail_id)
-    expense_item_form = EditExpenseItemForm()
-    expense_item_form.uom_id.choices = [(uom.id, uom.name)
-                                        for uom in UnitOfMeasurementLu.query.all()]
-    if expense_item_form.validate_on_submit():
-        expense_item.item_name = expense_item_form.item_name.data
-        expense_item.uom_id = expense_item_form.uom_id.data
-        expense_item.unit_price = expense_item_form.unit_price.data
-        expense_item.quantity = expense_item_form.quantity.data
-        expense_item.gross_price = expense_item_form.gross_price.data
-        db.session.add(expense_item)
-        db.session.commit()
-        update_expense_header(expense_item.expenses_id)
-        flash('Expense item was successfully Edited', 'Success')
-        return redirect(url_for('expenses.details', expense_id=expense_item.expenses_id))
-    expense_item_form.item_name.data = expense_item.item_name
-    expense_item_form.uom_id.data = expense_item.uom_id
-    expense_item_form.unit_price.data = expense_item.unit_price
-    expense_item_form.quantity.data = expense_item.quantity
-    expense_item_form.gross_price.data = expense_item.gross_price
-    expense = Expenses.query.get_or_404(expense_item.expenses_id)
-    return render_template('/expenses/_add.expenses.details.html', expense=expense, form=expense_item_form, legend="Edit Item")
 
 
 @login_required

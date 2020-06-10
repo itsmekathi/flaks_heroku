@@ -64,15 +64,15 @@ def expense(expenses_id):
         pass
 
 
-@api.route('/expenses/details/<int:expense_details_id>', methods=['GET', 'DELETE', 'POST'])
-def expenses_details(expense_details_id):
-    expense_detail = ExpenseDetails.query.get_or_404(expense_details_id)
-    if request.method == "GET":
-        return jsonify(expense_detail.to_json())
-    if request.method == "DELETE":
-        db.session.delete(expense_detail)
-        db.session.commit()
-        return jsonify({'status': 'deleted'})
-    if request.method == "POST":
-        # Code to update the entity
-        pass
+# @api.route('/expenses/details/<int:expense_details_id>', methods=['GET', 'DELETE', 'POST'])
+# def expenses_details(expense_details_id):
+#     expense_detail = ExpenseDetails.query.get_or_404(expense_details_id)
+#     if request.method == "GET":
+#         return jsonify(expense_detail.to_json())
+#     if request.method == "DELETE":
+#         db.session.delete(expense_detail)
+#         db.session.commit()
+#         return jsonify({'status': 'deleted'})
+#     if request.method == "POST":
+#         # Code to update the entity
+#         pass

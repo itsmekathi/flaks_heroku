@@ -30,7 +30,7 @@
                 };
                 // Show warning message
                 function showWarning(message) {
-                    self.toastr.warming(message);
+                    self.toastr.warning(message);
                 };
 
                 // Display a success toast, with a title

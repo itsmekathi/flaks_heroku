@@ -1,6 +1,8 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="content-section">
+<script
+    src="{{ url_for('static', filename='scripts/app/controllers/expenses/expenses.details.controller.js')}}"></script>
+<div class="content-section" ng-controller="expensesDetailsController as vm">
     <div class="row">
         <div class="col-md-8">
             <h3>{{expense.title}}</h3>
@@ -10,16 +12,14 @@
             <div class="pull-right">
                 <a class="btn btn-primary mb-4" href="{{ url_for('expenses.current_expenses') }}"><i
                         class="fas fa-arrow-circle-left"> Back</i></a>
-                <a class="btn btn-primary mb-4" title="Add New"
-                    href="{{ url_for('expenses.add_details', expense_id = expense.id ) }}">Add New <i
+                <a class="btn btn-primary mb-4" title="Add New" href="#" ng-click="vm.showExpenseModal()">Add New <i
                         class="fas fa-plus-circle"></i></a>
             </div>
         </div>
     </div>
     {% if expense_items %}
-    <script src="{{ url_for('static', filename='scripts/app/controllers/expenses/expenses.details.controller.js')}}"></script>
     <span class="badge badge-primary pull-right">Total Items: {{ expense_items | length }}</span>
-    <div ng-controller="expensesDetailsController">
+    <div>
         <table class="table table-striped table-bordered">
             <thead>
                 <tr>
@@ -42,9 +42,10 @@
                     <td>{{ expense_item.gross_price }}</td>
                     <td>{{ expense_item.created_on.strftime("%d %B %Y") }}</td>
                     <td>
-                        <span><a href="{{url_for('expenses.edit_details', expense_detail_id = expense_item.id)}}"
+                        <span><a href="#"
+                                ng-click="vm.showEditExpenseItemModal('{{ url_for('expenses.detail_item', expense_id = expense_item.expenses_id, expense_item_id=expense_item.id) }}')"
                                 class="btn" title="Edit Item"><i class="fas fa-edit" aria-hidden="true"></i></a></span>
-                        <span><a href="#" ng-click="showConfirm($event, {{ expense_item.id }} )" class="btn"
+                        <span><a href="#" ng-click="showConfirm($event, '{{ url_for('expenses.detail_item', expense_id = expense_item.expenses_id, expense_item_id=expense_item.id) }}' )" class="btn"
                                 title="Delete Item"><i class="fas fa-trash-alt"
                                     style="color: chocolate;"></i></a></span>
                     </td>
@@ -58,5 +59,16 @@
         <h2>No Items found</h2>
     </div>
     {% endif %}
+    {% import 'expenses/_expenses.macros.html' as forms %}
+    <modal-window show="vm.isShowExpenseItemAddModal" title="'Add new item'" width='800px'>
+        <div class="add-expenseitem-form-wrapper">
+            {{ forms.add_expense_detail_form(form, legend, expense.id , 'add-expense-detail-form', url_for('expenses.add_details',expense_id=expense.id)) }}
+        </div>
+    </modal-window>
+    <modal-window show="vm.isShowExpenseItemEditModal" title="'Edit item'" width='800px'>
+        <div class="edit-expenseitem-form-wrapper">
+            <!-- Edit form will be fetched by ajax request and appended inside the wrapper -->
+        </div>
+    </modal-window>
 </div>
 {% endblock content %}
