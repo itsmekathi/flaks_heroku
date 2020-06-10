@@ -55,7 +55,7 @@ def expense(expenses_id):
     if request.method == "GET":
         return jsonify(expense.to_json())
     if request.method == "DELETE":
-        ExpenseDetails.query.filter_by(expenses_id = expenses_id).delete()
+        ExpenseDetails.query.filter_by(expenses_id=expenses_id).delete()
         db.session.delete(expense)
         db.session.commit()
         return jsonify({'status': 'deleted'})
@@ -64,15 +64,12 @@ def expense(expenses_id):
         pass
 
 
-# @api.route('/expenses/details/<int:expense_details_id>', methods=['GET', 'DELETE', 'POST'])
-# def expenses_details(expense_details_id):
-#     expense_detail = ExpenseDetails.query.get_or_404(expense_details_id)
-#     if request.method == "GET":
-#         return jsonify(expense_detail.to_json())
-#     if request.method == "DELETE":
-#         db.session.delete(expense_detail)
-#         db.session.commit()
-#         return jsonify({'status': 'deleted'})
-#     if request.method == "POST":
-#         # Code to update the entity
-#         pass
+@api.route('/expenses/<int:expense_id>/details', methods=["GET"])
+def get_expenses_details(expense_id):
+    expense = Expenses.query.filter_by(id=expense_id)\
+        .filter_by(created_by_id=current_user.id)
+    if expense is None:
+        return jsonify({'status': 'No data Found'}), 400
+    expense_details = ExpenseDetails.query.filter_by(
+        expenses_id=expense_id).all()
+    return jsonify({'expenseItems': [expense_item.to_json() for expense_item in expense_details]})

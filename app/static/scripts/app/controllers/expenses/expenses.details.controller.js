@@ -1,14 +1,15 @@
 (function () {
     'use strict';
     angular.module('app')
-        .controller('expensesDetailsController', ['$scope', '$log', '$mdDialog', '$http', '$window', 'ToastrService',
-            function ($scope, $log, $mdDialog, $http, $window, ToastrService) {
+        .controller('expensesDetailsController', ['$log', '$mdDialog', '$window', 'ExpensesDataService', 'ToastrService',
+            function ($log, $mdDialog, $window, expensesDataService, ToastrService) {
                 var self = this;
 
                 self.isShowExpenseItemAddModal = false;
                 self.isShowExpenseItemEditModal = false;
+                self.expensesDetails = [];
 
-                $scope.showConfirm = function (ev, deleteUrl) {
+                self.showConfirm = function (ev, deleteUrl) {
                     var confirm = $mdDialog.confirm()
                         .title('Would you like to delete this item')
                         .textContent('This is an Irreversible action')
@@ -18,22 +19,25 @@
 
                     $mdDialog.show(confirm).then(function () {
                         $log.log('Delete item action initialted');
-                        deleteItem(deleteUrl);
+                        expensesDataService.deleteItem(deleteUrl)
+                        .then(function(data){
+                            getDetails();
+                            ToastrService.showSuccess(data.status, 'Deleted item');
+                        },function(error){
+                            ToastrService.showError('Error', error.statusText);
+                        });
                     }, function () {
                         $log.log('Cancel action initialted');
                     });
                 };
 
-                var deleteItem = function (url) {
-                    $http({
-                        method: 'DELETE',
-                        url: url
-                    }).then(function (response) {
-                        $scope.status = response.status;
-                        $window.location.reload();
-                    }, function (response) {
-                        ToastrService.showError('Error', response.statusText);
-                    });
+                function getDetails(){
+                    expensesDataService.getExpensesDetails()
+                    .then(function(data){
+                        self.expensesDetails = data.expenseItems;
+                    }, function(error){
+                        ToastrService.showError('Error', error.statusText)
+                    })
                 };
 
                 function addEventListeners() {
@@ -47,7 +51,8 @@
                         }).done(function (data) {
                             $log.log(data);
                             ToastrService.showSuccess('Added items successfully', 'Item added');
-                            $window.location.reload();
+                            self.isShowExpenseItemAddModal = false;
+                            getDetails();
                         }).fail(function (error) {
                             $log.log('Error: Enter valid values')
                             ToastrService.showWarning('Enter valid data in the form', 'Invalid data');
@@ -56,21 +61,6 @@
                         });
                     });
                 }
-
-                function getEditModalView(editItemUrl) {
-                    $http({
-                        method: 'GET',
-                        url: editItemUrl
-                    }).then(function (response) {
-                        $('.edit-expenseitem-form-wrapper').empty().append($(response.data).hide().fadeIn(500));
-                        self.isShowExpenseItemEditModal = true;
-                        addEditEventListeners();
-                    }, function (error) {
-                        ToastrService.showError('Error', error.statusText);
-                        self.isShowExpenseItemEditModal = false;
-                    })
-                };
-
 
                 function addEditEventListeners() {
                     $(".edit-expense-item-form").submit(function (event) {
@@ -83,7 +73,8 @@
                         }).done(function (data) {
                             $log.log(data);
                             ToastrService.showSuccess('Item edited successfully', 'Edit success');
-                            $window.location.reload();
+                            self.isShowExpenseItemEditModal = false;
+                            getDetails();
                         }).fail(function (error) {
                             $log.log('Error: Enter valid values')
                             ToastrService.showWarning('Enter valid data in the form', 'Invalid data');
@@ -98,7 +89,17 @@
                     addEventListeners();
                 };
                 self.showEditExpenseItemModal = function (editUrl) {
-                    getEditModalView(editUrl);
+                    expensesDataService.getItemEditForm(editUrl)
+                    .then(function(data){
+                        $('.edit-expenseitem-form-wrapper').empty().append($(data).hide().fadeIn(500));
+                        self.isShowExpenseItemEditModal = true;
+                        addEditEventListeners();
+                    }, function(error){
+                        ToastrService.showError('Error', error.statusText);
+                        self.isShowExpenseItemEditModal = false;
+                    });
                 };
+
+                getDetails();
             }]);
 })();

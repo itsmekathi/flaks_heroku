@@ -159,7 +159,7 @@ def edit_expenses(expense_id):
 
 
 @login_required
-@expenses.route('/details/<int:expense_id>', methods=["GET", "POST"])
+@expenses.route('/<int:expense_id>/details', methods=["GET"])
 def details(expense_id):
     expense = Expenses.query.get_or_404(expense_id)
     expense_items = ExpenseDetails.query.filter_by(
@@ -169,7 +169,8 @@ def details(expense_id):
     expense_item_form = AddExpenseItemForm()
     expense_item_form.uom_id.choices = [(uom.id, uom.name)
                                         for uom in UnitOfMeasurementLu.query.all()]
-    return render_template('/expenses/_expense.details.html', expense=expense, expense_items=expense_items, total_expense=total_expense, form=expense_item_form, legend="Add new item")
+    details_url = url_for('api.get_expenses_details', expense_id=expense_id)
+    return render_template('/expenses/_expense.details.html', expense=expense, total_expense=total_expense, form=expense_item_form, legend="Add new item", details_url=details_url)
 
 
 @login_required

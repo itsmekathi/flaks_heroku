@@ -561,12 +561,15 @@ class ExpenseDetails(db.Model):
         json = {
             'id': self.id,
             'name': self.item_name,
+            'expenseId': self.expenses_id,
             'uomId': self.uom_id,
             'uomName': self.uom.name,
             'unitPrice': self.unit_price,
             'quantity': self.quantity,
             'grossPrice': self.gross_price,
-            'createdOn': self.created_on
+            'createdOn': self.created_on,
+            'modifiedOn': self.modified_on,
+            'url': url_for('expenses.detail_item', expense_id=self.expenses_id, expense_item_id= self.id)
         }
         return json
 
