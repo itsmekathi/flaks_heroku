@@ -63,13 +63,3 @@ def expense(expenses_id):
         # Code to update the entity
         pass
 
-
-@api.route('/expenses/<int:expense_id>/details', methods=["GET"])
-def get_expenses_details(expense_id):
-    expense = Expenses.query.filter_by(id=expense_id)\
-        .filter_by(created_by_id=current_user.id)
-    if expense is None:
-        return jsonify({'status': 'No data Found'}), 400
-    expense_details = ExpenseDetails.query.filter_by(
-        expenses_id=expense_id).all()
-    return jsonify({'expenseItems': [expense_item.to_json() for expense_item in expense_details]})

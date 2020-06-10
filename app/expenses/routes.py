@@ -169,9 +169,19 @@ def details(expense_id):
     expense_item_form = AddExpenseItemForm()
     expense_item_form.uom_id.choices = [(uom.id, uom.name)
                                         for uom in UnitOfMeasurementLu.query.all()]
-    details_url = url_for('api.get_expenses_details', expense_id=expense_id)
+    details_url = url_for('expenses.get_expenses_details', expense_id=expense_id)
     return render_template('/expenses/_expense.details.html', expense=expense, total_expense=total_expense, form=expense_item_form, legend="Add new item", details_url=details_url)
 
+@login_required
+@expenses.route('/<int:expense_id>/details/all', methods=["GET"])
+def get_expenses_details(expense_id):
+    expense = Expenses.query.filter_by(id=expense_id)\
+        .filter_by(created_by_id=current_user.id)
+    if expense is None:
+        return jsonify({'status': 'No data Found'}), 400
+    expense_details = ExpenseDetails.query.filter_by(
+        expenses_id=expense_id).all()
+    return jsonify({'expenseItems': [expense_item.to_json() for expense_item in expense_details]})
 
 @login_required
 @expenses.route('/<int:expense_id>/details/add', methods=["POST"])
