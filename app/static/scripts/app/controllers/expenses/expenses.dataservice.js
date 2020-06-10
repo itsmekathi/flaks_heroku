@@ -6,7 +6,7 @@
                 // interface
                 var service = {
                     getExpensesDetails: getExpensesDetails,
-                    getItemEditForm: getItemEditForm,
+                    getFormTemplate: getFormTemplate,
                     deleteItem: deleteItem,
                 };
                 function getExpensesDetails() {
@@ -31,8 +31,8 @@
                         });
                     return def.promise;
                 }
-                function getItemEditForm(url){
-                    $log.log('Fetching Edit template from url: ' + url);
+                function getFormTemplate(url){
+                    $log.log('Fetching template from url: ' + url);
                     var def = $q.defer();
                     $http.get(url)
                         .then(function (response) {

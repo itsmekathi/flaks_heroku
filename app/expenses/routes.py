@@ -169,8 +169,10 @@ def details(expense_id):
     expense_item_form = AddExpenseItemForm()
     expense_item_form.uom_id.choices = [(uom.id, uom.name)
                                         for uom in UnitOfMeasurementLu.query.all()]
-    details_url = url_for('expenses.get_expenses_details', expense_id=expense_id)
+    details_url = url_for('expenses.get_expenses_details',
+                          expense_id=expense_id)
     return render_template('/expenses/_expense.details.html', expense=expense, total_expense=total_expense, form=expense_item_form, legend="Add new item", details_url=details_url)
+
 
 @login_required
 @expenses.route('/<int:expense_id>/details/all', methods=["GET"])
@@ -183,8 +185,9 @@ def get_expenses_details(expense_id):
         expenses_id=expense_id).all()
     return jsonify({'expenseItems': [expense_item.to_json() for expense_item in expense_details]})
 
+
 @login_required
-@expenses.route('/<int:expense_id>/details/add', methods=["POST"])
+@expenses.route('/<int:expense_id>/details/add', methods=["GET", "POST"])
 def add_details(expense_id):
     expense_item_form = AddExpenseItemForm()
     expense = Expenses.query.get_or_404(expense_id)
@@ -199,8 +202,12 @@ def add_details(expense_id):
         db.session.commit()
         update_expense_header(expense_id)
         return jsonify({'status': 'added'})
+    if request.method == "GET":
+        response_code = 200
+    if request.method == "POST":
+        response_code = 422
     return render_template('/expenses/_addExpensesDetails.partial.html', form=expense_item_form, legend="Add new item",
-                           expense=expense, form_class='add-expense-detail-form', action_name=url_for('expenses.add_details', expense_id=expense_id)), 422
+                           expense=expense, form_class='add-expense-detail-form', action_name=url_for('expenses.add_details', expense_id=expense_id)), response_code
 
 
 @login_required

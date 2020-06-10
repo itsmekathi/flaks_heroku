@@ -61,7 +61,7 @@
     {% endraw %}
     {% import 'expenses/_expenses.macros.html' as forms %}
     <modal-window show="vm.isShowExpenseItemAddModal" title="'Add new item'" width='800px'>
-        <div class="add-expenseitem-form-wrapper">
+        <div class="add-expense-item-form-wrapper">
             {{ forms.add_expense_detail_form(form, legend, expense.id , 'add-expense-detail-form', url_for('expenses.add_details',expense_id=expense.id)) }}
         </div>
     </modal-window>

@@ -1,8 +1,8 @@
 (function () {
     'use strict';
     angular.module('app')
-        .controller('expensesDetailsController', ['$log', '$mdDialog', '$window', 'ExpensesDataService', 'ToastrService',
-            function ($log, $mdDialog, $window, expensesDataService, ToastrService) {
+        .controller('expensesDetailsController', ['$log', '$mdDialog', '$window', 'ExpensesDataService','ExpensesConstants', 'ToastrService',
+            function ($log, $mdDialog, $window, expensesDataService,expensesConstants, ToastrService) {
                 var self = this;
 
                 self.isShowExpenseItemAddModal = false;
@@ -56,7 +56,7 @@
                         }).fail(function (error) {
                             $log.log('Error: Enter valid values')
                             ToastrService.showWarning('Enter valid data in the form', 'Invalid data');
-                            $('.add-expenseitem-form-wrapper').empty().append($(error.responseText).hide().fadeIn(500));
+                            $('.add-expense-item-form-wrapper').empty().append($(error.responseText).hide().fadeIn(500));
                             addEventListeners();
                         });
                     });
@@ -85,11 +85,17 @@
                 };
 
                 self.showExpenseModal = function () {
-                    self.isShowExpenseItemAddModal = true;
-                    addEventListeners();
+                    expensesDataService.getFormTemplate(expensesConstants.AddExpenseDetailFormUrl)
+                    .then(function(data){
+                        $('.add-expense-item-form-wrapper').empty().append($(data).hide().fadeIn(500));
+                        self.isShowExpenseItemAddModal = true;
+                        addEventListeners();
+                    }, function(error){
+                        ToastrService.showError('Error', error.statusText);
+                    });
                 };
                 self.showEditExpenseItemModal = function (editUrl) {
-                    expensesDataService.getItemEditForm(editUrl)
+                    expensesDataService.getFormTemplate(editUrl)
                     .then(function(data){
                         $('.edit-expenseitem-form-wrapper').empty().append($(data).hide().fadeIn(500));
                         self.isShowExpenseItemEditModal = true;

@@ -4,7 +4,8 @@
         angular.module('app')
             .constant('ExpensesConstants',
                 {
-                    "ExpenseDetailsUrl": "{{details_url}}"
+                    "ExpenseDetailsUrl": "{{details_url}}",
+                    "AddExpenseDetailFormUrl": "{{ url_for('expenses.add_details', expense_id=expense.id) }}"
                 });
     })();
 </script>
