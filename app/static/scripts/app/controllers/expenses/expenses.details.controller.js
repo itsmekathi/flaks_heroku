@@ -1,12 +1,13 @@
 (function () {
     'use strict';
     angular.module('app')
-        .controller('expensesDetailsController', ['$log', '$mdDialog', '$window', 'ExpensesDataService','ExpensesConstants', 'ToastrService',
-            function ($log, $mdDialog, $window, expensesDataService,expensesConstants, ToastrService) {
+        .controller('expensesDetailsController', ['$log', '$mdDialog', '$window', 'ExpensesDataService', 'ExpensesConstants', 'ToastrService',
+            function ($log, $mdDialog, $window, expensesDataService, expensesConstants, ToastrService) {
                 var self = this;
 
                 self.isShowExpenseItemAddModal = false;
                 self.isShowExpenseItemEditModal = false;
+                self.total = 0;
                 self.expensesDetails = [];
 
                 self.showConfirm = function (ev, deleteUrl) {
@@ -20,24 +21,35 @@
                     $mdDialog.show(confirm).then(function () {
                         $log.log('Delete item action initialted');
                         expensesDataService.deleteItem(deleteUrl)
-                        .then(function(data){
-                            getDetails();
-                            ToastrService.showSuccess(data.status, 'Deleted item');
-                        },function(error){
-                            ToastrService.showError('Error', error.statusText);
-                        });
+                            .then(function (data) {
+                                getDetails();
+                                ToastrService.showSuccess(data.status, 'Deleted item');
+                            }, function (error) {
+                                ToastrService.showError('Error', error.statusText);
+                            });
                     }, function () {
                         $log.log('Cancel action initialted');
                     });
                 };
 
-                function getDetails(){
+                function calcuateTotal() {
+                    if (self.expensesDetails != null && self.expensesDetails.length > 0) {
+                        for (let i = 0; i < self.expensesDetails.length; i++) {
+                            self.total += self.expensesDetails[i].grossPrice;
+                        }
+                    } else {
+                        self.total = 0;
+                    }
+                };
+
+                function getDetails() {
                     expensesDataService.getExpensesDetails()
-                    .then(function(data){
-                        self.expensesDetails = data.expenseItems;
-                    }, function(error){
-                        ToastrService.showError('Error', error.statusText)
-                    })
+                        .then(function (data) {
+                            self.expensesDetails = data.expenseItems;
+                            calcuateTotal();
+                        }, function (error) {
+                            ToastrService.showError('Error', error.statusText)
+                        })
                 };
 
                 function addEventListeners() {
@@ -86,24 +98,24 @@
 
                 self.showExpenseModal = function () {
                     expensesDataService.getFormTemplate(expensesConstants.AddExpenseDetailFormUrl)
-                    .then(function(data){
-                        $('.add-expense-item-form-wrapper').empty().append($(data).hide().fadeIn(500));
-                        self.isShowExpenseItemAddModal = true;
-                        addEventListeners();
-                    }, function(error){
-                        ToastrService.showError('Error', error.statusText);
-                    });
+                        .then(function (data) {
+                            $('.add-expense-item-form-wrapper').empty().append($(data).hide().fadeIn(500));
+                            self.isShowExpenseItemAddModal = true;
+                            addEventListeners();
+                        }, function (error) {
+                            ToastrService.showError('Error', error.statusText);
+                        });
                 };
                 self.showEditExpenseItemModal = function (editUrl) {
                     expensesDataService.getFormTemplate(editUrl)
-                    .then(function(data){
-                        $('.edit-expenseitem-form-wrapper').empty().append($(data).hide().fadeIn(500));
-                        self.isShowExpenseItemEditModal = true;
-                        addEditEventListeners();
-                    }, function(error){
-                        ToastrService.showError('Error', error.statusText);
-                        self.isShowExpenseItemEditModal = false;
-                    });
+                        .then(function (data) {
+                            $('.edit-expenseitem-form-wrapper').empty().append($(data).hide().fadeIn(500));
+                            self.isShowExpenseItemEditModal = true;
+                            addEditEventListeners();
+                        }, function (error) {
+                            ToastrService.showError('Error', error.statusText);
+                            self.isShowExpenseItemEditModal = false;
+                        });
                 };
 
                 getDetails();

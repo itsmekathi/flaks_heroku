@@ -8,7 +8,10 @@
     <div class="row">
         <div class="col-md-8">
             <h3>{{expense.title}}</h3>
-            <p>{{expense.description}}, Total Expense: {{total_expense}} </p>
+            <p>{{expense.description}}</p>
+            {% raw %}
+            <p>Total : {{ vm.total | currency : "INR₹ " }} </p>
+            {% endraw %}
         </div>
         <div class="col-md-4">
             <div class="pull-right">
