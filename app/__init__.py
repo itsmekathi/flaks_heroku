@@ -63,6 +63,9 @@ def create_app(config_name):
     from app.lists import lists as lists_blueprint
     app.register_blueprint(lists_blueprint, url_prefix='/lists')
 
+    from app.journal import journal as journal_blueprint
+    app.register_blueprint(journal_blueprint, url_prefix='/journal')
+
     from .api import api as api_blueprint
     app.register_blueprint(api_blueprint, url_prefix='/api/v1')
 

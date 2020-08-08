@@ -1,3 +1,4 @@
+import hashlib
 from datetime import datetime, date
 from app import db, login_manager, bcrypt
 from flask_login import UserMixin
@@ -52,6 +53,8 @@ class User(db.Model, UserMixin):
     expenses = db.relationship('Expenses', backref="created_by", lazy=True)
     addresses = db.relationship('Address', backref="created_by", lazy=True)
     lists = db.relationship('ListHeader', backref="created_by", lazy=True)
+    journals = db.relationship(
+        'PersonalJournal', backref="author", lazy='dynamic')
     bookmarks_folder = db.relationship(
         'BookmarksFolder', backref="created_by", lazy=True)
     bookmarks_items = db.relationship(
@@ -67,6 +70,13 @@ class User(db.Model, UserMixin):
     def get_reset_token(self, expires_sec=1800):
         s = Serializer(current_app.config['SECRET_KEY'], expires_sec)
         return s.dumps({'user_id': self.id}).decode('utf-8')
+
+    def gravatar_hash(self):
+        return hashlib.md5(self.email.lower().encode('utf-8')).hexdigest()
+
+    def gravatar(self, size=100, default='identicon', rating='g'):
+        url = 'https://secure.gravatar.com/avatar'
+        return '{url}/{hash}?s={size}&d={default}&r={rating}'.format(url=url, hash=self.gravatar_hash(), size=size, default=default, rating=rating)
 
     @staticmethod
     def verify_auth_token(token):
@@ -569,7 +579,7 @@ class ExpenseDetails(db.Model):
             'grossPrice': self.gross_price,
             'createdOn': self.created_on,
             'modifiedOn': self.modified_on,
-            'url': url_for('expenses.detail_item', expense_id=self.expenses_id, expense_item_id= self.id)
+            'url': url_for('expenses.detail_item', expense_id=self.expenses_id, expense_item_id=self.id)
         }
         return json
 
@@ -727,3 +737,18 @@ class BookmarksItems(db.Model):
             'modifiedOn': self.modified_on,
         }
         return json
+
+
+# Models for journal flow
+
+class PersonalJournal(db.Model):
+    __tablename__ = 'personal_journal'
+    id = db.Column(db.Integer, primary_key=True)
+    tag_line = db.Column(db.String(300))
+    body_html = db.Column(db.Text)
+    created_on = db.Column(db.DateTime(), nullable=False,
+                           default=datetime.utcnow)
+    modified_on = db.Column(db.DateTime())
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    is_private = db.Column(db.Boolean(),
+                           nullable=False, server_default='1')
