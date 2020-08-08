@@ -1,12 +1,8 @@
 {% extends "layout.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
 {% import "_macros.html" as macros%}
 {% block content %}
-<div>
-    {{ wtf.quick_form(form) }}
-</div>
 {% include 'journal/_journal.html' %}
 <div class="pagination">
-    {{ macros.pagination(pagination, 'journal.index')}}
+    {{ macros.pagination_widget(pagination, 'journal.index')}}
 </div>
 {% endblock content %}
