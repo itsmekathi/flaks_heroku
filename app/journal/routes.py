@@ -22,7 +22,7 @@ def index():
     page = request.args.get('page', 1, type=int)
     pagination = PersonalJournal.query.order_by(
         PersonalJournal.created_on.desc()).paginate(page, 5, error_out=False)
-    return render_template('journal/index.html', form=form, pagination=pagination)
+    return render_template('journal/index.html', form=form, pagination=pagination, legend="Today's Journal")
 
 
 @login_required

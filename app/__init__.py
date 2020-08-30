@@ -8,6 +8,7 @@ from config import config
 from flask_toastr import Toastr
 from datetime import datetime
 from flask_moment import Moment
+from flask_pagedown import PageDown
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -15,6 +16,7 @@ login_manager = LoginManager()
 mail = Mail()
 toastr = Toastr()
 moment = Moment()
+pagedown = PageDown()
 
 
 login_manager.login_view = 'users.login'
@@ -31,6 +33,7 @@ def create_app(config_name):
     mail.init_app(app)
     toastr.init_app(app)
     moment.init_app(app)
+    pagedown = PageDown(app)
 
     if app.config['SSL_REDIRECT']:
         from flask_sslify import SSLify
