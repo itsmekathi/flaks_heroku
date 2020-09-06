@@ -11,8 +11,9 @@
 5. Install the dependencies using
 ``` pip install -r requirements.txt ```
 6. Run the run_dev.bat file from command prompt ```run_dev.bat```
-7. You should see the application come up on port 8000.
-8. You change change the configuration by editing run_dev.bat file.
+7. To create the based database run ```flask db upgrade```. This should create a sql lite db in the project folder.
+8. You should see the application come up on port 8000.
+9. You change change the configuration by editing run_dev.bat file.
 
 ## Seting up angularjs part
 1. Switch into /app/static folder from command promp.
@@ -29,4 +30,4 @@ Resource Name | Resource Link
 Angular JS UI Grid | http://ui-grid.info/docs
 
 ## Links
-[Livee App On Heroku](https://aayud-hms.herokuapp.com/)
+[Live App On Heroku](https://aayud-hms.herokuapp.com/)
