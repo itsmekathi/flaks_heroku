@@ -24,6 +24,20 @@
 1. The app uses Jina as well as angularJS in the front end so parts which has ```{% raw %}``` is where we would be using angularJS to give it a SPA fee.
 2. The app will use the libraries from installed local node_modules when in development mode so make sure the node packages are installed.
 
+## Setting up on linux
+### Setting up python, pip and virtualenv
+1. Check whether python3 is installed by opening terminal and running ```python3 --version```
+2. Update the repo and install pip ```sudo apt update & sudo apt install python3-pip ```
+3. Verify pip installation ```pip3 --version```
+4. Install virtualenv ```apt-get install -y python3-venv```
+5. Create virtual environment ```python3 -m venv venv```
+6. Activate the virtual environment ```source venv/bin/activate```
+7. Installing the requirements ```pip3 install -r requirements.txt```
+8. To deactivate type ```deactivate```.
+8. Installing nodejs ```sudo apt install nodejs```
+9. Verify installation ```nodjs -v ```
+10. Installing npm ```sudo apt install npm```
+11. Verify installation ```npm -v ```
 # Resource Links
 Resource Name | Resource Link
 --------------|--------------
