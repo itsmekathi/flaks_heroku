@@ -7,7 +7,7 @@
 2. Clone the repository.
 3. Swith into the folder created.
 4. Create a python virtual environment using 
-``` virtual env venv ```
+``` virtualenv venv ```
 5. Install the dependencies using
 ``` pip install -r requirements.txt ```
 6. Run the run_dev.bat file from command prompt ```run_dev.bat```
