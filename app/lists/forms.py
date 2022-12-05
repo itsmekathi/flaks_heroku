@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, TextAreaField, SelectField, IntegerField, DateTimeField, \
     BooleanField
 from wtforms.validators import DataRequired, Length, NumberRange, ValidationError, Email, InputRequired
-from wtforms.fields.html5 import DateField, TimeField
+from wtforms.fields import DateField, TimeField
 
 
 class ListTypeLuForm(FlaskForm):

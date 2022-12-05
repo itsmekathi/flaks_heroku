@@ -16,7 +16,7 @@ class Config:
 
     # Application specific variables
     APP_NAME = 'AAYUD HMS'
-    APP_VERSION = '1.0.0'
+    APP_VERSION = '1.0.1'
 
     @staticmethod
     def init_app(app):
