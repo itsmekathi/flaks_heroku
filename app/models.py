@@ -3,7 +3,7 @@ from datetime import datetime, date
 from app import db, login_manager, bcrypt
 from flask_login import UserMixin
 from flask import current_app, url_for
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from itsdangerous import URLSafeTimedSerializer as Serializer
 from .exceptions import ValidationError
 
 

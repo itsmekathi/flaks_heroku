@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, TextAreaField, SelectField, IntegerField, DateTimeField
 from wtforms.validators import DataRequired, Length, NumberRange, ValidationError
-from wtforms.fields.html5 import DateField
+from wtforms.fields import DateField
 
 
 class ToDoListForm(FlaskForm):

@@ -4,6 +4,7 @@ from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from app.models import User
 from flask_login import current_user
+import email_validator
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators =[DataRequired(), Length(min=4, max=20)])

@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, TextAreaField, SelectField, IntegerField, DateTimeField, \
     BooleanField
 from wtforms.validators import DataRequired, Length, NumberRange, ValidationError, Email, InputRequired, URL
-from wtforms.fields.html5 import DateField, TimeField
+from wtforms.fields import DateField, TimeField
 
 class BookMarkFolderForm(FlaskForm):
     folder_name = StringField('Folder Name', validators=[DataRequired(), Length(

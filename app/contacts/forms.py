@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, TextAreaField, SelectField, IntegerField, DateTimeField, BooleanField
 from wtforms.validators import DataRequired, Length, NumberRange, ValidationError, Email
-from wtforms.fields.html5 import DateField
+from wtforms.fields import DateField
 
 
 class ContactTypeLuForm(FlaskForm):
