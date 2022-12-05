@@ -39,9 +39,10 @@
 10. Installing npm ```sudo apt install npm```
 11. Verify installation ```npm -v ```
 # Resource Links
-Resource Name | Resource Link
+Resource Name | Description
 --------------|--------------
-Angular JS UI Grid | http://ui-grid.info/docs
+[Angular JS UI Grid](http://ui-grid.info/docs) | UI Grid component for angularJS
+[Deploy flask applications to render](https://testdriven.io/blog/flask-render-deployment/)| How to deploy flask applications to render and connect to db
 
 ## Links
 [Live App On Heroku](https://aayud-hms.herokuapp.com/)
