@@ -9,6 +9,7 @@ from flask_migrate import Migrate, upgrade
 from datetime import datetime, date
 
 
+
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 migrate = Migrate(app, db)
 
@@ -259,3 +260,10 @@ def deploy():
     upgrade()
 
     # create or update data
+
+### Custom currency filter for indian currency
+
+@app.template_filter('conv_curr')
+def conv_curr(amount):
+    from babel.numbers import format_currency
+    return format_currency(amount, 'INR', locale='en_IN')
