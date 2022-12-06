@@ -563,7 +563,8 @@ class ExpenseDetails(db.Model):
     unit_price = db.Column(db.Numeric(10, 2), nullable=False)
     quantity = db.Column(db.Numeric(10, 2), nullable=False)
     gross_price = db.Column(db.Numeric(10, 2), nullable=False)
-    created_on = db.Column(db.DateTime(), nullable=False)
+    created_on = db.Column(db.DateTime(), nullable=False,
+                           default=datetime.utcnow)
     modified_on = db.Column(
         db.DateTime(), nullable=True)
 
