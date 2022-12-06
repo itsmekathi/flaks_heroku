@@ -35,7 +35,7 @@
                 function calcuateTotal() {
                     if (self.expensesDetails != null && self.expensesDetails.length > 0) {
                         for (let i = 0; i < self.expensesDetails.length; i++) {
-                            self.total += self.expensesDetails[i].grossPrice;
+                            self.total += parseInt(self.expensesDetails[i].grossPrice);
                         }
                     } else {
                         self.total = 0;

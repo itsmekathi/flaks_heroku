@@ -1,5 +1,5 @@
 from dateutil.relativedelta import relativedelta
-from _datetime import date
+from datetime import date
 
 
 def get_first_dateofthemonth():
