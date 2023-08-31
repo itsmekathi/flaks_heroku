@@ -1,12 +1,14 @@
 import os
 import sys
 import click
+import pytz
 from app import create_app, db
 from app.models import User, Role, UserRoles, Post, ToDoList, TaskStatusLu, TaskPriorityLu, TaskUrgencyLu, ToDoItem, \
     ToDoItemComments
 
 from flask_migrate import Migrate, upgrade
 from app.seed_data import seed_initial_data
+from flask import session
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 migrate = Migrate(app, db)
@@ -81,3 +83,16 @@ def conv_curr_inr(amount):
     """Custom currency filter for indian rupee"""
     from babel.numbers import format_currency
     return format_currency(amount, 'INR', locale='en_IN')
+
+
+@app.template_filter('localtime')
+def localtime_filter(value):
+    '''Use timezone from the session object, if available, to localize datetimes from UTC.'''
+    if 'timezone' not in session:
+        return value
+
+    # https://stackoverflow.com/a/34832184
+    utc_dt = pytz.utc.localize(value)
+    local_tz = pytz.timezone(session['timezone'])
+    local_dt = utc_dt.astimezone(local_tz)
+    return local_dt

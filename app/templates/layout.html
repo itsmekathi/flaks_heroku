@@ -11,6 +11,14 @@
     <title>Aayud - HMS</title>
     {% endif %}
 
+    {% if 'timezone' not in session %}
+    <script type="text/javascript">
+        // Send browser's timezone to server for displaying dates/times in local timezone.
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        fetch("/timezone", { method: 'POST', body: timezone });
+    </script>
+    {% endif %}
+
 
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 

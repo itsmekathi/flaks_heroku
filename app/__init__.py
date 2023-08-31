@@ -63,6 +63,9 @@ def create_app(config_name):
     from app.lists import lists as lists_blueprint
     app.register_blueprint(lists_blueprint, url_prefix='/lists')
 
+    from app.timezone import timezone as timezone_blueprint
+    app.register_blueprint(timezone_blueprint, url_prefix="/timezone")
+
     ## from app.journal import journal as journal_blueprint
     ## app.register_blueprint(journal_blueprint, url_prefix='/journal')
 

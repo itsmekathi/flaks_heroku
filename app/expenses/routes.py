@@ -1,7 +1,7 @@
 from flask import render_template, jsonify, url_for, flash, redirect, request, abort, session
 from flask_login import current_user, login_required
 from app import db
-from app.utils import get_first_dateofthemonth
+from app.utils import get_first_dateofthemonth, get_local_date
 from app.constants import date_time_format
 from app.models import ExpenseTypeLu, ExpenseCategoryLu, Expenses, ExpenseDetails, Contact, UnitOfMeasurementLu
 from .forms import ExpenseTypeLuForm, ExpenseCategoryLuForm, AddExpenseForm, EditExpenseForm, AddExpenseItemForm, EditExpenseItemForm, UOMForm, ExpenseFilterForm
@@ -97,6 +97,7 @@ def current_expenses():
 @expenses.route('/add', methods=["GET", "POST"])
 def add_expenses():
     expenses_form = AddExpenseForm()
+    local_date_time = get_local_date(datetime.utcnow())
     expenses_form.contact_id.choices = [(contact.id, contact.first_name)
                                         for contact in Contact.query.filter_by(created_by=current_user).all()]
     expenses_form.type_id.choices = [
@@ -114,8 +115,8 @@ def add_expenses():
         db.session.commit()
         flash('Expense was successfully added', 'Success')
         return redirect(url_for('expenses.current_expenses'))
-    expenses_form.expense_date.data = datetime.now()
-    expenses_form.expense_time.data = datetime.now()
+    expenses_form.expense_date.data = local_date_time
+    expenses_form.expense_time.data = local_date_time
     return render_template('/expenses/_add.expenses.html', form=expenses_form, legend="Add New Expense")
 
 
