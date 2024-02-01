@@ -1,4 +1,4 @@
-from flask import render_template, jsonify, url_for, flash, redirect, request, abort, session
+from flask import make_response, render_template, jsonify, url_for, flash, redirect, request, abort, session
 from flask_login import current_user, login_required
 from app import db
 from app.utils import get_first_dateofthemonth, get_local_date
@@ -7,9 +7,24 @@ from app.models import ExpenseTypeLu, ExpenseCategoryLu, Expenses, ExpenseDetail
 from .forms import ExpenseTypeLuForm, ExpenseCategoryLuForm, AddExpenseForm, EditExpenseForm, AddExpenseItemForm, EditExpenseItemForm, UOMForm, ExpenseFilterForm
 from . import expenses
 from datetime import date, datetime, timedelta
-from dateutil.relativedelta import relativedelta
 from .constants import from_date_name, to_date_name, selected_category_id_name, selected_contact_id_name, selected_type_id_name
 
+
+@login_required
+@expenses.route('print-view', methods=["GET"])
+def print_view():
+    from_date = get_first_dateofthemonth()
+    to_date = date.today()
+    user_expenses_query = Expenses.query.filter_by(created_by=current_user)\
+        .filter(Expenses.expense_date_time >= from_date)\
+        .filter(Expenses.expense_date_time <= (to_date + timedelta(days=1)))
+    user_expenses = user_expenses_query.order_by(Expenses.expense_date_time.desc()).all()
+    total_expense = sum(
+        expense.expense_amount for expense in user_expenses_query.all())
+    expense_filters = [f'From date: {from_date.strftime(date_time_format)}',
+                       f'To date: {to_date.strftime(date_time_format)}']
+    return render_template('/expenses/_export.pdf.expenses.html', expenses=user_expenses,
+                             total_expense=total_expense, expense_filters=expense_filters)
 
 @login_required
 @expenses.route('', methods=["GET", "POST"])
