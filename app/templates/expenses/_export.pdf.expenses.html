@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Print View - Expenses</title>
+    <style>
+        @media print {
+            /* Add print-specific styles here */
+            body {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% if environment == 'development' %}
+    <link rel="stylesheet"
+        href="{{ url_for('static', filename='node_modules/bootstrap/dist/css/bootstrap.min.css', _external=True) }}">
+    {% else %}
+    <!-- If environment is other than local use from CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    {% endif %}
+    <div class="container">
+        <div class="content-section">
+            <div class="row">
+                <div class="col-md-4">
+                    <h2>Aayud-hms expenses extract</h2>
+                </div>
+                <div class="col-md-8">
+                    <h3>All Expenses - {{ total_expense | conv_curr_inr }}</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    Filters: {% for expense_filter in expense_filters %}
+                    <span class="badge badge-info">{{ expense_filter }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <td>Title</td>
+                        <td>Expense Date</td>
+                        <td>Type</td>
+                        <td>Category</td>
+                        <td>Contact Name</td>
+                        <td>Expense Amount</td>
+                        <td>Description</td>
+                        <td>Items</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for expense in expenses %}
+                    <tr>
+                        <td>{{ expense.title }}</td>
+                        <td>{{ expense.expense_date_time.strftime("%b %d %Y %I:%M %p") }}</td>
+                        <td>{{ expense.expense_type.name }}</td>
+                        <td>{{ expense.expense_category.name }}</td>
+                        <td>{{ expense.contact.first_name }}</td>
+                        <td>{{ expense.expense_amount | conv_curr_inr}}</td>
+                        <td>{{ expense.description }}</td>
+                        <td>
+                            {% if expense.expense_details %}{{ expense.expense_details|length }}
+                            {% else %} -- {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>

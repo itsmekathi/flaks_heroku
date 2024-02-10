@@ -72,3 +72,9 @@
 | [Visual studio code](https://code.visualstudio.com/) | Free code editor from microsoft                                                       | Free  |
 
 ### [Live App On render](https://aayud-hms.onrender.com/)
+
+
+# Use Full commands
+1. Upgrade all python packages `pip freeze > requirements.txt && pip install --upgrade -r requirements.txt`
+2. Upgrade a particular package `pip install --upgrade <package_name>`
+3. Uninstall a package `pip uninstall <packagename>`

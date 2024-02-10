@@ -1,17 +1,22 @@
-{% extends "layout.html" %} {% block content %} {% if expenses.total > 0 %}
+{% extends "layout.html" %}
+{% block content %}
+{% if expenses.total > 0 %}
 <script src="{{ url_for('static', filename='scripts/app/controllers/expenses/expenses.controller.js')}}"></script>
 <div class="content-section" ng-controller="expensesController">
   <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-6">
       <h3>All Expenses - {{ total_expense | conv_curr_inr }}</h3>
     </div>
-    <div class="col-md-4">
-      <a
-        class="btn btn-primary mb-4 pull-right"
-        title="Add New"
-        href="{{ url_for('expenses.add_expenses') }}"
-        >Add New <i class="fas fa-plus-circle"></i
-      ></a>
+    <div class="col-md-6">
+      <a class="btn btn-primary mb-4 pull-right" title="Add New" href="{{ url_for('expenses.add_expenses') }}">Add New
+        <i class="fas fa-plus-circle"></i></a>
+      <a href="{{ url_for('expenses.print_view') }}" target="_blank" id="openPrintView">Open Print View</a>
+      <script>
+        document.getElementById('openPrintView').addEventListener('click', function(event) {
+            event.preventDefault();
+            window.open(this.href, '_blank', 'width=600,height=600');
+        });
+    </script>
     </div>
   </div>
   <div class="row">
@@ -28,9 +33,7 @@
       5)}}
     </div>
     <div class="col-md-2">
-      <span class="badge badge-primary pull-right"
-        >Total Items: {{ expenses.total }}</span
-      >
+      <span class="badge badge-primary pull-right">Total Items: {{ expenses.total }}</span>
     </div>
   </div>
   <table class="table table-striped table-bordered">
@@ -62,28 +65,12 @@
           {% else %} -- {% endif %}
         </td>
         <td>
-          <span
-            ><a
-              href="{{url_for('expenses.edit_expenses', expense_id=expense.id)}}"
-              class="btn"
-              title="Edit expense"
-              ><i class="far fa-edit"></i></a
-          ></span>
-          <span
-            ><a
-              href="{{url_for('expenses.details', expense_id=expense.id)}}"
-              class="btn"
-              title="Add sub Item"
-              ><i class="far fa-plus-square"></i></a
-          ></span>
-          <span
-            ><a
-              href="#"
-              ng-click="showConfirm($event, {{ expense.id }} )"
-              class="btn"
-              title="Delete Item"
-              ><i class="fas fa-trash-alt" style="color: chocolate"></i></a
-          ></span>
+          <span><a href="{{url_for('expenses.edit_expenses', expense_id=expense.id)}}" class="btn"
+              title="Edit expense"><i class="far fa-edit"></i></a></span>
+          <span><a href="{{url_for('expenses.details', expense_id=expense.id)}}" class="btn" title="Add sub Item"><i
+                class="far fa-plus-square"></i></a></span>
+          <span><a href="#" ng-click="showConfirm($event, {{ expense.id }} )" class="btn" title="Delete Item"><i
+                class="fas fa-trash-alt" style="color: chocolate"></i></a></span>
         </td>
       </tr>
       {% endfor %}
@@ -97,15 +84,14 @@
       <h3>No items found</h3>
     </div>
     <div class="col-md-4">
-      <a
-        class="btn btn-primary mb-4 pull-right"
-        title="Add New"
-        href="{{ url_for('expenses.add_expenses') }}"
-        >Add New <i class="fas fa-plus-circle"></i
-      ></a>
+      <a class="btn btn-primary mb-4 pull-right" title="Add New" href="{{ url_for('expenses.add_expenses') }}">Add New
+        <i class="fas fa-plus-circle"></i></a>
     </div>
   </div>
 </div>
-{% endif %} {% endblock content %} {% block sidebar %} {% import
-'expenses/_expenses.macros.html' as forms %} {{ forms.expenseFilter(form,
-legend)}} {% endblock sidebar%}
+{% endif %}
+{% endblock content %}
+{% block sidebar %}
+{% import 'expenses/_expenses.macros.html' as forms %}
+{{ forms.expenseFilter(form,legend)}}
+{% endblock sidebar%}

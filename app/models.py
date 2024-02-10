@@ -676,7 +676,8 @@ class ListItem(db.Model):
             'sortOrder': self.sort_order,
             'createdOn': self.created_on,
             'modifiedOn': self.modified_on,
-            'updateUrl': url_for('api.list_item', list_id=self.list_id)
+            'resourceUrl': url_for('api.list_item', list_id=self.list_id),
+            'deleteUrl' : url_for('api.delete_list_item',item_id=self.id)
         }
         return json
 

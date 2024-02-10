@@ -13,7 +13,14 @@
                         { field: 'name' },
                         { field: 'description' },
                         { field: 'stars', enableSorting: true, type: 'number' },
-                        { field: 'sortOrder', enableSorting: true, type: 'number' }
+                        { field: 'sortOrder', enableSorting: true, type: 'number' },
+                        ,
+                        {
+                            field: 'Actions',
+                            cellTemplate:
+                                `<span><a href="#" ng-click="grid.appScope.showConfirm($event, row.entity )" class="btn"
+                        title="Delete Item"><i class="fas fa-trash-alt" style="color:red;"></i></a></span>`
+                        }
                     ],
                     onRegisterApi: function (gridApi) {
                         $scope.gridApi = gridApi;
@@ -25,6 +32,28 @@
                     var promise = ListDataService.updateListDetail(listDetail);
                     $scope.gridApi.rowEdit.setSavePromise(listDetail, promise);
                 }
+                // Angular material dialog
+                $scope.showConfirm = function (ev, item) {
+                    $scope.currentItem = item;
+                    var confirm = $mdDialog.confirm()
+                        .title('Would you like to delete this item')
+                        .textContent('This is an Irreversible action')
+                        .targetEvent(ev)
+                        .ok('Delete')
+                        .cancel('Cancel');
+
+                    $mdDialog.show(confirm).then(function () {
+                        ListDataService.deleteListItem($scope.currentItem)
+                            .then(function (data) {
+                                ToastrService.showSuccess('Item deleted successfully', 'Success');
+                                self.getListDetails();
+                            }, function () {
+                                $log.log('Delete action Failed');
+                            });
+                    }, function () {
+                        $log.log('Cancel action initialted');
+                    });
+                };
 
 
                 self.getListDetails = function () {

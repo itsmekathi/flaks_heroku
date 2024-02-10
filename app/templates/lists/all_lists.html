@@ -3,14 +3,17 @@
 {% include 'lists/_list.constants.html'%}
 <script src="{{ url_for('static', filename='scripts/app/controllers/lists/allLists.controller.js')}}"></script>
 <div class="container-fluid" ng-controller="allListsController as vm">
+    <div class="row mb-3">
+        <div class="col-md-8"></div>
+        <div class="col-md-4">
+            <a class="btn btn-success pull-right" href="{{ url_for('lists.new_lists') }}"><span></span>Add New <i
+                    class="fas fa-plus-circle"></i></a>
+        </div>
+    </div>
     {% if items %}
     <div class="row mb-3">
         <div class="col-md-8">
             <h2>All List Data.</h2>
-        </div>
-        <div class="col-md-4">
-            <a class="btn btn-success pull-right" href="{{ url_for('lists.new_lists') }}"><span></span>Add New <i
-                    class="fas fa-plus-circle"></i></a>
         </div>
     </div>
     <div class="accordion" id="allLists">
@@ -44,7 +47,8 @@
     {% else %}
     <h1 class="offset-lg-3">No items to show.</h1>
     {% endif %}
-    <div class="col-md-6 col-md-offset-3">
+    <!-- Model Dialog Example -->
+    <!-- <div class="col-md-6 col-md-offset-3">
         <button ng-click="vm.openModal('delete-list-modal')">Delete</button>
         <button ng-click="vm.showModal2=true">Show Modal2 </button>
     </div>
@@ -75,6 +79,6 @@
     </custom-modal>
     <modal-window show="vm.showModal2"  title="'Simple modal dialog 2'" width='800px' height=60%>
         <p>Hello simple Modal Window</p>
-    </modal-window>
+    </modal-window> -->
 </div>
 {% endblock content %}
