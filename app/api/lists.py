@@ -78,17 +78,10 @@ def list_type(type_id):
         return jsonify(list_type.to_json())
 
 
-@api.route('/lists/<int:list_id>/items', methods=['GET', 'DELETE', 'POST'])
+@api.route('/lists/<int:list_id>/items', methods=['GET', 'POST'])
 def list_item(list_id):
     if request.method == "GET":
-        return jsonify([item.to_json() for item in ListItem.query.filter_by(list_id=list_id)])
-    if request.method == "DELETE":
-        """ Deletes the entity
-        """
-        list_item = ListItem.query.get_or_404(int(request.json["id"]))
-        db.session.delete(list_item)
-        db.session.commit()
-        return jsonify({'status': 'deleted'})
+        return jsonify([item.to_json() for item in ListItem.query.filter_by(list_id=list_id)])        
     if request.method == "POST":
         """ Updates the entity if POST and Id is valid, create should always be done
         through form
@@ -101,3 +94,13 @@ def list_item(list_id):
         list_item.stars = request.json['stars']
         db.session.commit()
         return jsonify(list_item.to_json())
+    
+@api.route('/lists/items/<int:item_id>', methods=['DELETE'])
+def delete_list_item(item_id):
+    """ Deletes the list item entity from table if found
+        """
+    list_item = ListItem.query.get_or_404(item_id)
+    db.session.delete(list_item)
+    db.session.commit()
+    return jsonify({'status': 'deleted'})
+       

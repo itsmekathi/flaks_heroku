@@ -43,10 +43,11 @@ def delete_list(list_id):
     """ Delete the list and its associated items
     """
     list_items = ListItem.query.filter_by(list_id=list_id).all()
-    db.session.remove(list_items)
+    for list_item in list_items:
+        db.session.delete(list_item)
     db.session.commit()
-    list_header = ListHeader.query.filter_by(id=list_id).all()
-    db.session.remove(list_header)
+    list_header = ListHeader.query.get_or_404(list_id)
+    db.session.delete(list_header)
     db.session.commit()
     return redirect(url_for('lists.all_lists'))
 
@@ -76,7 +77,7 @@ def list_details(list_id):
 def add_list_item(list_id):
     """ Page where user can add items to list
     """
-    form = AddListItemForm(request.args)
+    form = AddListItemForm()
     if form.validate_on_submit():
         list_item = ListItem(
             list_id=list_id, 

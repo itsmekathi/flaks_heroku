@@ -9,12 +9,13 @@
                     getListTypeLookups: getListTypeLookups,
                     getListDetails: getListDetails,
                     updateListDetail: updateListDetail,
+                    deleteListItem: deleteListItem,
                     addNewListType: addNewListType,
                     deleteListType: deleteListType
                 };
                 function updateListDetail(listItem) {
                     var def = $q.defer();
-                    $http.post(listItem.updateUrl, listItem)
+                    $http.post(listItem.resourceUrl, listItem)
                         .then(function (response) {
                             def.resolve(response.data);
                         }, function (error) {
@@ -22,6 +23,16 @@
                         });
                     return def.promise;
                 };
+                function deleteListItem(listItem){
+                    var def = $q.defer();
+                    $http.delete(listItem.deleteUrl, listItem)
+                    .then(function(response){
+                        def.resolve(response.data);
+                    }, function(error){
+                        def.reject(error);
+                    });
+                    return def.promise;
+                }
                 function getListDetails() {
                     var def = $q.defer();
                     $http.get(ListConstants.CurrentListHeader.detailUrl)
