@@ -2,9 +2,6 @@ from . import api
 from flask import request, flash, jsonify
 from app import db
 from app.models import ExpenseTypeLu, ExpenseCategoryLu, UnitOfMeasurementLu, Expenses, ExpenseDetails
-from app.api.errors import unauthorized
-from flask_login import current_user
-from .authentication import auth
 
 
 @api.route('/expenses/types/<int:type_id>', methods=['GET', 'DELETE', 'POST'])

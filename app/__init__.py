@@ -1,21 +1,7 @@
 from flask import Flask
-import click
-from flask_sqlalchemy import SQLAlchemy
-from flask_bcrypt import Bcrypt
-from flask_login import LoginManager
-from flask_mail import Mail
 from config import config
-from flask_toastr import Toastr
 from datetime import datetime
-from flask_moment import Moment
-
-db = SQLAlchemy()
-bcrypt = Bcrypt()
-login_manager = LoginManager()
-mail = Mail()
-toastr = Toastr()
-moment = Moment()
-
+from .extensions import scheduler, db, login_manager, bcrypt, mail, toastr, moment
 
 login_manager.login_view = 'users.login'
 login_manager.login_message = 'Please login to continue'
@@ -31,6 +17,11 @@ def create_app(config_name):
     mail.init_app(app)
     toastr.init_app(app)
     moment.init_app(app)
+
+    # Initialize scheduler
+    scheduler.init_app(app)
+    from . import jobs
+    scheduler.start()
 
     if app.config['SSL_REDIRECT']:
         from flask_sslify import SSLify
@@ -71,6 +62,9 @@ def create_app(config_name):
 
     from .api import api as api_blueprint
     app.register_blueprint(api_blueprint, url_prefix='/api/v1')
+    
+    from .health import health as health_blueprint
+    app.register_blueprint(health_blueprint, url_prefix="/health")
 
     @app.context_processor
     def inject_environment_variables():
