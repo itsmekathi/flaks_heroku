@@ -55,7 +55,7 @@
 | [Angular JS UI Grid](http://ui-grid.info/docs)                                             | UI Grid component for angularJS                              |
 | [Deploy flask applications to render](https://testdriven.io/blog/flask-render-deployment/) | How to deploy flask applications to render and connect to db |
 | [Grunt JS](https://gruntjs.com/getting-started)                                            | Getting started with Grunt JS                                |
-
+| [Flask-apscheduler](https://viniciuschiele.github.io/flask-apscheduler/index.html)| Flask-APScheduler is a Flask extension which adds support for the APScheduler.|
 ## Steps for production deployment.
 
 1. Set below environment values accordingly before PAAS deployment.

@@ -13,6 +13,8 @@ class Config:
     FLASK_MAIL_SENDER = 'Admin <admin@aayudhms.com>'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SSL_REDIRECT = False
+    SCHEDULER_API_ENABLED = True
+    HEALTH_CHECK_ENDPOINT_URL= 'http://127.0.0.1:8000/health'
 
     # Application specific variables
     APP_NAME = 'AAYUD HMS'
